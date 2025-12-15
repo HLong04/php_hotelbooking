@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
+use App\Model\User;
 use App\Controller;
 
 class UserController extends Controller
@@ -14,7 +14,7 @@ class UserController extends Controller
         $this->userModel = new User();
     }
 
-    public function index()
+    public function showAll()
     {
         $users = $this->userModel->getAllUsers();
 
@@ -61,10 +61,7 @@ class UserController extends Controller
             $fullName = $_POST['full_name'];
             $email = $_POST['email'];
             $phone = $_POST['phone'];
-            
-            // Lưu ý: Thường update admin sẽ không đổi pass ở đây, 
-            // hoặc phải làm logic riêng nếu user nhập pass mới.
-            // Ở đây mình chỉ update thông tin cơ bản.
+
 
             $this->userModel->updateUser($userId, $fullName, $email, $phone);
             

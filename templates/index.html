@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bistro Elegance - Fine Dining Experience</title>
+    <link rel="stylesheet" href="tooplate-bistro-elegance.css">
+<!--
+
+Tooplate 2148 Bistro Elegance
+
+https://www.tooplate.com/view/2148-bistro-elegance
+
+Free HTML CSS Template
+
+-->
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Plate/Circle -->
+                    <circle cx="20" cy="20" r="18" stroke="#e74c3c" stroke-width="2" fill="none"/>
+                    <circle cx="20" cy="20" r="14" stroke="#e74c3c" stroke-width="1" fill="none" opacity="0.5"/>
+                    
+                    <!-- Fork -->
+                    <path d="M10 12 L10 20 M8 12 L8 15 M12 12 L12 15 M8 12 L12 12" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <!-- Knife -->
+                    <path d="M30 12 L30 20 M28 12 Q28 14 30 14" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    
+                    <!-- Chef's hat accent -->
+                    <ellipse cx="20" cy="26" rx="6" ry="3" fill="#e74c3c" opacity="0.2"/>
+                    <path d="M14 26 C14 24 16 22 20 22 C24 22 26 24 26 26" stroke="#e74c3c" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    <circle cx="17" cy="24" r="1" fill="#e74c3c" opacity="0.6"/>
+                    <circle cx="20" cy="23" r="1" fill="#e74c3c" opacity="0.6"/>
+                    <circle cx="23" cy="24" r="1" fill="#e74c3c" opacity="0.6"/>
+                </svg>
+                <span>Bistro Elegance</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#reservation">Reservations</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="diagonal-grid"></div>
+        <div class="static-decoration"></div>
+        <div class="bottom-right-decoration"></div>
+        <div class="hero-content">
+            <h1>Welcome to Bistro Elegance</h1>
+            <p>
+                <span class="text-option">Experience culinary excellence in an atmosphere of refined sophistication</span>
+                <span class="text-option">Discover exquisite flavors crafted with passion and precision</span>
+                <span class="text-option">Where fine dining meets unforgettable moments</span>
+            </p>
+            <a href="#reservation" class="cta-btn">Reserve Your Table</a>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu">
+        <h2>Our Signature Menu</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400&h=200&fit=crop&crop=center" alt="Truffle Risotto" class="menu-item-image">
+                <div class="menu-item-content">
+                    <h3>Truffle Risotto</h3>
+                    <p>Creamy arborio rice with black truffle, parmesan, and fresh herbs</p>
+                    <div class="price">$32</div>
+                    <button class="ingredients-btn" onclick="showIngredients('truffle-risotto')">View Ingredients</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=200&fit=crop&crop=center" alt="Grilled Salmon" class="menu-item-image">
+                <div class="menu-item-content">
+                    <h3>Grilled Salmon</h3>
+                    <p>Atlantic salmon with lemon butter sauce and seasonal vegetables</p>
+                    <div class="price">$28</div>
+                    <button class="ingredients-btn" onclick="showIngredients('grilled-salmon')">View Ingredients</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=200&fit=crop&crop=center" alt="Beef Wellington" class="menu-item-image">
+                <div class="menu-item-content">
+                    <h3>Beef Wellington</h3>
+                    <p>Premium beef tenderloin wrapped in puff pastry with mushroom duxelles</p>
+                    <div class="price">$45</div>
+                    <button class="ingredients-btn" onclick="showIngredients('beef-wellington')">View Ingredients</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=200&fit=crop&crop=center" alt="Lobster Thermidor" class="menu-item-image">
+                <div class="menu-item-content">
+                    <h3>Lobster Thermidor</h3>
+                    <p>Fresh lobster in cognac cream sauce with gruyere cheese</p>
+                    <div class="price">$52</div>
+                    <button class="ingredients-btn" onclick="showIngredients('lobster-thermidor')">View Ingredients</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=200&fit=crop&crop=center" alt="Duck Confit" class="menu-item-image">
+                <div class="menu-item-content">
+                    <h3>Duck Confit</h3>
+                    <p>Slow-cooked duck leg with garlic potatoes and cherry reduction</p>
+                    <div class="price">$38</div>
+                    <button class="ingredients-btn" onclick="showIngredients('duck-confit')">View Ingredients</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=200&fit=crop&crop=center" alt="Chocolate Soufflé" class="menu-item-image">
+                <div class="menu-item-content">
+                    <h3>Chocolate Soufflé</h3>
+                    <p>Warm chocolate soufflé with vanilla ice cream and berry coulis</p>
+                    <div class="price">$16</div>
+                    <button class="ingredients-btn" onclick="showIngredients('chocolate-souffle')">View Ingredients</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section id="reservation">
+        <div class="reservation">
+            <div class="reservation-left">
+                <h2>Make a Reservation</h2>
+                <form class="reservation-form" onsubmit="handleReservation(event)">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <select id="time" name="time" required>
+                            <option value="">Select Time</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="17:30">5:30 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="18:30">6:30 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="19:30">7:30 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="20:30">8:30 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Number of Guests</label>
+                        <select id="guests" name="guests" required>
+                            <option value="">Select Guests</option>
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5 Guests</option>
+                            <option value="6">6 Guests</option>
+                            <option value="7">7 Guests</option>
+                            <option value="8">8 Guests</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="special">Special Requests</label>
+                        <textarea id="special" name="special" rows="5" placeholder="Any dietary restrictions or special occasions?"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Reserve Table</button>
+                </form>
+            </div>
+            <div class="reservation-right">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop&crop=center" alt="Restaurant Interior" class="reservation-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>123 Culinary Street<br>
+                Gourmet District, GD 12345<br>
+                Phone: (555) 123-4567<br>
+                Email: info@bistroelegance.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Opening Hours</h3>
+                <p>Monday - Thursday: 5:00 PM - 10:00 PM<br>
+                Friday - Saturday: 5:00 PM - 11:00 PM<br>
+                Sunday: 5:00 PM - 9:00 PM<br>
+                Closed on major holidays</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <p><a href="#">Facebook</a><br>
+                <a href="#">Instagram</a><br>
+                <a href="#">Twitter</a><br>
+                <a href="#">LinkedIn</a></p>
+            </div>
+        </div>
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #555; text-align: center;">
+            <p>&copy; 2026 Bistro Elegance. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <span>|</span>
+                <a href="#">Terms & Conditions</a>
+                <span>|</span>
+                <a href="#">Sitemap</a>
+                <span>|</span>
+                <a rel="nofollow noopener" href="https://www.tooplate.com" target="_blank">Designed by Tooplate</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Ingredients Modal -->
+    <div id="ingredientsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">Dish Ingredients</h3>
+            <ul id="ingredientsList" class="ingredient-list"></ul>
+        </div>
+    </div>
+
+<script src="tooplate-bistro-scripts.js"></script>
+</body>
+</html>

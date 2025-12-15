@@ -1,30 +1,60 @@
 <?php
 
 use App\Router;
-use App\Controllers\UserController;
 
+use App\Controllers\AuthController;  
+use App\Controllers\HomeController;   
+use App\Controllers\UserController;    
+use App\Controllers\RoomController;    
+use App\Controllers\OrderController;   
 
-$controller = new UserController();
+$authCtrl = new AuthController();
+$homeCtrl = new HomeController();
+$userCtrl = new UserController();
+$roomCtrl = new RoomController();
+$orderCtrl = new OrderController();
 
 $router = new Router();
 
-// Trang chủ: "/"
-$router->addRoute('#^/$#', [$controller, 'index']);
+$router->addRoute('#^/$#', [$homeCtrl, 'index']); // Trang chủ
+$router->addRoute('#^/login/?$#', [$authCtrl, 'login']);
+$router->addRoute('#^/register/?$#', [$authCtrl, 'register']); // [MỚI] Đăng ký
+$router->addRoute('#^/logout/?$#', [$authCtrl, 'logout']);
 
-// "/post" hoặc "/post/" 
-$router->addRoute('#^/user/?$#', [$controller, 'index']);
 
-// "/post/index" hoặc "/post/index/"
-$router->addRoute('#^/user/index/?$#', [$controller, 'index']);
+// USER
+// Xem danh sách phòng & Chi tiết
+$router->addRoute('#^/rooms/?$#', [$homeCtrl, 'listRoom']);
+$router->addRoute('#^/room/detail/(\d+)$#', [$homeCtrl, 'detailRoom']);
 
-// "/post/show/123"
-$router->addRoute('#^/user/show/(\d+)$#', [$controller, 'show']);
+// Route này nhận dữ liệu POST từ form đặt phòng để lưu vào DB
+$router->addRoute('#^/booking/create/(\d+)$#', [$orderCtrl, 'createBooking']);
 
-// "/post/create"
-$router->addRoute('#^/user/create/?$#', [$controller, 'create']);
+// Quản lý cá nhân
+$router->addRoute('#^/profile/(\d+)$#', [$userCtrl, 'profile']);
+$router->addRoute('#^/profile/update/(\d+)$#', [$userCtrl, 'updateProfile']);
 
-// "/post/update/123"
-$router->addRoute('#^/user/update/(\d+)$#', [$controller, 'update']);
+// Lịch sử đặt phòng của tôi
+$router->addRoute('#^/myorders/?$#', [$orderCtrl, 'myOrders']);
+$router->addRoute('#^/myorders/detail/(\d+)$#', [$orderCtrl, 'myOrderDetail']);
 
-// "/post/delete/123"
-$router->addRoute('#^/user/delete/(\d+)$#', [$controller, 'delete']);
+
+//   ADMIN PORTAL
+// 1. Quản lý Phòng (Rooms)
+$router->addRoute('#^/admin/rooms/?$#', [$roomCtrl, 'index']);
+$router->addRoute('#^/admin/rooms/create/?$#', [$roomCtrl, 'create']);
+$router->addRoute('#^/admin/rooms/update/(\d+)$#', [$roomCtrl, 'update']);
+$router->addRoute('#^/admin/rooms/delete/(\d+)$#', [$roomCtrl, 'delete']);
+
+// 2. Quản lý Khách hàng (Users)
+$router->addRoute('#^/admin/users/?$#', [$userCtrl, 'index']);
+$router->addRoute('#^/admin/users/create/?$#', [$userCtrl, 'create']);
+$router->addRoute('#^/admin/users/update/(\d+)$#', [$userCtrl, 'update']); // [MỚI] Sửa User
+$router->addRoute('#^/admin/users/delete/(\d+)$#', [$userCtrl, 'delete']);
+
+// 3. Quản lý Đơn đặt (Orders)
+$router->addRoute('#^/admin/orders/?$#', [$orderCtrl, 'index']);
+$router->addRoute('#^/admin/orders/detail/(\d+)$#', [$orderCtrl, 'show']);
+// [MỚI] Route để Admin duyệt đơn (đổi status thành Confirmed/Cancelled)
+$router->addRoute('#^/admin/orders/status/(\d+)$#', [$orderCtrl, 'updateStatus']);
+$router->addRoute('#^/admin/orders/delete/(\d+)$#', [$orderCtrl, 'delete']);

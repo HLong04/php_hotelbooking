@@ -33,7 +33,6 @@ class RoomType
         return $result->fetch_assoc();
     }
 
-    // Admin tạo loại phòng
     public function createRoomType($name, $price, $description, $image)
     {
         $name = $this->connection->real_escape_string($name);
@@ -47,7 +46,6 @@ class RoomType
         return $this->connection->query($sql);
     }
 
-    // Admin cập nhật
     public function updateRoomType($id, $name, $price, $description)
     {
         $id = $this->connection->real_escape_string($id);

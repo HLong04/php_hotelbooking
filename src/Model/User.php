@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Model;
 
 class User
 {
@@ -25,35 +25,34 @@ class User
         $result = $this->connection->query("SELECT * FROM users ORDER BY created_at DESC");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+    //login
+    public function login($email, $password)
+    {
+        $email = $this->connection->real_escape_string($email);
+        $sql = "SELECT * FROM users WHERE email = '$email'";
+        $result = $this->connection->query($sql);
 
-    //insert user
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            if ($password == $user['password']) {
+                return $user;
+            }
+        }
+        return false;
+    }
+
+    //register
     public function register($fullName, $email, $password, $phone)
     {
         $fullName = $this->connection->real_escape_string($fullName);
         $email = $this->connection->real_escape_string($email);
         $phone = $this->connection->real_escape_string($phone);
+        $password = $this->connection->real_escape_string($password); // Lưu password thường
 
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $sql = "INSERT INTO users (full_name, email, password, phone) 
-                VALUES ('$fullName', '$email', '$hashedPassword', '$phone')";
+        $sql = "INSERT INTO users (full_name, email, password, phone, role, created_id) 
+            VALUES ('$fullName', '$email', '$password', '$phone', 0, row())";
 
         return $this->connection->query($sql);
-    }
-
-    //login
-    public function login($email, $password)
-    {
-        $email = $this->connection->real_escape_string($email);
-        $result = $this->connection->query("SELECT * FROM users WHERE email = '$email'");
-
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            if (password_verify($password, $user['password'])) {
-                return $user;
-            }
-        }
-        return false;
     }
 
     //lấy thông tin user
