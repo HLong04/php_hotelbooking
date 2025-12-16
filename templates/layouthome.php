@@ -19,7 +19,7 @@
                 <span>Bistro Elegance</span>
             </a>
             <ul class="nav-links">
-                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#home" class="active">Home52236</a></li>
                 <li><a href="#menu">Menu</a></li>
                 <li><a href="#booking">Booking</a></li>
                 <li><a href="#contact">Contact</a></li>
