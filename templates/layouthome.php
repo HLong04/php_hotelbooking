@@ -19,10 +19,12 @@
                 <span>Bistro</span>
             </a>
             <ul class="nav-links">
-                <li><a href="#home" class="active">Home52236</a></li>
+                <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#menu">Menu</a></li>
                 <li><a href="#booking">Booking</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="/login">login</a></li>
+
             </ul>
             <div class="menu-toggle">
                 <span></span><span></span><span></span>
@@ -46,10 +48,6 @@
         </div>
     </section>
     <!-- end home -->
-
-    <div class="container mt-3">
-        <?= $content ?>
-    </div>
 
 
 
