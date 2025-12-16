@@ -42,7 +42,7 @@ class AuthController extends Controller
                 if ($user['role'] == 1) {
                     $this->render('admin\adminhome', ['users' => $user]);
                 } else {
-                    $this->render('\home', ['users' => $user]);
+                    $this->render('rooms\home', ['users' => $user]);
                 }
                 exit();
             } else {
