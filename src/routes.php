@@ -19,8 +19,8 @@ $adminCtrl = new AdminController();
 
 
 $router = new Router();
-
-$router->addRoute('#^/$#', [$homeCtrl, 'index']); // Trang chủ
+// Route cho trang chủ (dấu /)
+$router->addRoute('#^/$#', [$homeCtrl, 'index']);
 $router->addRoute('#^/login/?$#', [$authCtrl, 'login']);
 $router->addRoute('#^/register/?$#', [$authCtrl, 'register']); // [MỚI] Đăng ký
 $router->addRoute('#^/logout/?$#', [$authCtrl, 'logout']);

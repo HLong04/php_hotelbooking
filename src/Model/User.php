@@ -98,4 +98,12 @@ class User
 
         return $this->connection->query($sql);
     }
+    // Thêm vào trong class User
+    public function countUsers()
+    {
+        $sql = "SELECT COUNT(*) as total FROM users WHERE role = 0"; // Chỉ đếm khách hàng, không đếm admin
+        $result = $this->connection->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Model;
 
 class Booking
 {
@@ -31,7 +31,7 @@ class Booking
         // Mặc định status là 'pending'
         $sql = "INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price, status) 
                 VALUES ('$userId', '$roomId', '$checkIn', '$checkOut', '$totalPrice', 'pending')";
-        
+
         return $this->connection->query($sql);
     }
 
@@ -39,7 +39,7 @@ class Booking
     public function getBookingsByUserId($userId)
     {
         $userId = $this->connection->real_escape_string($userId);
-        
+
         // Join bảng để lấy tên loại phòng hiển thị cho đẹp
         $sql = "SELECT bookings.*, room_types.name as room_name, rooms.room_number 
                 FROM bookings 
@@ -60,8 +60,20 @@ class Booking
                 JOIN users ON bookings.user_id = users.id
                 JOIN rooms ON bookings.room_id = rooms.id
                 ORDER BY bookings.created_at DESC";
-                
+
         $result = $this->connection->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    // Thêm vào trong class Booking/Order
+    public function getTotalRevenue()
+    {
+        // Chỉ tính tổng tiền các đơn đã hoàn thành (status = 'completed') hoặc đã cọc
+        // Nếu muốn tính tất cả thì bỏ đoạn WHERE
+        $sql = "SELECT SUM(total_price) as total FROM bookings WHERE status = 'completed'";
+        $result = $this->connection->query($sql);
+        $row = $result->fetch_assoc();
+
+        // Nếu chưa có đơn nào thì trả về 0
+        return $row['total'] ? $row['total'] : 0;
     }
 }

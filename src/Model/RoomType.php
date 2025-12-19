@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Model;
 
 class RoomType
 {
@@ -42,7 +42,7 @@ class RoomType
 
         $sql = "INSERT INTO room_types (name, price, description, image) 
                 VALUES ('$name', '$price', '$description', '$image')";
-        
+
         return $this->connection->query($sql);
     }
 
@@ -54,7 +54,7 @@ class RoomType
         $description = $this->connection->real_escape_string($description);
 
         $sql = "UPDATE room_types SET name='$name', price='$price', description='$description' WHERE id=$id";
-        
+
         return $this->connection->query($sql);
     }
 
@@ -62,5 +62,13 @@ class RoomType
     {
         $id = $this->connection->real_escape_string($id);
         return $this->connection->query("DELETE FROM room_types WHERE id=$id");
+    }
+    // Thêm vào trong class Room
+    public function countRooms()
+    {
+        $sql = "SELECT COUNT(*) as total FROM rooms";
+        $result = $this->connection->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['total'];
     }
 }
