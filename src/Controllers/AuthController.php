@@ -41,7 +41,11 @@ class AuthController extends Controller
                 if ($user['role'] == 1) {
                     header('Location: /adminhome');
                 } else {
+<<<<<<< HEAD
                     header('Location: /rooms');
+=======
+                    $this->render('rooms\home', ['users' => $user]);
+>>>>>>> 93fee7df0affb3ae87ebb267fe11a4657c3ffe7d
                 }
                 exit();
             } else {
