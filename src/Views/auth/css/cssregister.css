@@ -1,0 +1,144 @@
+/* public/auth/css/cssregister.css */
+
+/* Reset và Font */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    min-height: 100vh;   /* Chiều cao full màn hình */
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 30px 15px;  /* Thêm padding để không bị dính mép trên mobile */
+}
+
+.register-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 450px; /* Rộng hơn login một chút */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.register-header h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 10px 0 5px;
+}
+
+.register-header p {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Input Styles */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95a5a6;
+    font-size: 16px;
+    width: 20px; /* Cố định chiều rộng icon để căn lề đều */
+    text-align: center;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 15px 12px 50px; /* Padding trái lớn hơn để chứa icon */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Button */
+.btn-register {
+    width: 100%;
+    padding: 14px;
+    background: #e74c3c; /* Dùng màu đỏ cho nút Đăng ký để nổi bật */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Error Alert */
+.alert-error {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #fecaca;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Footer */
+.register-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.register-footer a {
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-footer a:hover {
+    color: #e74c3c;
+    text-decoration: underline;
+}

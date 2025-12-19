@@ -18,14 +18,31 @@ class User
         if ($this->connection->connect_error) {
             die("Connection failed: " . $this->connection->connect_error);
         }
+        $this->connection->set_charset("utf8");
     }
-    //all user
+
     public function getAllUsers()
     {
         $result = $this->connection->query("SELECT * FROM users ORDER BY created_at DESC");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-    //login
+
+    public function getUserById($id)
+    {
+        $id = $this->connection->real_escape_string($id);
+        $result = $this->connection->query("SELECT * FROM users WHERE id = $id");
+        return $result->fetch_assoc();
+    }
+
+    public function countUsers()
+    {
+        $sql = "SELECT COUNT(*) as total FROM users WHERE role = 0"; 
+        $result = $this->connection->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
+
+
     public function login($email, $password)
     {
         $email = $this->connection->real_escape_string($email);
@@ -34,36 +51,63 @@ class User
 
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            if ($password == $user['password']) {
+            if (password_verify($password, $user['password']) || $password == $user['password']) {
                 return $user;
             }
         }
         return null;
     }
 
-    //register
     public function register($fullName, $email, $password, $phone)
     {
         $fullName = $this->connection->real_escape_string($fullName);
         $email = $this->connection->real_escape_string($email);
         $phone = $this->connection->real_escape_string($phone);
-        $password = $this->connection->real_escape_string($password); // Lưu password thường
+        
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (full_name, email, password, phone, role, created_id) 
-            VALUES ('$fullName', '$email', '$password', '$phone', 0, row())";
+        $sql = "INSERT INTO users (full_name, email, password, phone, role) 
+                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', 0)";
 
         return $this->connection->query($sql);
     }
 
-    //lấy thông tin user
-    public function getUserById($id)
+
+    public function createUser($fullName, $email, $password, $phone, $role)
     {
-        $id = $this->connection->real_escape_string($id);
-        $result = $this->connection->query("SELECT * FROM users WHERE id = $id");
-        return $result->fetch_assoc();
+        $fullName = $this->connection->real_escape_string($fullName);
+        $email = $this->connection->real_escape_string($email);
+        $phone = $this->connection->real_escape_string($phone);
+        $role = (int)$role;
+
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO users (full_name, email, password, phone, role) 
+                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', '$role')";
+
+        return $this->connection->query($sql);
     }
 
-    //update user
+    public function updateUserWithRole($id, $fullName, $email, $phone, $role)
+    {
+        $id = $this->connection->real_escape_string($id);
+        $fullName = $this->connection->real_escape_string($fullName);
+        $email = $this->connection->real_escape_string($email);
+        $phone = $this->connection->real_escape_string($phone);
+        $role = (int)$role;
+
+        $sql = "UPDATE users 
+                SET full_name='$fullName', email='$email', phone='$phone', role='$role' 
+                WHERE id=$id";
+
+        return $this->connection->query($sql);
+    }
+
+    public function adminResetPassword($id, $newPassword)
+    {
+        return $this->changePassword($id, $newPassword);
+    }
+
     public function updateUser($id, $fullName, $email, $phone)
     {
         $id = $this->connection->real_escape_string($id);
@@ -78,32 +122,18 @@ class User
         return $this->connection->query($sql);
     }
 
-    //delete
     public function deleteUser($id)
     {
         $id = $this->connection->real_escape_string($id);
         $sql = "DELETE FROM users WHERE id=$id";
-
         return $this->connection->query($sql);
     }
 
-    //đôi mật khẩu riêng
     public function changePassword($id, $newPassword)
     {
         $id = $this->connection->real_escape_string($id);
-        // Mã hóa mật khẩu mới
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-
         $sql = "UPDATE users SET password='$hashedPassword' WHERE id=$id";
-
         return $this->connection->query($sql);
-    }
-    // Thêm vào trong class User
-    public function countUsers()
-    {
-        $sql = "SELECT COUNT(*) as total FROM users WHERE role = 0"; // Chỉ đếm khách hàng, không đếm admin
-        $result = $this->connection->query($sql);
-        $row = $result->fetch_assoc();
-        return $row['total'];
     }
 }

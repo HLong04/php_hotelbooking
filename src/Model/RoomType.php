@@ -64,9 +64,9 @@ class RoomType
         return $this->connection->query("DELETE FROM room_types WHERE id=$id");
     }
     // Thêm vào trong class Room
-    public function countRooms()
+    public function countRoomTypes()
     {
-        $sql = "SELECT COUNT(*) as total FROM rooms";
+        $sql = "SELECT COUNT(*) as total FROM room_types";
         $result = $this->connection->query($sql);
         $row = $result->fetch_assoc();
         return $row['total'];

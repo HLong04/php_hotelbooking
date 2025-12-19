@@ -5,11 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bistro Elegance - Fine Dining Experience</title>
-    <link rel="stylesheet" href="css/tooplate-bistro-elegance.css">
+    <link rel="stylesheet" href="/templates/css/tooplate-bistro-elegance.css">
 </head>
 
 <body>
-    <!-- navbar -->
     <nav>
         <div class="nav-container">
             <a href="#home" class="logo">
@@ -18,40 +17,45 @@
                 </svg>
                 <span>Bistro</span>
             </a>
+            
             <ul class="nav-links">
-                <li><a href="#home" class="active">Home</a></li>
-                <li><a href="#menu">Menu</a></li>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/rooms">Rooms</a></li>
                 <li><a href="#booking">Booking</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="\login">login</a></li>
-    
-            </ul>
+                
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    
+                    <li class="dropdown">
+                        <a href="#" style="color: #e74c3c; font-weight: bold;">
+                            Hello, <?= htmlspecialchars($_SESSION['user_name']) ?> ▼
+                        </a>
+                        
+                        <ul class="dropdown-menu">
+                            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1): ?>
+                                <li><a href="/adminhome">Dashboard Admin</a></li>
+                            <?php else: ?>
+                                <li><a href="/profile/<?= $_SESSION['user_id'] ?>">Hồ sơ cá nhân</a></li>
+                                <li><a href="/myorders">Lịch sử đặt phòng</a></li>
+                            <?php endif; ?>
+                            
+                            <li><a href="/logout">Đăng xuất</a></li>
+                        </ul>
+                    </li>
+
+                <?php else: ?>
+                    
+                    <li><a href="/login">Login</a></li>
+                    
+                <?php endif; ?>
+                </ul>
             <div class="menu-toggle">
                 <span></span><span></span><span></span>
             </div>
         </div>
     </nav>
-    <!-- end navbar -->
-    <!-- home -->
-    <section id="home" class="hero">
-        <div class="diagonal-grid"></div>
-        <div class="static-decoration"></div>
-        <div class="bottom-right-decoration"></div>
-        <div class="hero-content">
-            <h1>Welcome to Bistro Elegance</h1>
-            <p>
-                <span class="text-option">Experience culinary excellence in an atmosphere of refined sophistication</span>
-                <span class="text-option">Discover exquisite flavors crafted with passion and precision</span>
-                <span class="text-option">Where fine dining meets unforgettable moments</span>
-            </p>
-            <a href="#reservation" class="cta-btn">Reserve Your Table</a>
-        </div>
-    </section>
-    <!-- end home -->
+    
+    <?php if(isset($content)) echo $content; ?>
 
-
-
-    <!-- phần footer -->
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
@@ -71,6 +75,7 @@
             <p>&copy; 2026 Bistro Elegance. All rights reserved.</p>
         </div>
     </footer>
+    
     <div id="ingredientsModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>

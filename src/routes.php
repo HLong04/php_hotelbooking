@@ -44,24 +44,22 @@ $router->addRoute('#^/myorders/detail/(\d+)$#', [$orderCtrl, 'myOrderDetail']);
 
 
 //   ADMIN PORTAL
-// 1. Quản lý Phòng (Rooms)
+$router->addRoute('#^/admin/?$#', [$adminCtrl, 'admin']);
 
-$router->addRoute('#^/adminhome/?$#', [$adminCtrl, 'admin']);
-
-
-$router->addRoute('#^/admin/rooms/?$#', [$roomCtrl, 'index']);
+// 1. Quản lý Phòng
+$router->addRoute('#^/admin/rooms/?$#', [$roomCtrl, 'qlroom']);
 $router->addRoute('#^/admin/rooms/create/?$#', [$roomCtrl, 'create']);
 $router->addRoute('#^/admin/rooms/update/(\d+)$#', [$roomCtrl, 'update']);
 $router->addRoute('#^/admin/rooms/delete/(\d+)$#', [$roomCtrl, 'delete']);
 
-// 2. Quản lý Khách hàng (Users)
-$router->addRoute('#^/admin/users/?$#', [$userCtrl, 'index']);
-$router->addRoute('#^/admin/users/create/?$#', [$userCtrl, 'create']);
-$router->addRoute('#^/admin/users/update/(\d+)$#', [$userCtrl, 'update']); // [MỚI] Sửa User
-$router->addRoute('#^/admin/users/delete/(\d+)$#', [$userCtrl, 'delete']);
+// 2. Quản lý Users
+$router->addRoute('#^/admin/users/?$#', [$userCtrl, 'qluser']); 
+$router->addRoute('#^/admin/users/create/?$#', [$userCtrl, 'create']); 
+$router->addRoute('#^/admin/users/update/(\d+)$#', [$userCtrl, 'update']);
+$router->addRoute('#^/admin/users/delete/(\d+)$#', [$userCtrl, 'delete']); 
 
 // 3. Quản lý Đơn đặt (Orders)
-$router->addRoute('#^/admin/orders/?$#', [$orderCtrl, 'index']);
+$router->addRoute('#^/admin/orders/?$#', [$orderCtrl, 'qlorder']);
 $router->addRoute('#^/admin/orders/detail/(\d+)$#', [$orderCtrl, 'show']);
 // [MỚI] Route để Admin duyệt đơn (đổi status thành Confirmed/Cancelled)
 $router->addRoute('#^/admin/orders/status/(\d+)$#', [$orderCtrl, 'updateStatus']);

@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Model\User;
-use App\Model\Room;     // Import Model Phòng
-use App\Model\Booking;  // Import Model Đặt phòng (Hoặc Order tùy tên bạn đặt)
+use App\Model\Booking;
+use App\Model\Room;
 use App\Model\RoomType;
 
 class AdminController extends Controller
@@ -13,32 +13,36 @@ class AdminController extends Controller
     private $userModel;
     private $roomModel;
     private $bookingModel;
+    private $roomTypeModel;
 
     public function __construct()
     {
         $this->userModel = new User();
-        $this->roomModel = new RoomType();
+        $this->roomModel = new Room();
+        $this->roomTypeModel = new RoomType();
         $this->bookingModel = new Booking(); 
     }
 
     public function admin()
     {
+        // 1. Check quyền Admin
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 1) {
             header('Location: /login');
             exit();
         }
 
-        $countUsers = $this->userModel->countUsers();
-        $countRooms = $this->roomModel->countRooms();
-        $revenue    = $this->bookingModel->getTotalRevenue();
+        $countUsers = $this->userModel->countUsers(); // Hàm tự viết trong Model User
+        $countRooms = $this->roomModel->countRooms(); // Hàm tự viết trong Model Room
+        $countRoomTypes = $this->roomTypeModel->countRoomTypes(); // Hàm tự viết trong Model RoomType
+        $revenue    = $this->bookingModel->getTotalRevenue(); // Hàm tự viết trong Model Booking
 
-        // 3. Đóng gói dữ liệu để gửi sang View
         $data = [
             'so_user' => $countUsers,
             'so_room' => $countRooms,
+            'so_room_type' => $countRoomTypes,
             'tong_tien' => $revenue
         ];
-        // Lưu ý: Đường dẫn 'admin/adminhome' phải khớp với file src/Views/admin/adminhome.php
-        $this->render('admin/adminhome', $data);
+
+        $this->render('admin/dashboard', $data);
     }
 }

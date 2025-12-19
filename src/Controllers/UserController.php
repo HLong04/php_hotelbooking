@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Model\User;
 use App\Controller;
+use App\Model\User;
 
 class UserController extends Controller
 {
@@ -14,71 +14,87 @@ class UserController extends Controller
         $this->userModel = new User();
     }
 
-    public function showAll()
+    private function requireAdmin()
     {
-        $users = $this->userModel->getAllUsers();
-
-        $this->render('users\user-list', ['users' => $users]);
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 1) {
+            header('Location: /login');
+            exit();
+        }
     }
 
-    public function show($userId)
+    public function qluser()
     {
-        $user = $this->userModel->getUserById($userId);
-        $this->render('users\user-detail', ['user' => $user]);
+        $this->requireAdmin();
+        $users = $this->userModel->getAllUsers();
+        $this->render('admin/users/qluser', ['users' => $users]);
     }
 
     public function create()
     {
+        $this->requireAdmin();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            $fullName = $_POST['full_name']; 
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
-            $password = $_POST['password'];
-            $passwordCheck = $_POST['password_check'];
-            
-            if ($password !== $passwordCheck) {
-                echo "<script>alert('Mật khẩu nhập lại không khớp!');</script>";
-            } else {
-                $isCreated = $this->userModel->register($fullName, $email, $password, $phone);
-
-                if ($isCreated) {
-                    header('Location: /users'); 
-                    exit();
-                } else {
-                    echo "<script>alert('Lỗi: Email có thể đã tồn tại!');</script>";
-                }
-            }
-        }
-
-        $this->render('users\user-form', ['user' => []]);
-    }
-
-    public function update($userId)
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             $fullName = $_POST['full_name'];
             $email = $_POST['email'];
+            $password = $_POST['password'];
             $phone = $_POST['phone'];
+            $role = $_POST['role'];
 
+            $isCreated = $this->userModel->createUser($fullName, $email, $password, $phone, $role);
 
-            $this->userModel->updateUser($userId, $fullName, $email, $phone);
-            
-            header('Location: /users');
+            if ($isCreated) {
+                $_SESSION['flash_message'] = "Thêm người dùng thành công!";
+                header('Location: /admin/users');
+                exit();
+            } else {
+                $this->render('admin/users/create', ['error' => 'Lỗi: Email có thể đã tồn tại!']);
+            }
+        } else {
+            $this->render('admin/users/create');
+        }
+    }
+
+    public function update($id)
+    {
+        $this->requireAdmin();
+        $user = $this->userModel->getUserById($id);
+
+        if (!$user) {
+            header('Location: /admin/users');
             exit();
         }
 
-        $user = $this->userModel->getUserById($userId);
-        
-        $this->render('users\user-form', ['user' => $user]);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $fullName = $_POST['full_name'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $role = $_POST['role'];
+            $newPassword = $_POST['password']; 
+
+            $this->userModel->updateUserWithRole($id, $fullName, $email, $phone, $role);
+
+            if (!empty($newPassword)) {
+                $this->userModel->adminResetPassword($id, $newPassword);
+            }
+
+            $_SESSION['flash_message'] = "Cập nhật thành công!";
+            header('Location: /admin/users');
+            exit();
+        } else {
+            $this->render('admin/users/update', ['user' => $user]);
+        }
     }
 
-    public function delete($userId)
+    public function delete($id)
     {
-        $this->userModel->deleteUser($userId);
-
-        header('Location: /users');
+        $this->requireAdmin();
+        if ($id == $_SESSION['user_id']) {
+            $_SESSION['flash_message'] = "Không thể xóa tài khoản đang đăng nhập!";
+        } else {
+            $this->userModel->deleteUser($id);
+            $_SESSION['flash_message'] = "Xóa người dùng thành công!";
+        }
+        header('Location: /admin/users');
         exit();
     }
 }

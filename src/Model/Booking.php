@@ -1,79 +1,60 @@
 <?php
-
 namespace App\Model;
 
-class Booking
-{
-    private $connection;
+class Booking {
+    private $mysqli;
 
-    public function __construct()
-    {
-        $host = DB_HOST;
-        $username = DB_USER;
-        $password = DB_PASSWORD;
-        $database = DB_NAME;
-
-        $this->connection = new \mysqli($host, $username, $password, $database);
-        if ($this->connection->connect_error) {
-            die("Connection failed: " . $this->connection->connect_error);
-        }
+    public function __construct() {
+        $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        $this->mysqli->set_charset("utf8");
     }
 
-    // Tạo đơn đặt phòng
-    public function createBooking($userId, $roomId, $checkIn, $checkOut, $totalPrice)
-    {
-        $userId = $this->connection->real_escape_string($userId);
-        $roomId = $this->connection->real_escape_string($roomId);
-        $checkIn = $this->connection->real_escape_string($checkIn);
-        $checkOut = $this->connection->real_escape_string($checkOut);
-        $totalPrice = $this->connection->real_escape_string($totalPrice);
-
-        // Mặc định status là 'pending'
-        $sql = "INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price, status) 
-                VALUES ('$userId', '$roomId', '$checkIn', '$checkOut', '$totalPrice', 'pending')";
-
-        return $this->connection->query($sql);
-    }
-
-    // Lấy danh sách lịch sử đặt phòng của 1 user
-    public function getBookingsByUserId($userId)
-    {
-        $userId = $this->connection->real_escape_string($userId);
-
-        // Join bảng để lấy tên loại phòng hiển thị cho đẹp
-        $sql = "SELECT bookings.*, room_types.name as room_name, rooms.room_number 
-                FROM bookings 
-                JOIN rooms ON bookings.room_id = rooms.id 
-                JOIN room_types ON rooms.room_type_id = room_types.id
-                WHERE bookings.user_id = $userId
-                ORDER BY bookings.created_at DESC";
-
-        $result = $this->connection->query($sql);
+    public function getAllBookings() {
+        $sql = "SELECT b.*, u.full_name, u.email, r.room_number 
+                FROM bookings b 
+                JOIN users u ON b.user_id = u.id 
+                JOIN rooms r ON b.room_id = r.id 
+                ORDER BY b.created_at DESC";
+        
+        $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Admin lấy tất cả booking
-    public function getAllBookings()
-    {
-        $sql = "SELECT bookings.*, users.full_name, rooms.room_number 
-                FROM bookings 
-                JOIN users ON bookings.user_id = users.id
-                JOIN rooms ON bookings.room_id = rooms.id
-                ORDER BY bookings.created_at DESC";
-
-        $result = $this->connection->query($sql);
-        return $result->fetch_all(MYSQLI_ASSOC);
+    public function getBookingById($id) {
+        $id = $this->mysqli->real_escape_string($id);
+        $sql = "SELECT b.*, u.full_name, u.email, u.phone, r.room_number, r.price 
+                FROM bookings b 
+                JOIN users u ON b.user_id = u.id 
+                JOIN rooms r ON b.room_id = r.id 
+                WHERE b.id = $id";
+        
+        $result = $this->mysqli->query($sql);
+        return $result->fetch_assoc();
     }
-    // Thêm vào trong class Booking/Order
-    public function getTotalRevenue()
-    {
-        // Chỉ tính tổng tiền các đơn đã hoàn thành (status = 'completed') hoặc đã cọc
-        // Nếu muốn tính tất cả thì bỏ đoạn WHERE
-        $sql = "SELECT SUM(total_price) as total FROM bookings WHERE status = 'completed'";
-        $result = $this->connection->query($sql);
+
+    // 3. Cập nhật trạng thái đơn (Pending -> Confirmed -> Cancelled)
+    public function updateStatus($id, $status) {
+        $id = $this->mysqli->real_escape_string($id);
+        $status = $this->mysqli->real_escape_string($status);
+        
+        $sql = "UPDATE bookings SET status = '$status' WHERE id = $id";
+        return $this->mysqli->query($sql);
+    }
+
+    // 4. Xóa đơn
+    public function deleteBooking($id) {
+        $id = $this->mysqli->real_escape_string($id);
+        $sql = "DELETE FROM bookings WHERE id = $id";
+        return $this->mysqli->query($sql);
+    }
+
+    // 5. Tính tổng doanh thu (Chỉ tính các đơn đã Hoàn thành hoặc Đã xác nhận)
+    // Hàm này dùng cho Dashboard AdminController
+    public function getTotalRevenue() {
+        $sql = "SELECT SUM(total_price) as revenue FROM bookings 
+                WHERE status = 'Confirmed' OR status = 'Completed'";
+        $result = $this->mysqli->query($sql);
         $row = $result->fetch_assoc();
-
-        // Nếu chưa có đơn nào thì trả về 0
-        return $row['total'] ? $row['total'] : 0;
+        return $row['revenue'] ?? 0;
     }
 }
