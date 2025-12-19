@@ -6,13 +6,17 @@ use App\Controllers\AuthController;
 use App\Controllers\HomeController;   
 use App\Controllers\UserController;    
 use App\Controllers\RoomController;    
-use App\Controllers\OrderController;   
+use App\Controllers\OrderController;
+use App\Controllers\AdminController;   
+
 
 $authCtrl = new AuthController();
 $homeCtrl = new HomeController();
 $userCtrl = new UserController();
 $roomCtrl = new RoomController();
 $orderCtrl = new OrderController();
+$adminCtrl = new AdminController();
+
 
 $router = new Router();
 
@@ -41,6 +45,10 @@ $router->addRoute('#^/myorders/detail/(\d+)$#', [$orderCtrl, 'myOrderDetail']);
 
 //   ADMIN PORTAL
 // 1. Quản lý Phòng (Rooms)
+
+$router->addRoute('#^/adminhome/?$#', [$adminCtrl, 'admin']);
+
+
 $router->addRoute('#^/admin/rooms/?$#', [$roomCtrl, 'index']);
 $router->addRoute('#^/admin/rooms/create/?$#', [$roomCtrl, 'create']);
 $router->addRoute('#^/admin/rooms/update/(\d+)$#', [$roomCtrl, 'update']);

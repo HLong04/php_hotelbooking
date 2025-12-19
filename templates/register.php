@@ -47,11 +47,8 @@
 </head>
 
 <body>
-
     <div class="login-wrapper">
         <?= $content ?>
     </div>
-<a href="/register">Register</a>
 </body>
-
 </html>

@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         if (isset($_SESSION['user_id'])) {
             if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1) {
-                header('Location: /admin/rooms');
+                header('Location: /adminhome');
             } else {
                 header('Location: /');
             }
@@ -31,26 +31,25 @@ class AuthController extends Controller
 
             $user = $this->userModel->login($email, $password);
 
-
             if ($user) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['full_name'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_phone'] = $user['phone'];
-                $_SESSION['user_role'] = $user['role']; // 0: User, 1: Admin
+                $_SESSION['user_role'] = $user['role'];
 
                 if ($user['role'] == 1) {
-                    $this->render('admin\adminhome', ['users' => $user]);
+                    header('Location: /adminhome');
                 } else {
-                    $this->render('\home', ['users' => $user]);
+                    header('Location: /rooms');
                 }
                 exit();
             } else {
                 $error = "Email hoặc mật khẩu không đúng!";
-                $this->render('./Views/auth/login', ['error' => $error]);
+                $this->render('auth/login', ['error' => $error]);
             }
         } else {
-            $this->render('auth\login');
+            $this->render('auth/login');
         }
     }
 

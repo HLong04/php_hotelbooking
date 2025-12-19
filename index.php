@@ -10,7 +10,7 @@ require __DIR__ . '/src/routes.php';
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 if ($uri === '/' || $uri === '') {
-    $uri = '/login';
+    $uri = '/index';
 }
 $router->match($uri);
 ?>

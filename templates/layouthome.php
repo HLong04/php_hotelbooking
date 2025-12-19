@@ -23,8 +23,8 @@
                 <li><a href="#menu">Menu</a></li>
                 <li><a href="#booking">Booking</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="/login">login</a></li>
-
+                <li><a href="\login">login</a></li>
+    
             </ul>
             <div class="menu-toggle">
                 <span></span><span></span><span></span>

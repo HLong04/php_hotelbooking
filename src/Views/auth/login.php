@@ -23,4 +23,4 @@ ob_start();
 </form>
 <?php $content = ob_get_clean(); ?>
 
-<?php include(__DIR__ . '/../../../templates/login.php'); ?>
+<?php include __DIR__ . '/../../../templates/login.php';?>

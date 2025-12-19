@@ -38,7 +38,7 @@ class User
                 return $user;
             }
         }
-        return false;
+        return null;
     }
 
     //register
