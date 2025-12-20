@@ -17,14 +17,16 @@ class Room
         if ($this->mysqli->connect_error) {
             die("Connection failed: " . $this->mysqli->connect_error);
         }
-        
+
         $this->mysqli->set_charset("utf8");
     }
 
-
     public function getAllRooms()
-    {        
-        $sql = "SELECT r.*, rt.name as room_type_name FROM rooms r JOIN room_types rt ON r.room_type_id = rt.id ORDER BY room_number ASC";
+    {
+        $sql = "SELECT r.*, rt.name as room_type_name, rt.price, rt.image 
+                FROM rooms r 
+                JOIN room_types rt ON r.room_type_id = rt.id 
+                ORDER BY room_number ASC";
         $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
@@ -39,10 +41,16 @@ class Room
         return $result->fetch_assoc();
     }
 
+
     public function getRoomsByType($roomTypeId)
     {
         $roomTypeId = $this->mysqli->real_escape_string($roomTypeId);
-        $sql = "SELECT * FROM rooms WHERE room_type_id = $roomTypeId";
+        $sql = "SELECT r.*, rt.name as room_type_name, rt.image as type_image, rt.price
+                FROM rooms r 
+                JOIN room_types rt ON r.room_type_id = rt.id 
+                WHERE r.room_type_id = $roomTypeId
+                ORDER BY r.room_number ASC";
+
         $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
@@ -54,6 +62,7 @@ class Room
         $row = $result->fetch_assoc();
         return $row['total'];
     }
+
     public function createRoom($roomTypeId, $roomNumber, $status = 'Available')
     {
         $roomTypeId = $this->mysqli->real_escape_string($roomTypeId);
@@ -62,7 +71,7 @@ class Room
 
         $sql = "INSERT INTO rooms (room_type_id, room_number, status) 
                 VALUES ('$roomTypeId', '$roomNumber', '$status')";
-        
+
         return $this->mysqli->query($sql);
     }
 
@@ -88,6 +97,19 @@ class Room
         $id = $this->mysqli->real_escape_string($id);
         $sql = "DELETE FROM rooms WHERE id = $id";
         return $this->mysqli->query($sql);
+    }
+
+
+    public function getFeaturedRooms($limit = 3)
+    {
+        $sql = "SELECT  r.*, rt.name as type_name, rt.price, rt.image as type_image
+                FROM rooms r 
+                JOIN room_types rt ON r.room_type_id = rt.id 
+                WHERE r.status = 'available' 
+                ORDER BY r.id DESC         
+                LIMIT $limit";
+        $result = $this->mysqli->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
 

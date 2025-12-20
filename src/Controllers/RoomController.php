@@ -4,7 +4,8 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Model\Room;
-use App\Model\RoomType; 
+use App\Model\RoomType;
+
 class RoomController extends Controller
 {
     private $roomModel;
@@ -13,7 +14,7 @@ class RoomController extends Controller
     public function __construct()
     {
         $this->roomModel = new Room();
-        $this->roomTypeModel = new RoomType(); 
+        $this->roomTypeModel = new RoomType();
     }
 
     private function requireAdmin()
@@ -23,6 +24,7 @@ class RoomController extends Controller
             exit();
         }
     }
+
 //rome controller
     /**
      * Hiển thị danh sách phòng
@@ -33,7 +35,7 @@ class RoomController extends Controller
         $this->requireAdmin();
 
         $rooms = $this->roomModel->getAllRooms();
-        
+
         $this->render('admin/rooms/qlroom', ['rooms' => $rooms]);
     }
 
@@ -61,14 +63,13 @@ class RoomController extends Controller
                 $roomTypes = $this->roomTypeModel->getAllRoomTypes();
                 $this->render('admin/rooms/create', ['error' => $error, 'roomTypes' => $roomTypes]);
             }
-
         } else {
             $roomTypes = $this->roomTypeModel->getAllRoomTypes();
             $this->render('admin/rooms/create', ['roomTypes' => $roomTypes]);
         }
     }
 
- 
+
     // Route: /admin/rooms/update/{id}
 
     public function update($id)
@@ -98,15 +99,15 @@ class RoomController extends Controller
                 $error = "Lỗi cập nhật phòng!";
                 $roomTypes = $this->roomTypeModel->getAllRoomTypes();
                 $this->render('admin/rooms/update', [
-                    'error' => $error, 
-                    'room' => $room, 
+                    'error' => $error,
+                    'room' => $room,
                     'roomTypes' => $roomTypes
                 ]);
             }
         } else {
             $roomTypes = $this->roomTypeModel->getAllRoomTypes();
             $this->render('admin/rooms/update', [
-                'room' => $room, 
+                'room' => $room,
                 'roomTypes' => $roomTypes
             ]);
         }
@@ -121,7 +122,7 @@ class RoomController extends Controller
         $this->requireAdmin();
 
         $this->roomModel->deleteRoom($id);
-        
+
         $_SESSION['flash_message'] = "Đã xóa phòng thành công!";
         header('Location: /admin/rooms');
         exit();

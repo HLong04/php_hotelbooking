@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - BookHotel</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/templates/css/cssadmin.css">
 </head>
+
 <body>
 
     <div class="sidebar">
@@ -18,7 +20,7 @@
         <div class="sidebar-menu">
             <ul>
                 <?php $uri = $_SERVER['REQUEST_URI']; ?>
-                
+
                 <li>
                     <a href="/admin" class="<?= strpos($uri, 'adminhome') !== false ? 'active' : '' ?>">
                         <span class="fa-solid fa-gauge-high"></span> <span>Dashboard</span>
@@ -37,6 +39,11 @@
                 <li>
                     <a href="/admin/orders" class="<?= strpos($uri, 'orders') !== false ? 'active' : '' ?>">
                         <span class="fa-solid fa-clipboard-list"></span> <span>Đơn đặt</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/typeroom" class="<?= strpos($uri, 'typeroom') !== false ? 'active' : '' ?>">
+                        <span class="fa-solid fa-bed"></span> <span>Loại phòng</span>
                     </a>
                 </li>
                 <li>
@@ -68,4 +75,5 @@
     </div>
 
 </body>
+
 </html>

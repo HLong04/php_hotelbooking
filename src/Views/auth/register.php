@@ -8,7 +8,7 @@ ob_start();
 
 <div class="register-container">
     <div class="register-card">
-        
+
         <div class="register-visual">
             <div class="visual-icon">
                 <i class="fa-solid fa-user-plus"></i>
@@ -18,7 +18,7 @@ ob_start();
         </div>
 
         <div class="register-form-wrapper">
-            
+
             <h2 class="register-title">Thông tin đăng ký</h2>
 
             <?php if (isset($error)): ?>
@@ -29,7 +29,7 @@ ob_start();
             <?php endif; ?>
 
             <form method="POST" action="/register">
-                
+
                 <div class="input-group">
                     <label>Họ và tên</label>
                     <div class="input-wrapper">
@@ -58,11 +58,11 @@ ob_start();
                     <label>Mật khẩu</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-lock"></i>
-                        
+
                         <input type="password" name="password" id="pass1" placeholder="Tạo mật khẩu" required>
-                        
-                        <i class="fa-solid fa-eye-slash toggle-password" 
-                           onclick="
+
+                        <i class="fa-solid fa-eye-slash toggle-password"
+                            onclick="
                                var input = document.getElementById('pass1');
                                if (input.type === 'password') {
                                    input.type = 'text';
@@ -82,11 +82,11 @@ ob_start();
                     <label>Xác nhận mật khẩu</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-shield-halved"></i>
-                        
+
                         <input type="password" name="password_check" id="pass2" placeholder="Nhập lại mật khẩu" required>
-                        
-                        <i class="fa-solid fa-eye-slash toggle-password" 
-                           onclick="
+
+                        <i class="fa-solid fa-eye-slash toggle-password"
+                            onclick="
                                var input = document.getElementById('pass2');
                                if (input.type === 'password') {
                                    input.type = 'text';
@@ -119,8 +119,8 @@ ob_start();
     </div>
 </div>
 
-<?php 
-$content = ob_get_clean(); 
+<?php
+$content = ob_get_clean();
 // Lưu ý: Đường dẫn include này giữ nguyên theo code cũ của bạn
-include __DIR__ . '/../../../templates/login.php'; 
+include __DIR__ . '/../../../templates/login.php';
 ?>

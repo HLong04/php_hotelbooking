@@ -57,17 +57,17 @@ class AuthController extends Controller
         }
     }
 
-    public function register()
+   public function register()
     {
         if (isset($_SESSION['user_id'])) {
             header('Location: /');
             exit();
         }
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
             $fullName = $_POST['full_name'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
+            $email    = $_POST['email'];
+            $phone    = $_POST['phone'];
             $password = $_POST['password'];
             $passwordCheck = $_POST['password_check'];
 
@@ -76,20 +76,25 @@ class AuthController extends Controller
                 return;
             }
 
+            if ($this->userModel->checkEmailExists($email)) {
+                $this->render('auth/register', ['error' => 'Email này đã tồn tại, vui lòng dùng email khác!']);
+                return;
+            }
+
             $isCreated = $this->userModel->register($fullName, $email, $password, $phone);
 
             if ($isCreated) {
-                $_SESSION['flash_message'] = "Đăng ký thành công! Vui lòng đăng nhập.";
-                header('Location: /login?msg=registered');
+                $_SESSION['flash_message'] = "Đăng ký thành công! Hãy đăng nhập.";
+                header('Location: /login');
                 exit();
             } else {
-                $this->render('auth/register', ['error' => 'Email này đã được sử dụng hoặc có lỗi xảy ra!']);
+                $this->render('auth/register', ['error' => 'Lỗi hệ thống, vui lòng thử lại sau!']);
             }
+
         } else {
             $this->render('auth/register');
         }
     }
-
 
     public function logout()
     {

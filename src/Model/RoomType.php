@@ -33,27 +33,31 @@ class RoomType
         return $result->fetch_assoc();
     }
 
-    public function createRoomType($name, $price, $description, $image)
+    public function createRoomType($name, $price,$max_adults, $description, $image)
     {
         $name = $this->connection->real_escape_string($name);
         $price = $this->connection->real_escape_string($price);
+        $max_adults = $this->connection->real_escape_string($max_adults);
         $description = $this->connection->real_escape_string($description);
         $image = $this->connection->real_escape_string($image);
 
-        $sql = "INSERT INTO room_types (name, price, description, image) 
-                VALUES ('$name', '$price', '$description', '$image')";
+        $sql = "INSERT INTO room_types (name, price, max_adults, description, image) 
+            VALUES ('$name', '$price', '$max_adults', '$description', '$image')";
 
         return $this->connection->query($sql);
     }
-
-    public function updateRoomType($id, $name, $price, $description)
+    public function updateRoomType($id, $name, $price, $max_adults, $description, $image)
     {
         $id = $this->connection->real_escape_string($id);
         $name = $this->connection->real_escape_string($name);
         $price = $this->connection->real_escape_string($price);
+        $max_adults = $this->connection->real_escape_string($max_adults);
         $description = $this->connection->real_escape_string($description);
+        $image = $this->connection->real_escape_string($image);
 
-        $sql = "UPDATE room_types SET name='$name', price='$price', description='$description' WHERE id=$id";
+        $sql = "UPDATE room_types 
+            SET name='$name', price='$price', max_adults='$max_adults', description='$description', image='$image' 
+            WHERE id=$id";
 
         return $this->connection->query($sql);
     }
@@ -63,7 +67,7 @@ class RoomType
         $id = $this->connection->real_escape_string($id);
         return $this->connection->query("DELETE FROM room_types WHERE id=$id");
     }
-    // Thêm vào trong class Room
+
     public function countRoomTypes()
     {
         $sql = "SELECT COUNT(*) as total FROM room_types";

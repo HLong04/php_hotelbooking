@@ -58,7 +58,7 @@
         </div>
 
         <div class="booking-bar">
-            <form action="/search" method="GET" style="display: flex; width: 100%; gap: 20px;">
+            <form action="/search" method="GET" style="display: flex; width: 100%; gap: 20px; align-items: flex-end;">
                 <div class="form-group">
                     <label>Ngày nhận phòng</label>
                     <input type="date" name="checkin" required>
@@ -70,8 +70,8 @@
                 <div class="form-group">
                     <label>Khách</label>
                     <select name="guests">
-                        <option value="1">1 Người lớn</option>
-                        <option value="2" selected>2 Người lớn</option>
+                        <option value="1">2 Người lớn</option>
+                        <option value="2" selected>3 Người lớn</option>
                         <option value="3">Gia đình (3+)</option>
                     </select>
                 </div>
@@ -85,7 +85,6 @@
             if(isset($content)) {
                 echo $content; 
             } else {
-                // Nội dung mẫu nếu biến $content chưa có
                 echo "<h2 style='text-align:center; font-family: var(--font-heading); margin-bottom:20px;'>Các phòng nổi bật</h2>";
                 echo "<p style='text-align:center;'>Vui lòng tải nội dung view vào biến \$content.</p>";
             }
@@ -118,7 +117,6 @@
     </footer>
 
     <script>
-        // Hiệu ứng dính navbar khi cuộn (Optional)
         window.addEventListener("scroll", function(){
             var nav = document.querySelector("nav");
             nav.classList.toggle("sticky", window.scrollY > 0);
