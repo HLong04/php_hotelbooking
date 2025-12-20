@@ -57,4 +57,5 @@ class Booking {
         $row = $result->fetch_assoc();
         return $row['revenue'] ?? 0;
     }
+    
 }
