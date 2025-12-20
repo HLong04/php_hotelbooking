@@ -47,7 +47,11 @@ ob_start();
     </div>
 </section>
 
+<<<<<<< HEAD
 <section id="type" class="featured-rooms">
+=======
+<section class="featured-rooms">
+>>>>>>> f7d30a4cf4acf75333336f79a0208d2f8fd8fa06
     <h2 class="section-title">CÁC HẠNG PHÒNG NỔI BẬT</h2> <div class="room-grid">
         <?php if (!empty($roomTypes)): ?>
             <?php
@@ -76,6 +80,11 @@ ob_start();
                         </p>
 
                         <?php
+<<<<<<< HEAD
+=======
+                        // Link chuyển hướng đến trang danh sách các phòng của loại này
+                        // Giả sử route bạn cấu hình là /rooms/type/{id}
+>>>>>>> f7d30a4cf4acf75333336f79a0208d2f8fd8fa06
                         $detailLink = '/rooms/type/' . $type['id'];
                         ?>
                         <a href="<?= $detailLink ?>" class="btn-detail">Xem danh sách phòng</a>
@@ -87,6 +96,13 @@ ob_start();
             <p style="text-align: center; width: 100%;">Hiện chưa có hạng phòng nào.</p>
         <?php endif; ?>
     </div>
+<<<<<<< HEAD
+=======
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/rooms" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả &rarr;</a>
+    </div>
+>>>>>>> f7d30a4cf4acf75333336f79a0208d2f8fd8fa06
 </section>
 
 <?php
