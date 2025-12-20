@@ -45,10 +45,10 @@
                             </td>
                             <td style="padding: 12px;">
                                 <?php 
-                                    $statusColor = '#f1c40f'; // Vàng (Pending)
-                                    if($order['status'] == 'Confirmed') $statusColor = '#27ae60'; // Xanh (Confirmed)
-                                    if($order['status'] == 'Cancelled') $statusColor = '#e74c3c'; // Đỏ (Cancelled)
-                                    if($order['status'] == 'Completed') $statusColor = '#2980b9'; // Xanh dương (Completed)
+                                    $statusColor = '#f1c40f'; 
+                                    if($order['status'] == 'confirmed') $statusColor = '#27ae60'; // Xanh (Confirmed)
+                                    if($order['status'] == 'cancelled') $statusColor = '#e74c3c'; // Đỏ (Cancelled)
+                                    if($order['status'] == 'completed') $statusColor = '#2980b9'; // Xanh dương (Completed)
                                 ?>
                                 <span style="background: <?= $statusColor ?>; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">
                                     <?= $order['status'] ?>

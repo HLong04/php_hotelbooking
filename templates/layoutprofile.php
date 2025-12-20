@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="/templates/css/tooplate-bistro-elegance.css">
+    <link rel="stylesheet" href="/templates/css/profile.css">
 
 </head>
 
@@ -50,35 +51,6 @@
             </ul>
         </div>
     </nav>
-    
-    <header class="hero">
-        <div>
-            <h1>Chào mừng đến với LuxStay</h1>
-            <p>Tận hưởng kỳ nghỉ đẳng cấp 5 sao tại trung tâm thành phố</p>
-        </div>
-
-        <div class="booking-bar">
-            <form action="/search" method="GET" style="display: flex; width: 100%; gap: 20px;">
-                <div class="form-group">
-                    <label>Ngày nhận phòng</label>
-                    <input type="date" name="checkin" required>
-                </div>
-                <div class="form-group">
-                    <label>Ngày trả phòng</label>
-                    <input type="date" name="checkout" required>
-                </div>
-                <div class="form-group">
-                    <label>Khách</label>
-                    <select name="guests">
-                        <option value="1">1 Người lớn</option>
-                        <option value="2" selected>2 Người lớn</option>
-                        <option value="3">Gia đình (3+)</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-book">Kiểm tra phòng</button>
-            </form>
-        </div>
-    </header>
 
     <main class="main-content">
         <?php 
