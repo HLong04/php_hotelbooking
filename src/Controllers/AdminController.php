@@ -35,13 +35,15 @@ class AdminController extends Controller
         $countRooms = $this->roomModel->countRooms(); 
         $countRoomTypes = $this->roomTypeModel->countRoomTypes(); 
         $revenue    = $this->bookingModel->getTotalRevenue();
+        $recent_orders = $this->bookingModel->getRecentOrders(5);
 
         // 2. Truyền dữ liệu sang View
         $data = [
             'so_user' => $countUsers,
             'so_room' => $countRooms,
             'so_room_type' => $countRoomTypes,
-            'tong_tien' => $revenue
+            'tong_tien' => $revenue,
+            'recent_orders' => $recent_orders
         ];
 
         $this->render('admin/dashboard', $data);
