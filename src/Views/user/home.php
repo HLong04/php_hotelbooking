@@ -10,11 +10,20 @@ ob_start();
     <div class="hero-content">
         <h1>BOOK HOTEL</h1>
         <p>Trải nghiệm nghỉ dưỡng đẳng cấp & sang trọng bậc nhất</p>
+<<<<<<< HEAD
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="/rooms" class="btn-hero">ĐẶT PHÒNG NGAY</a>
         <?php else: ?>
             <a href="/login" class="btn-hero">ĐĂNG NHẬP ĐỂ ĐẶT PHÒNG</a>
         <?php endif; ?>
+=======
+        <?php 
+        $bookLink = isset($_SESSION['user_id']) ? '/rooms' : '/login'; 
+    ?>
+    
+    <a href="<?= $bookLink ?>" class="btn-hero">ĐẶT PHÒNG NGAY</a>
+       
+>>>>>>> 8e64337b75bac24ec3a837529b759c4911812a37
     </div>
 </div>
 
@@ -70,7 +79,10 @@ ob_start();
                         <i class="fa-solid fa-bed"></i> Loại: <?= $room['room_type_id'] ?> | 
                         <i class="fa-solid fa-check"></i> <?= $room['status'] ?>
                     </p>
-                    <a href="/room/detail/<?= $room['id'] ?>" class="btn-detail">Xem chi tiết</a>
+                    <?php 
+        $bookRoom = isset($_SESSION['user_id']) ? '/room/detail/' . $room['id'] : '/login'; 
+    ?>
+                    <a href="<?= $bookRoom ?>" class="btn-detail">Xem chi tiết</a>
                 </div>
             </div>
 
@@ -81,7 +93,7 @@ ob_start();
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
-        <a href="/rooms" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả phòng &rarr;</a>
+        <a href="<?= $bookLink ?>" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả phòng &rarr;</a>
     </div>
 </section>
 
