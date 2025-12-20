@@ -33,6 +33,8 @@ $router->addRoute('#^/logout/?$#', [$authCtrl, 'logout']);
 // Xem danh sách phòng & Chi tiết
 $router->addRoute('#^/rooms/?$#', [$homeCtrl, 'listRoom']);
 $router->addRoute('#^/room/detail/(\d+)$#', [$homeCtrl, 'detailRoom']);
+// Route xem danh sách phòng theo Loại (VD: /rooms/type/1)
+$router->addRoute('#^/rooms/type/(\d+)$#', [$homeCtrl, 'roomsByType']);
 
 // Route này nhận dữ liệu POST từ form đặt phòng để lưu vào DB
 $router->addRoute('#^/booking/create/(\d+)$#', [$orderCtrl, 'createBooking']);

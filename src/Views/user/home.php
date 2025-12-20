@@ -44,76 +44,54 @@ ob_start();
                 <h3>Phòng Gym</h3>
             </div>
         </div>
-
-<<<<<<< HEAD
-=======
-<div class="hero-section">
-    <div class="hero-content">
-        <h1>BOOK HOTEL</h1>
-        <p>Trải nghiệm nghỉ dưỡng đẳng cấp & sang trọng bậc nhất</p>
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="/rooms" class="btn-hero">ĐẶT PHÒNG NGAY</a>
-        <?php else: ?>
-            <a href="/login" class="btn-hero">ĐĂNG NHẬP ĐỂ ĐẶT PHÒNG</a>
-        <?php endif; ?>
-
-        <?php 
-        $bookLink = isset($_SESSION['user_id']) ? '/rooms' : '/login'; 
-    ?>
-    
-    <a href="<?= $bookLink ?>" class="btn-hero">ĐẶT PHÒNG NGAY</a>
-       
-
->>>>>>> e82787de6dc01637d1bf70fb236eabc569091812
     </div>
 </section>
 
 <section class="featured-rooms">
-    <h2 class="section-title">PHÒNG NỔI BẬT</h2>
-
-    <div class="room-grid">
-        <?php if (!empty($rooms)): ?>
+    <h2 class="section-title">CÁC HẠNG PHÒNG NỔI BẬT</h2> <div class="room-grid">
+        <?php if (!empty($roomTypes)): ?>
             <?php
-            // Chỉ lấy 3 phòng đầu tiên để hiển thị trang chủ
-            $limit = 3;
+            $limit = 4;
             $count = 0;
-            foreach ($rooms as $room):
+            foreach ($roomTypes as $type):
                 if ($count >= $limit) break;
                 $count++;
 
-                // Xử lý ảnh (Nếu không có ảnh thì dùng ảnh mặc định)
-                // Giả sử DB có cột 'image', nếu không có bạn xóa thẻ img đi hoặc hardcode
-                $imgSrc = !empty($room['image']) ? URLROOT . '/img/' . $room['image'] : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60';
+                $imgSrc = !empty($type['image']) ? URLROOT . '/img/' . $type['image'] : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60';
             ?>
 
                 <div class="room-card">
                     <div class="room-img">
-                        <img src="<?= $imgSrc ?>" alt="Room Image">
+                        <img src="<?= $imgSrc ?>" alt="<?= $type['name'] ?>">
                     </div>
                     <div class="room-info">
-                        <h3>Phòng số: <?= $room['room_number'] ?></h3>
+                        <h3><?= $type['name'] ?></h3>
+                        
                         <div class="room-price">
-                            <?= number_format(500000) ?> VNĐ / đêm
+                            <?= number_format($type['price']) ?> VNĐ / đêm
                         </div>
-                        <p>
-                            <i class="fa-solid fa-bed"></i> Loại: <?= $room['room_type_id'] ?> |
-                            <i class="fa-solid fa-check"></i> <?= $room['status'] ?>
+                        
+                        <p style="font-size: 14px; color: #666; margin-bottom: 10px;">
+                           <?= substr($type['description'], 0, 100) ?>...
                         </p>
+
                         <?php
-                        $bookRoom = isset($_SESSION['user_id']) ? '/room/detail/' . $room['id'] : '/login';
+                        // Link chuyển hướng đến trang danh sách các phòng của loại này
+                        // Giả sử route bạn cấu hình là /rooms/type/{id}
+                        $detailLink = '/rooms/type/' . $type['id'];
                         ?>
-                        <a href="<?= $bookRoom ?>" class="btn-detail">Xem chi tiết</a>
+                        <a href="<?= $detailLink ?>" class="btn-detail">Xem danh sách phòng</a>
                     </div>
                 </div>
 
             <?php endforeach; ?>
         <?php else: ?>
-            <p style="text-align: center; width: 100%;">Hiện chưa có phòng nào.</p>
+            <p style="text-align: center; width: 100%;">Hiện chưa có hạng phòng nào.</p>
         <?php endif; ?>
     </div>
 
     <div style="text-align: center; margin-top: 40px;">
-        <a href="<?= $bookLink ?>" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả phòng &rarr;</a>
+        <a href="/rooms" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả &rarr;</a>
     </div>
 </section>
 

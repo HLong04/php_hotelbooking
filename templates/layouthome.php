@@ -58,7 +58,7 @@
         </div>
 
         <div class="booking-bar">
-            <form action="/search" method="GET" style="display: flex; width: 100%; gap: 20px;">
+            <form action="/search" method="GET" style="display: flex; width: 100%; gap: 20px; align-items: flex-end;">
                 <div class="form-group">
                     <label>Ngày nhận phòng</label>
                     <input type="date" name="checkin" required>

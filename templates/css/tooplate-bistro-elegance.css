@@ -234,7 +234,7 @@ nav {
    ========================================= */
 .main-content {
     padding: 20px 20px 60px;
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
 }
 
@@ -536,12 +536,21 @@ footer {
 }
 
 .feature-item {
-    padding: 20px;
-    transition: transform 0.3s ease;
+    padding: 30px 20px;
+    border: 1px solid #eee; /* Thêm viền mờ */
+    transition: all 0.3s ease;
+    background: #fff;
 }
 
 .feature-item:hover {
-    transform: translateY(-5px); /* Hiệu ứng nổi lên khi rê chuột */
+    border-color: var(--primary);
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.feature-item:hover .icon-box {
+    transform: scale(1.1);
+    transition: transform 0.3s;
 }
 
 .icon-box {
@@ -573,4 +582,29 @@ footer {
         grid-template-columns: repeat(2, 1fr); /* Trên mobile chia 2 cột */
         gap: 20px;
     }
+}
+
+/* --- STYLE CHO ROOM DETAIL --- */
+
+/* 1. Trạng thái Sẵn sàng (Available) */
+.room-item.status-available { border-color: #27ae60; }
+.room-item.status-available .status-bar { background-color: #27ae60; }
+.room-item.status-available .room-status-badge { background-color: #eafaf1; color: #27ae60; }
+.room-item.status-available:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(39, 174, 96, 0.15); }
+.room-item.status-available .btn-book-room:hover { background-color: #219150; }
+
+/* 2. Trạng thái Đã đặt (Booked) */
+.room-item.status-booked { border-color: #e74c3c; opacity: 0.8; }
+.room-item.status-booked .status-bar { background-color: #e74c3c; }
+.room-item.status-booked .room-status-badge { background-color: #fdedec; color: #e74c3c; }
+
+/* 3. Trạng thái Bảo trì (Maintenance) */
+.room-item.status-maintenance { border-color: #f39c12; opacity: 0.7; }
+.room-item.status-maintenance .status-bar { background-color: #f39c12; }
+.room-item.status-maintenance .room-status-badge { background-color: #fef9e7; color: #f39c12; }
+
+/* Responsive cho Mobile */
+@media (max-width: 768px) {
+    .detail-layout { grid-template-columns: 1fr !important; }
+    .room-info-sidebar .info-box { position: static; }
 }
