@@ -26,6 +26,46 @@ class User
         $result = $this->connection->query("SELECT * FROM users ORDER BY created_at DESC");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+    public function getProfileById($id)
+{
+    $id = (int)$id;
+
+    $sql = "SELECT 
+                id, 
+                full_name, 
+                email, 
+                phone, 
+                role, 
+                password,       -- <--- Thêm password
+                created_at 
+            FROM users 
+            WHERE id = $id";
+
+    $result = $this->connection->query($sql);
+    return $result->fetch_assoc();
+}
+
+public function emailExistsExceptUser($email, $id)
+{
+    $email = $this->connection->real_escape_string($email);
+    $id = (int)$id;
+
+    $sql = "SELECT id FROM users 
+            WHERE email = '$email' AND id != $id";
+
+    $result = $this->connection->query($sql);
+    return $result->num_rows > 0;
+}
+public function updatePassword($id, $password)
+{
+    $stmt = $this->connection->prepare(
+        "UPDATE users SET password = ? WHERE id = ?"
+    );
+    $stmt->bind_param("si", $password, $id);
+    return $stmt->execute();
+}
+
+
 
     public function getUserById($id)
     {

@@ -34,7 +34,9 @@
                             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1): ?>
                                 <li><a href="/adminhome">Dashboard Admin</a></li>
                             <?php else: ?>
-                                <li><a href="/profile/<?= $_SESSION['user_id'] ?>">Hồ sơ cá nhân</a></li>
+                                <li><a href="/profile/<?= (int)$_SESSION['user_id'] ?>">Hồ sơ cá nhân</a></li>
+                                            
+                                        
                                 <li><a href="/myorders">Lịch sử đặt phòng</a></li>
                             <?php endif; ?>
                             

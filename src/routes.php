@@ -7,7 +7,8 @@ use App\Controllers\HomeController;
 use App\Controllers\UserController;    
 use App\Controllers\RoomController;    
 use App\Controllers\OrderController;
-use App\Controllers\AdminController;   
+use App\Controllers\AdminController;  
+
 
 
 $authCtrl = new AuthController();
@@ -16,6 +17,8 @@ $userCtrl = new UserController();
 $roomCtrl = new RoomController();
 $orderCtrl = new OrderController();
 $adminCtrl = new AdminController();
+
+
 
 
 $router = new Router();
@@ -35,8 +38,9 @@ $router->addRoute('#^/room/detail/(\d+)$#', [$homeCtrl, 'detailRoom']);
 $router->addRoute('#^/booking/create/(\d+)$#', [$orderCtrl, 'createBooking']);
 
 // Quản lý cá nhân
-$router->addRoute('#^/profile/(\d+)$#', [$userCtrl, 'profile']);
-$router->addRoute('#^/profile/update/(\d+)$#', [$userCtrl, 'updateProfile']);
+$router->addRoute('#^/profile/(\d+)$#', [$userCtrl, 'Profile']);
+$router->addRoute('#^/profile/update/(\d+)$#', [$userCtrl, 'updateprofile']);
+$router->addRoute('#^/profile/change-password/(\d+)$#', [$userCtrl, 'changePassword']);
 
 // Lịch sử đặt phòng của tôi
 $router->addRoute('#^/myorders/?$#', [$orderCtrl, 'myOrders']);
