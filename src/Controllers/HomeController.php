@@ -8,7 +8,7 @@ use App\Model\Room;
 class HomeController extends Controller {
     
     private $roomModel;
-
+//home controller
     public function __construct() {
         $this->roomModel = new Room();
     }

@@ -7,6 +7,7 @@ use App\Model\User;
 
 class AuthController extends Controller
 {
+    //login model
     private $userModel;
 
     public function __construct()

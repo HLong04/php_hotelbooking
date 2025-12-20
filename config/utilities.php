@@ -21,4 +21,5 @@ function view($view, $data = [])
     // View does not exist
     die('<h1> 404 Page not found </h1>');
   }
+  
 }

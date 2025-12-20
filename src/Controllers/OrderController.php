@@ -17,6 +17,7 @@ class OrderController extends Controller {
             exit();
         }
     }
+    //oder controller
 
     // 1. Hiển thị danh sách đơn
     public function qlorder() {

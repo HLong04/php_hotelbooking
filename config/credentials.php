@@ -3,4 +3,6 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASSWORD', 'admin');	
 define('DB_NAME', 'mybhotel_db');
+
+// Database credentials
 ?>

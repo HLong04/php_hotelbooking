@@ -31,11 +31,12 @@ class AdminController extends Controller
             exit();
         }
 
-        $countUsers = $this->userModel->countUsers(); // Hàm tự viết trong Model User
-        $countRooms = $this->roomModel->countRooms(); // Hàm tự viết trong Model Room
-        $countRoomTypes = $this->roomTypeModel->countRoomTypes(); // Hàm tự viết trong Model RoomType
-        $revenue    = $this->bookingModel->getTotalRevenue(); // Hàm tự viết trong Model Booking
+        $countUsers = $this->userModel->countUsers();
+        $countRooms = $this->roomModel->countRooms(); 
+        $countRoomTypes = $this->roomTypeModel->countRoomTypes(); 
+        $revenue    = $this->bookingModel->getTotalRevenue();
 
+        // 2. Truyền dữ liệu sang View
         $data = [
             'so_user' => $countUsers,
             'so_room' => $countRooms,

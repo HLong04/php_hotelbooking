@@ -21,6 +21,7 @@ class UserController extends Controller
             exit();
         }
     }
+    //user controller
 
     public function qluser()
     {

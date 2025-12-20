@@ -23,7 +23,7 @@ class RoomController extends Controller
             exit();
         }
     }
-
+//rome controller
     /**
      * Hiển thị danh sách phòng
      * Route: /admin/rooms
