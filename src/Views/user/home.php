@@ -10,20 +10,19 @@ ob_start();
     <div class="hero-content">
         <h1>BOOK HOTEL</h1>
         <p>Trải nghiệm nghỉ dưỡng đẳng cấp & sang trọng bậc nhất</p>
-<<<<<<< HEAD
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="/rooms" class="btn-hero">ĐẶT PHÒNG NGAY</a>
         <?php else: ?>
             <a href="/login" class="btn-hero">ĐĂNG NHẬP ĐỂ ĐẶT PHÒNG</a>
         <?php endif; ?>
-=======
+
         <?php 
         $bookLink = isset($_SESSION['user_id']) ? '/rooms' : '/login'; 
     ?>
     
     <a href="<?= $bookLink ?>" class="btn-hero">ĐẶT PHÒNG NGAY</a>
        
->>>>>>> 8e64337b75bac24ec3a837529b759c4911812a37
+
     </div>
 </div>
 
