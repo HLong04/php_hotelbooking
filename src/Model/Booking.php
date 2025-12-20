@@ -22,7 +22,7 @@ class Booking {
 
     public function getBookingById($id) {
         $id = $this->mysqli->real_escape_string($id);
-        $sql = "SELECT b.*, u.full_name, u.email, u.phone, r.room_number, r.price 
+        $sql = "SELECT b.*, u.full_name, u.email, u.phone, r.room_number, b.total_price 
                 FROM bookings b 
                 JOIN users u ON b.user_id = u.id 
                 JOIN rooms r ON b.room_id = r.id 

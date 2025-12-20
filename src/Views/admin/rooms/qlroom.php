@@ -31,7 +31,7 @@
                         <tr style="border-bottom: 1px solid #eee;">
                             <td style="padding: 12px;">#<?= $room['id'] ?></td>
                             <td style="padding: 12px; font-weight: bold; color: #2c3e50;"><?= $room['room_number'] ?></td>
-                            <td style="padding: 12px;"><?= $room['room_type_id'] ?></td>
+                            <td style="padding: 12px;"><?= $room['room_type_name'] ?></td>
                             <td style="padding: 12px;">
                                 <?php 
                                     $statusColor = 'green';

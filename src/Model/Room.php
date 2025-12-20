@@ -24,7 +24,7 @@ class Room
 
     public function getAllRooms()
     {        
-        $sql = "SELECT * FROM rooms ORDER BY room_number ASC";
+        $sql = "SELECT r.*, rt.name as room_type_name FROM rooms r JOIN room_types rt ON r.room_type_id = rt.id ORDER BY room_number ASC";
         $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
