@@ -162,6 +162,18 @@ class OrderController extends Controller
         exit();
     }
 
+    public function myorders()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit();
+        }
+        $allBookings = $this->bookingModel->getAllBookings();
+        $myBookings = array_filter($allBookings, function ($b) {
+            return $b['user_id'] == $_SESSION['user_id'];
+        });
 
+        $this->render('user/my-order', ['bookings' => $myBookings]);
+    }
 
 }
