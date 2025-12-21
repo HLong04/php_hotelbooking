@@ -67,7 +67,6 @@ class Booking {
         return $result->fetch_assoc();
     }
 
-    // 4. Tạo đơn đặt phòng mới (Dùng cho User khi đặt phòng) -> QUAN TRỌNG
     public function createBooking($data) {
         $sql = "INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price, status, created_at) 
                 VALUES (?, ?, ?, ?, ?, ?, NOW())";

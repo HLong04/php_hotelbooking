@@ -107,7 +107,7 @@
             </div>
             <div class="footer-section">
                 <h3>Kết nối</h3>
-                <p><a href="#"><i class="fa-brands fa-facebook"></i> Facebook</a></p>
+                <p><a href="https://www.facebook.com/rot2704#"><i class="fa-brands fa-facebook"></i> Facebook</a></p>
                 <p><a href="#"><i class="fa-brands fa-instagram"></i> Instagram</a></p>
             </div>
         </div>

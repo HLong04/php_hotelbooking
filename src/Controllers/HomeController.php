@@ -32,22 +32,14 @@ class HomeController extends Controller {
      * Route: /rooms/type/{id}
      */
     public function roomsByType($id) {
-        // 1. Lấy thông tin loại phòng (Tên, giá...)
-        // Dùng $this->roomTypeModel thay vì new RoomType()
         $typeInfo = $this->roomTypeModel->getRoomTypeById($id);
 
         if (!$typeInfo) {
-            // Nếu khách nhập ID linh tinh -> về trang chủ hoặc trang danh sách
             header("Location: /rooms"); 
             exit;
         }
 
-        // 2. Lấy danh sách các phòng cụ thể (101, 102...) thuộc loại này
         $roomList = $this->roomModel->getRoomsByType($id);
-        
-        // 3. Render view
-        // Bạn kiểm tra lại tên file view là 'detail_room' hay 'rooms_by_type' nhé
-        // Theo code cũ của bạn là 'user/detail_room'
         $this->render('user/detail_room', [
             'typeInfo' => $typeInfo,
             'roomList' => $roomList
@@ -59,14 +51,8 @@ class HomeController extends Controller {
      * Route: /rooms
      */
     public function listRoom() {
-      // [QUAN TRỌNG] Đổi sang dùng Model Room (thay vì RoomType)
-        $roomModel = new \App\Model\Room();
-        
-        // Gọi hàm vừa viết để lấy danh sách chi tiết (101, 102...)
-        $rooms = $roomModel->getAllRoomsWithDetails(); 
-
-        // Render ra view
-        $this->render('user/list', ['rooms' => $rooms]);
+        $rooms = $this->roomModel->getAllRooms();
+        $this->render('user/list', ['rooms' => $rooms]); 
     }
 
     /**

@@ -24,7 +24,7 @@ class Room
         // Query này lấy từ bảng room_types (Loại phòng) chứ không phải bảng rooms (Phòng lẻ)
         // Đảm bảo trang chủ luôn hiện 4 ô gọn gàng
         $sql = "SELECT * FROM room_types ORDER BY price ASC LIMIT ?";
-        
+
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("i", $limit);
         $stmt->execute();
@@ -35,8 +35,8 @@ class Room
     // 2. HÀM DÙNG CHO TRANG TÌM KIẾM (SEARCH PAGE)
     // Mục đích: Lấy danh sách PHÒNG CỤ THỂ (101, 102...) còn trống
     // ================================================================
-    public function searchAvailableRoomTypes($checkIn, $checkOut) {
-        // Query này lấy từ bảng rooms (Phòng lẻ)
+    public function searchAvailableRoomTypes($checkIn, $checkOut)
+    {
         $sql = "SELECT r.*, 
                        rt.name as room_type_name, 
                        rt.price, 
@@ -88,13 +88,13 @@ class Room
      */
     public function getRoomsByType($roomTypeId)
     {
-        
+
         $roomTypeId = $this->mysqli->real_escape_string($roomTypeId);
 
         $sql = "SELECT * FROM rooms WHERE room_type_id = '$roomTypeId' ORDER BY room_number ASC";
-        
+
         $result = $this->mysqli->query($sql);
-        
+
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
@@ -122,11 +122,19 @@ class Room
         return $stmt->execute();
     }
 
-       public function countRooms()
+    public function countRooms()
     {
         $sql = "SELECT COUNT(*) as total FROM rooms";
         $result = $this->mysqli->query($sql);
         $row = $result->fetch_assoc();
         return $row['total'];
+    }
+    
+    public function updateStatus($roomId, $status)
+    {
+        $sql = "UPDATE rooms SET status = ? WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("si", $status, $roomId);
+        return $stmt->execute();
     }
 }

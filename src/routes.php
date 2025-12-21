@@ -46,7 +46,7 @@ $router->addRoute('#^/profile/update/(\d+)$#', [$userCtrl, 'updateprofile']);
 $router->addRoute('#^/profile/change-password/(\d+)$#', [$userCtrl, 'changePassword']);
 
 // Lịch sử đặt phòng của tôi
-$router->addRoute('#^/myorders/?$#', [$orderCtrl, 'myOrders']);
+$router->addRoute('#^/myorders/?$#', [$orderCtrl, 'index']);
 $router->addRoute('#^/myorders/detail/(\d+)$#', [$orderCtrl, 'myOrderDetail']);
 
 
