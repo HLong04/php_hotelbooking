@@ -176,4 +176,101 @@ class OrderController extends Controller
         $this->render('user/my-order', ['bookings' => $myBookings]);
     }
 
+    public function myOrderDetail($id)
+    {
+        // Kiểm tra đăng nhập
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit();
+        }
+    
+        // Lấy thông tin booking với JOIN để lấy đầy đủ thông tin
+        $booking = $this->bookingModel->getBookingWithDetails($id);
+    
+        // Kiểm tra booking có tồn tại và thuộc về user hiện tại
+        if (!$booking || $booking['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['flash_message'] = "Đơn đặt phòng không tồn tại!";
+            header('Location: /myorders');
+            exit();
+        }
+    
+        // Render view chi tiết
+        $this->render('user/order-detail', ['booking' => $booking]);
+    }
+    
+    public function cancel($bookingId)
+    {
+        // Kiểm tra đăng nhập
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit();
+        }
+
+        // Lấy thông tin booking
+        $booking = $this->bookingModel->getBookingById($bookingId);
+
+        // Kiểm tra booking có tồn tại và thuộc về user hiện tại
+        if (!$booking || $booking['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['flash_message'] = "Đơn đặt phòng không tồn tại!";
+            header('Location: /myorders');
+            exit();
+        }
+
+        // Kiểm tra trạng thái phải là 'pending' mới được hủy
+        if ($booking['status'] != 'pending') {
+            $_SESSION['flash_message'] = "Chỉ có thể hủy đơn hàng đang chờ duyệt!";
+            header('Location: /myorders');
+            exit();
+        }
+
+        // 1. Cập nhật trạng thái booking thành 'cancelled'
+        $this->bookingModel->updateStatus($bookingId, 'cancelled');
+
+        // 2. Cập nhật trạng thái phòng về 'available'
+        $this->roomModel->updateStatus($booking['room_id'], 'available');
+
+        // 3. Thông báo thành công
+        $_SESSION['flash_message'] = "✅ Đã hủy đơn đặt phòng thành công!";
+        header('Location: /myorders');
+        exit();
+    }
+
+    public function checkout($bookingId)
+    {
+        // Kiểm tra đăng nhập
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit();
+        }
+    
+        // Lấy thông tin booking
+        $booking = $this->bookingModel->getBookingById($bookingId);
+    
+        // Kiểm tra booking có tồn tại và thuộc về user hiện tại
+        if (!$booking || $booking['user_id'] != $_SESSION['user_id']) {
+            $_SESSION['flash_message'] = "Đơn đặt phòng không tồn tại!";
+            header('Location: /myorders');
+            exit();
+        }
+    
+        // Kiểm tra trạng thái phải là 'confirmed' mới được checkout
+        if ($booking['status'] != 'confirmed') {
+            $_SESSION['flash_message'] = "Chỉ có thể checkout đơn hàng đã xác nhận!";
+            header('Location: /myorders/detail/' . $bookingId);
+            exit();
+        }
+    
+        // 1. Cập nhật trạng thái booking thành 'completed'
+        $this->bookingModel->updateStatus($bookingId, 'completed');
+    
+        // 2. Cập nhật trạng thái phòng thành 'maintenance'
+        $this->roomModel->updateStatus($booking['room_id'], 'maintenance');
+    
+        // 3. Thông báo thành công
+        $_SESSION['flash_message'] = "✅ Checkout thành công! Phòng đang được bảo trì.";
+        header('Location: /myorders/detail/' . $bookingId);
+        exit();
+    }
+
+
 }

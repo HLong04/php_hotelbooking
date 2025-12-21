@@ -211,7 +211,7 @@ function getStatusBadge($status) {
                                 </td>
 
                                 <td>
-                                    <a href="/booking/detail/<?= $booking['id'] ?>" class="btn-action-view">
+                                    <a href="/myorders/detail/<?= $booking['id'] ?>" class="btn-action-view">
                                         <i class="fa-solid fa-eye"></i> Chi tiết
                                     </a>
 
