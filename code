@@ -1,0 +1,29 @@
+        <!-- <div class="filter-container">
+            
+            <a href="/rooms" class="cat-card <?= ($currentTypeId == null) ? 'active' : '' ?>">
+                <div class="cat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="cat-info">
+                    <h3>Tất cả</h3>
+                    <p>Xem toàn bộ</p>
+                </div>
+            </a>
+
+            <?php foreach ($roomTypes as $type): ?>
+                <?php 
+                    $isActive = ($currentTypeId == $type['id']) ? 'active' : '';
+                    
+                    // Logic Icon
+                    $iconClass = 'fa-bed';
+                    if(stripos($type['name'], 'VIP') !== false) $iconClass = 'fa-crown';
+                    if(stripos($type['name'], 'Family') !== false) $iconClass = 'fa-users';
+                    if(stripos($type['name'], 'Double') !== false) $iconClass = 'fa-user-group';
+                ?>
+                <a href="/rooms?type_id=<?= $type['id'] ?>" class="cat-card <?= $isActive ?>">
+                    <div class="cat-icon"><i class="fa-solid <?= $iconClass ?>"></i></div>
+                    <div class="cat-info">
+                        <h3><?= $type['name'] ?></h3>
+                        <p>Từ <?= number_format($type['price'] / 1000) ?>k</p>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div> -->

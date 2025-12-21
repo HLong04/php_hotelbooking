@@ -19,10 +19,23 @@ class Booking {
         $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+    
+    public function getRecentOrders($limit = 5) {
+        $limit = (int)$limit;
+        $sql = "SELECT b.*, u.full_name, r.room_number 
+                FROM bookings b 
+                JOIN users u ON b.user_id = u.id 
+                JOIN rooms r ON b.room_id = r.id 
+                ORDER BY b.created_at DESC 
+                LIMIT $limit";
+        
+        $result = $this->mysqli->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 
     public function getBookingById($id) {
         $id = $this->mysqli->real_escape_string($id);
-        $sql = "SELECT b.*, u.full_name, u.email, u.phone, r.room_number, r.price 
+        $sql = "SELECT b.*, u.full_name, u.email, u.phone, r.room_number, b.total_price 
                 FROM bookings b 
                 JOIN users u ON b.user_id = u.id 
                 JOIN rooms r ON b.room_id = r.id 
@@ -57,4 +70,5 @@ class Booking {
         $row = $result->fetch_assoc();
         return $row['revenue'] ?? 0;
     }
+    
 }

@@ -39,18 +39,32 @@
                 </div>
             <?php endif; ?>
 
+            <?php 
+                // Kiểm tra xem đơn hàng đã kết thúc chưa (Completed hoặc Cancelled)
+                // Dùng strtolower để đảm bảo không bị lỗi chữ hoa/thường
+                $stt = strtolower($order['status']);
+                $is_finished = ($stt == 'completed' || $stt == 'cancelled');
+            ?>
+
             <form action="/admin/orders/status/<?= $order['id'] ?>" method="POST">
                 <label style="display: block; margin-bottom: 10px;">Cập nhật trạng thái:</label>
-                <select name="status" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
-                    <option value="Pending" <?= $order['status'] == 'Pending' ? 'selected' : '' ?>>Pending (Chờ duyệt)</option>
-                    <option value="Confirmed" <?= $order['status'] == 'Confirmed' ? 'selected' : '' ?>>Confirmed (Đã xác nhận)</option>
-                    <option value="Completed" <?= $order['status'] == 'Completed' ? 'selected' : '' ?>>Completed (Đã trả phòng)</option>
-                    <option value="Cancelled" <?= $order['status'] == 'Cancelled' ? 'selected' : '' ?>>Cancelled (Hủy bỏ)</option>
+                
+                <select name="status" <?= $is_finished ? 'disabled' : '' ?> style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; background-color: <?= $is_finished ? '#f0f0f0' : '#fff' ?>;">
+                    <option value="pending" <?= $stt == 'pending' ? 'selected' : '' ?>>Pending (Chờ duyệt)</option>
+                    <option value="confirmed" <?= $stt == 'confirmed' ? 'selected' : '' ?>>Confirmed (Đã xác nhận)</option>
+                    <option value="completed" <?= $stt == 'completed' ? 'selected' : '' ?>>Completed (Đã trả phòng)</option>
+                    <option value="cancelled" <?= $stt == 'cancelled' ? 'selected' : '' ?>>Cancelled (Hủy bỏ)</option>
                 </select>
                 
-                <button type="submit" style="width: 100%; background: #2c3e50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
-                    Cập nhật
-                </button>
+                <?php if (!$is_finished): ?>
+                    <button type="submit" style="width: 100%; background: #2c3e50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer;">
+                        Cập nhật
+                    </button>
+                <?php else: ?>
+                    <div style="width: 100%; background: #eee; color: #777; padding: 10px; border: none; border-radius: 4px; text-align: center;">
+                        Đơn hàng đã đóng, không thể chỉnh sửa
+                    </div>
+                <?php endif; ?>
             </form>
 
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">

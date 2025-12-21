@@ -28,6 +28,7 @@
             </thead>
             <tbody>
                 <?php foreach ($users as $u): ?>
+                    <?php if($u['role'] == 0): ?>
                     <tr style="border-bottom: 1px solid #eee;">
                         <td style="padding: 12px;">#<?= $u['id'] ?></td>
                         <td style="padding: 12px; font-weight: bold;"><?= $u['full_name'] ?></td>
@@ -48,6 +49,7 @@
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </tbody>
         </table>

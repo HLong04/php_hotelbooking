@@ -27,6 +27,46 @@ class User
         $result = $this->connection->query("SELECT * FROM users ORDER BY created_at DESC");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+    public function getProfileById($id)
+    {
+        $id = (int)$id;
+
+        $sql = "SELECT 
+                id, 
+                full_name, 
+                email, 
+                phone, 
+                role, 
+                password,       -- <--- Thêm password
+                created_at 
+            FROM users 
+            WHERE id = $id";
+
+        $result = $this->connection->query($sql);
+        return $result->fetch_assoc();
+    }
+
+    public function emailExistsExceptUser($email, $id)
+    {
+        $email = $this->connection->real_escape_string($email);
+        $id = (int)$id;
+
+        $sql = "SELECT id FROM users 
+            WHERE email = '$email' AND id != $id";
+
+        $result = $this->connection->query($sql);
+        return $result->num_rows > 0;
+    }
+    public function updatePassword($id, $password)
+    {
+        $stmt = $this->connection->prepare(
+            "UPDATE users SET password = ? WHERE id = ?"
+        );
+        $stmt->bind_param("si", $password, $id);
+        return $stmt->execute();
+    }
+
+
 
     public function getUserById($id)
     {
@@ -37,7 +77,7 @@ class User
 
     public function countUsers()
     {
-        $sql = "SELECT COUNT(*) as total FROM users WHERE role = 0"; 
+        $sql = "SELECT COUNT(*) as total FROM users WHERE role = 0";
         $result = $this->connection->query($sql);
         $row = $result->fetch_assoc();
         return $row['total'];
@@ -64,11 +104,11 @@ class User
         $fullName = $this->connection->real_escape_string($fullName);
         $email = $this->connection->real_escape_string($email);
         $phone = $this->connection->real_escape_string($phone);
-        
+
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO users (full_name, email, password, phone, role) 
-                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', 0)";
+                VALUES ('$fullName', '$email', '$password', '$phone', 0)";
 
         return $this->connection->query($sql);
     }
@@ -136,5 +176,19 @@ class User
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
         $sql = "UPDATE users SET password='$hashedPassword' WHERE id=$id";
         return $this->connection->query($sql);
+    }
+
+
+    public function checkEmailExists($email)
+    {
+        $sql = "SELECT COUNT(*) as count FROM users WHERE email = ?";
+
+        
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['count'] > 0;
     }
 }

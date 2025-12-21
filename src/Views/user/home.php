@@ -1,90 +1,109 @@
-<?php 
-ob_start(); 
+<?php
+ob_start();
 ?>
+<section class="intro-section">
+    <div class="container">
 
-<style>
-
-</style>
-
-<div class="hero-section">
-    <div class="hero-content">
-        <h1>BOOK HOTEL</h1>
-        <p>Trải nghiệm nghỉ dưỡng đẳng cấp & sang trọng bậc nhất</p>
-        <a href="/rooms" class="btn-hero">ĐẶT PHÒNG NGAY</a>
-    </div>
-</div>
-
-<div class="features">
-    <div class="features-grid">
-        <div class="feature-item">
-            <i class="fa-solid fa-wifi"></i>
-            <h4>Wifi Tốc độ cao</h4>
+        <div class="intro-text">
+            <span class="sub-heading">BOOK HOTEL</span>
+            <h2 class="main-heading">Trải nghiệm nghỉ dưỡng đẳng cấp &<br>sang trọng bậc nhất</h2>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="#type" class="btn-intro">ĐẶT PHÒNG NGAY</a>
+            <?php else: ?>
+                <a href="/login" class="btn-intro">ĐĂNG NHẬP ĐỂ ĐẶT PHÒNG</a>
+            <?php endif; ?>
+            <!-- <a href="#booking" class="">ĐẶT PHÒNG NGAY</a> -->
         </div>
-        <div class="feature-item">
-            <i class="fa-solid fa-person-swimming"></i>
-            <h4>Hồ bơi vô cực</h4>
-        </div>
-        <div class="feature-item">
-            <i class="fa-solid fa-utensils"></i>
-            <h4>Nhà hàng 5 sao</h4>
-        </div>
-        <div class="feature-item">
-            <i class="fa-solid fa-dumbbell"></i>
-            <h4>Phòng Gym</h4>
-        </div>
-    </div>
-</div>
 
-<section class="featured-rooms">
-    <h2 class="section-title">PHÒNG NỔI BẬT</h2>
-    
-    <div class="room-grid">
-        <?php if (!empty($rooms)): ?>
-            <?php 
-            // Chỉ lấy 3 phòng đầu tiên để hiển thị trang chủ
-            $limit = 3; 
-            $count = 0;
-            foreach ($rooms as $room): 
-                if ($count >= $limit) break; 
-                $count++;
-                
-                // Xử lý ảnh (Nếu không có ảnh thì dùng ảnh mặc định)
-                // Giả sử DB có cột 'image', nếu không có bạn xóa thẻ img đi hoặc hardcode
-                $imgSrc = !empty($room['image']) ? URLROOT . '/img/' . $room['image'] : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60';
-            ?>
-            
-            <div class="room-card">
-                <div class="room-img">
-                    <img src="<?= $imgSrc ?>" alt="Room Image">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-wifi"></i>
                 </div>
-                <div class="room-info">
-                    <h3>Phòng số: <?= $room['room_number'] ?></h3>
-                    <div class="room-price">
-                        <?= number_format(500000) ?> VNĐ / đêm
-                    </div>
-                    <p>
-                        <i class="fa-solid fa-bed"></i> Loại: <?= $room['room_type_id'] ?> | 
-                        <i class="fa-solid fa-check"></i> <?= $room['status'] ?>
-                    </p>
-                    <a href="/room/detail/<?= $room['id'] ?>" class="btn-detail">Xem chi tiết</a>
-                </div>
+                <h3>Wifi Tốc độ cao</h3>
             </div>
 
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p style="text-align: center; width: 100%;">Hiện chưa có phòng nào.</p>
-        <?php endif; ?>
-    </div>
-    
-    <div style="text-align: center; margin-top: 40px;">
-        <a href="/rooms" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả phòng &rarr;</a>
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-person-swimming"></i>
+                </div>
+                <h3>Hồ bơi vô cực</h3>
+            </div>
+
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <h3>Nhà hàng 5 sao</h3>
+            </div>
+
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+                <h3>Phòng Gym</h3>
+            </div>
+        </div>
     </div>
 </section>
 
-<?php 
-// 2. Lấy nội dung gán vào biến $content
-$content = ob_get_clean(); 
 
-// 3. Gọi Layout Chính (Giả sử file layout của bạn tên là layouthome.php nằm trong templates)
-include APPROOT . '/templates/layouthome.php'; 
+<section id="type" class="featured-rooms">
+<section class="featured-rooms">
+    <h2 class="section-title">CÁC HẠNG PHÒNG NỔI BẬT</h2> <div class="room-grid">
+        <?php if (!empty($roomTypes)): ?>
+            <?php
+            $limit = 4;
+            $count = 0;
+            foreach ($roomTypes as $type):
+                if ($count >= $limit) break;
+                $count++;
+
+                $imgSrc = !empty($type['image']) ? URLROOT . '/img/' . $type['image'] : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60';
+            ?>
+
+                <div class="room-card">
+                    <div class="room-img">
+                        <img src="<?= $imgSrc ?>" alt="<?= $type['name'] ?>">
+                    </div>
+                    <div class="room-info">
+                        <h3><?= $type['name'] ?></h3>
+                        
+                        <div class="room-price">
+                            <?= number_format($type['price']) ?> VNĐ / đêm
+                        </div>
+                        
+                        <p style="font-size: 14px; color: #666; margin-bottom: 10px;">
+                           <?= substr($type['description'], 0, 100) ?>...
+                        </p>
+
+                       <?php
+                        // --- ĐOẠN ĐÃ SỬA ---
+                        // Kiểm tra session user_id để xác định link
+                        if (isset($_SESSION['user_id'])) {
+                            $detailLink = '/rooms/type/' . $type['id'];
+                        } else {
+                            $detailLink = '/login';
+                        }
+                        // -------------------
+                        ?>
+                        <a href="<?= $detailLink ?>" class="btn-detail">Xem danh sách phòng</a>
+                    </div>
+                </div>
+
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p style="text-align: center; width: 100%;">Hiện chưa có hạng phòng nào.</p>
+        <?php endif; ?>
+    </div>
+
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/rooms" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả &rarr;</a>
+    </div>
+</section>
+
+<?php
+$content = ob_get_clean();
+include APPROOT . '/templates/layouthome.php';
 ?>
