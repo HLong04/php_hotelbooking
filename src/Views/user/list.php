@@ -25,7 +25,7 @@
                 $maxAdults = isset($room['max_adults']) ? $room['max_adults'] : 2;
 
                 // Link chi tiết
-                $detailLink = "/room/detail/" . $room['id'];
+                $detailLink = "/booking/create/" . $room['id'];
                 ?>
 
                 <div class="hotel-card-item">

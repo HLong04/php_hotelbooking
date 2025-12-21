@@ -29,13 +29,12 @@ class OrderController extends Controller
             exit();
         }
     }
-
-    // 1. Hiển thị danh sách đơn
+    // 1. Xem đơn hàng (tất cả, có tìm kiếm)
     public function qlorder()
     {
         $this->requireAdmin();
         $orders = $this->bookingModel->getAllBookings();
-        $this->render('admin/orders/qlorder', ['orders' => $orders]);
+        $this->render('admin/orders/qlorder', [ 'orders' => $orders]);
     }
 
     // 2. Xem chi tiết đơn (Và form đổi trạng thái nằm ở đây luôn)
@@ -59,10 +58,10 @@ class OrderController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newStatus = $_POST['status'];
-            
+
             // 1. Lấy thông tin booking hiện tại để biết Room ID là gì
             $booking = $this->bookingModel->getBookingById($id);
-            
+
             if ($booking) {
                 $roomId = $booking['room_id'];
 
@@ -72,11 +71,10 @@ class OrderController extends Controller
                 // 3. Xử lý đồng bộ trạng thái Phòng (Room)                
                 if ($newStatus == 'confirmed' || $newStatus == 'pending') {
                     $this->roomModel->updateStatus($roomId, 'booked');
-                    
                 } elseif ($newStatus == 'completed' || $newStatus == 'cancelled') {
                     $this->roomModel->updateStatus($roomId, 'available');
                 }
-                
+
                 $_SESSION['flash_message'] = "Cập nhật trạng thái Order #$id và trạng thái phòng thành công!";
             } else {
                 $_SESSION['flash_message'] = "Không tìm thấy đơn hàng!";
@@ -91,6 +89,7 @@ class OrderController extends Controller
     {
         $this->requireAdmin();
         $this->bookingModel->deleteBooking($id);
+        $this->roomModel->updateRoomStatus($id, 'available');
         $_SESSION['flash_message'] = "Đã xóa đơn hàng thành công!";
         header('Location: /admin/orders');
         exit();
@@ -98,7 +97,7 @@ class OrderController extends Controller
     //end admin check
 
 
-       
+
     public function createBooking($roomId)
     {
         // Chưa login
@@ -116,9 +115,6 @@ class OrderController extends Controller
             exit();
         }
 
-        // =====================
-        // GET → HIỂN THỊ FORM
-        // =====================
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $this->render('user/booking', [
                 'room' => $room
@@ -126,9 +122,6 @@ class OrderController extends Controller
             return;
         }
 
-        // =====================
-        // POST → XỬ LÝ BOOKING
-        // =====================
         $checkIn  = $_POST['check_in'];
         $checkOut = $_POST['check_out'];
 
@@ -153,7 +146,6 @@ class OrderController extends Controller
             $totalPrice
         );
 
-        // 2️⃣ Update trạng thái phòng
         $this->roomModel->updateRoomStatus($roomId, 'booked');
 
         // 3️⃣ Thông báo + redirect
@@ -161,7 +153,4 @@ class OrderController extends Controller
         header('Location: /rooms');
         exit();
     }
-
-
-
 }

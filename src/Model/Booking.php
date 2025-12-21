@@ -105,7 +105,6 @@ class Booking {
     }
 
     // 8. (Bổ sung) Tìm phòng trống theo loại phòng và ngày
-    // Hàm này giúp Controller kiểm tra xem còn phòng để đặt không
     public function findAvailableRoomId($roomTypeId, $checkIn, $checkOut) {
         // Logic: Lấy 1 phòng thuộc loại này mà ID của nó KHÔNG nằm trong danh sách các booking trùng ngày
         $sql = "SELECT r.id FROM rooms r
@@ -130,4 +129,5 @@ class Booking {
         }
         return null; // Hết phòng
     }
+
 }

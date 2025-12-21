@@ -27,7 +27,7 @@
                     $checkOut = $_GET['checkout'] ?? date('Y-m-d', strtotime('+1 day'));
 
                     // Nếu chưa có hàm confirm, trỏ về trang chi tiết trước
-                    $bookLink = "/room/detail/" . $room['id'];
+                    $bookLink = "/booking/create/" . $room['id'];
                     ?>
 
                     <div class="hotel-card-item">

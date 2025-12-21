@@ -77,8 +77,8 @@ class Room
     }
 
     public function getRoomById($id)
-{
-    $sql = "SELECT r.*, 
+    {
+        $sql = "SELECT r.*, 
                    rt.name AS room_type_name,
                    rt.price,
                    rt.image
@@ -86,12 +86,12 @@ class Room
             JOIN room_types rt ON r.room_type_id = rt.id
             WHERE r.id = ?";
 
-    $stmt = $this->mysqli->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
 
-    return $stmt->get_result()->fetch_assoc();
-}
+        return $stmt->get_result()->fetch_assoc();
+    }
 
 
     /**
@@ -148,12 +148,35 @@ class Room
         $stmt->bind_param("si", $status, $roomId);
         return $stmt->execute();
     }
-    
-public function updateRoomStatus($roomId, $status)
-{
-    $sql = "UPDATE rooms SET status = ? WHERE id = ?";
-    $stmt = $this->mysqli->prepare($sql);
-    $stmt->bind_param("si", $status, $roomId);
-    return $stmt->execute();
-}
+
+    public function updateRoomStatus($roomId, $status)
+    {
+        $sql = "UPDATE rooms SET status = ? WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("si", $status, $roomId);
+        return $stmt->execute();
+    }
+
+    public function searchRooms($keyword, $status)
+    {
+        $sql = "SELECT r.*, rt.name as room_type_name 
+                FROM rooms r
+                LEFT JOIN room_types rt ON r.room_type_id = rt.id
+                WHERE 1=1";
+
+        // Nếu có từ khóa -> Tìm theo số phòng HOẶC tên loại phòng
+        if (!empty($keyword)) {
+            $safeKeyword = $this->mysqli->real_escape_string($keyword);
+            $sql .= " AND (r.room_number LIKE '%$safeKeyword%' OR rt.name LIKE '%$safeKeyword%')";
+        }
+
+        // Nếu có chọn trạng thái -> Lọc theo trạng thái
+        if (!empty($status)) {
+            $safeStatus = $this->mysqli->real_escape_string($status);
+            $sql .= " AND r.status = '$safeStatus'";
+        }
+        $sql .= " ORDER BY r.room_number ASC";
+        $result = $this->mysqli->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 }

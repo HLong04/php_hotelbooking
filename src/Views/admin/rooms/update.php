@@ -31,7 +31,7 @@
                 <label>Trạng thái:</label>
                 <select name="status" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                     <option value="Available" <?= $room['status'] == 'Available' ? 'selected' : '' ?>>Available</option>
-                    <option value="Occupied" <?= $room['status'] == 'Occupied' ? 'selected' : '' ?>>Occupied</option>
+                    <option value="Booked" <?= $room['status'] == 'Booked' ? 'selected' : '' ?>>Booked</option>
                     <option value="Maintenance" <?= $room['status'] == 'Maintenance' ? 'selected' : '' ?>>Maintenance</option>
                 </select>
             </div>

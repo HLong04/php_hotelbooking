@@ -62,7 +62,7 @@
                     </button>
                 <?php else: ?>
                     <div style="width: 100%; background: #eee; color: #777; padding: 10px; border: none; border-radius: 4px; text-align: center;">
-                        Đơn hàng đã đóng, không thể chỉnh sửa
+                        Đơn đã đóng, không thể chỉnh sửa
                     </div>
                 <?php endif; ?>
             </form>
