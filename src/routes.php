@@ -32,6 +32,7 @@ $router->addRoute('#^/logout/?$#', [$authCtrl, 'logout']);
 // USER
 // Xem danh sách phòng & Chi tiết
 $router->addRoute('#^/rooms/?$#', [$homeCtrl, 'listRoom']);
+$router->addRoute('#^/search/?$#', [$roomCtrl, 'search']);
 $router->addRoute('#^/room/detail/(\d+)$#', [$homeCtrl, 'detailRoom']);
 // Route xem danh sách phòng theo Loại (VD: /rooms/type/1)
 $router->addRoute('#^/rooms/type/(\d+)$#', [$homeCtrl, 'roomsByType']);

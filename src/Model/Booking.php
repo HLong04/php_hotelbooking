@@ -5,70 +5,136 @@ class Booking {
     private $mysqli;
 
     public function __construct() {
+        // Kết nối CSDL
         $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT);
         $this->mysqli->set_charset("utf8");
+
+        // Kiểm tra lỗi kết nối
+        if ($this->mysqli->connect_error) {
+            die("Connection failed: " . $this->mysqli->connect_error);
+        }
     }
 
+    // 1. Lấy tất cả đơn hàng (Đã thêm JOIN room_types)
     public function getAllBookings() {
-        $sql = "SELECT b.*, u.full_name, u.email, r.room_number 
+        // Thêm JOIN room_types để lấy tên loại phòng (rt.name)
+        $sql = "SELECT b.*, 
+                       u.full_name, u.email, 
+                       r.room_number, 
+                       rt.name as room_type_name 
                 FROM bookings b 
                 JOIN users u ON b.user_id = u.id 
                 JOIN rooms r ON b.room_id = r.id 
+                JOIN room_types rt ON r.room_type_id = rt.id
                 ORDER BY b.created_at DESC";
         
         $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
     
+    // 2. Lấy đơn hàng gần đây (Dashboard)
     public function getRecentOrders($limit = 5) {
-        $limit = (int)$limit;
-        $sql = "SELECT b.*, u.full_name, r.room_number 
+        $sql = "SELECT b.*, u.full_name, r.room_number, b.status, b.total_price 
                 FROM bookings b 
                 JOIN users u ON b.user_id = u.id 
                 JOIN rooms r ON b.room_id = r.id 
                 ORDER BY b.created_at DESC 
-                LIMIT $limit";
+                LIMIT ?"; // Dùng dấu ?
         
-        $result = $this->mysqli->query($sql);
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $limit); // "i" nghĩa là integer
+        $stmt->execute();
+        $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    // 3. Xem chi tiết đơn hàng
     public function getBookingById($id) {
-        $id = $this->mysqli->real_escape_string($id);
-        $sql = "SELECT b.*, u.full_name, u.email, u.phone, r.room_number, b.total_price 
+        $sql = "SELECT b.*, 
+                       u.full_name, u.email, u.phone, 
+                       r.room_number, 
+                       rt.name as room_type_name, rt.price as price_per_night
                 FROM bookings b 
                 JOIN users u ON b.user_id = u.id 
                 JOIN rooms r ON b.room_id = r.id 
-                WHERE b.id = $id";
+                JOIN room_types rt ON r.room_type_id = rt.id
+                WHERE b.id = ?";
         
-        $result = $this->mysqli->query($sql);
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
 
-    // 3. Cập nhật trạng thái đơn (Pending -> Confirmed -> Cancelled)
-    public function updateStatus($id, $status) {
-        $id = $this->mysqli->real_escape_string($id);
-        $status = $this->mysqli->real_escape_string($status);
+    // 4. Tạo đơn đặt phòng mới (Dùng cho User khi đặt phòng) -> QUAN TRỌNG
+    public function createBooking($data) {
+        $sql = "INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price, status, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+        $stmt = $this->mysqli->prepare($sql);
+        // "iissds" tương ứng: int, int, string, string, double, string
+        $stmt->bind_param("iissss", 
+            $data['user_id'], 
+            $data['room_id'], 
+            $data['check_in'], 
+            $data['check_out'], 
+            $data['total_price'],
+            $data['status']
+        );
         
-        $sql = "UPDATE bookings SET status = '$status' WHERE id = $id";
-        return $this->mysqli->query($sql);
+        return $stmt->execute();
     }
 
-    // 4. Xóa đơn
+    // 5. Cập nhật trạng thái
+    public function updateStatus($id, $status) {
+        $sql = "UPDATE bookings SET status = ? WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
+    }
+
+    // 6. Xóa đơn
     public function deleteBooking($id) {
-        $id = $this->mysqli->real_escape_string($id);
-        $sql = "DELETE FROM bookings WHERE id = $id";
-        return $this->mysqli->query($sql);
+        $sql = "DELETE FROM bookings WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
     }
 
-    // 5. Tính tổng doanh thu (Chỉ tính các đơn đã Hoàn thành hoặc Đã xác nhận)
-    // Hàm này dùng cho Dashboard AdminController
+    // 7. Tổng doanh thu (Chỉ tính Confirmed hoặc Completed)
     public function getTotalRevenue() {
         $sql = "SELECT SUM(total_price) as revenue FROM bookings 
-                WHERE status = 'Confirmed' OR status = 'Completed'";
+                WHERE status IN ('Confirmed', 'Completed')";
         $result = $this->mysqli->query($sql);
         $row = $result->fetch_assoc();
         return $row['revenue'] ?? 0;
     }
-    
+
+    // 8. (Bổ sung) Tìm phòng trống theo loại phòng và ngày
+    // Hàm này giúp Controller kiểm tra xem còn phòng để đặt không
+    public function findAvailableRoomId($roomTypeId, $checkIn, $checkOut) {
+        // Logic: Lấy 1 phòng thuộc loại này mà ID của nó KHÔNG nằm trong danh sách các booking trùng ngày
+        $sql = "SELECT r.id FROM rooms r
+                WHERE r.room_type_id = ? 
+                AND r.status = 'available'
+                AND r.id NOT IN (
+                    SELECT b.room_id FROM bookings b
+                    WHERE (
+                        (b.check_in <= ? AND b.check_out >= ?)
+                        AND b.status != 'cancelled'
+                    )
+                )
+                LIMIT 1";
+        
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("iss", $roomTypeId, $checkOut, $checkIn);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($row = $result->fetch_assoc()) {
+            return $row['id'];
+        }
+        return null; // Hết phòng
+    }
 }

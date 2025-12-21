@@ -48,7 +48,7 @@ class OrderController extends Controller {
             $status = $_POST['status'];
             $this->bookingModel->updateStatus($id, $status);
             
-            $_SESSION['flash_message'] = "Cập nhật trạng thái đơn hàng #$id thành công!";
+            $_SESSION['flash_message'] = "Cập nhật trạng thái Order #$id thành công!";
             header("Location: /admin/orders/detail/$id");
             exit();
         }

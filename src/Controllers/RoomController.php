@@ -25,7 +25,41 @@ class RoomController extends Controller
         }
     }
 
-//rome controller
+    // ==========================================
+    // PHẦN NGƯỜI DÙNG (USER)
+    // ==========================================
+
+    /**
+     * [QUAN TRỌNG] Tìm kiếm phòng trống theo ngày
+     * Route: /search?checkin=...&checkout=...
+     */
+    public function search() {
+        // 1. Lấy dữ liệu từ URL
+        $checkIn = $_GET['checkin'] ?? null;
+        $checkOut = $_GET['checkout'] ?? null;
+        
+        // 2. Kiểm tra nếu thiếu ngày thì về trang chủ
+        if (!$checkIn || !$checkOut) {
+            header('Location: /');
+            exit();
+        }
+
+        // 3. Gọi Model để tìm các LOẠI PHÒNG còn trống
+        // Hàm searchAvailableRoomTypes phải được khai báo trong Model/Room.php
+        $availableRooms = $this->roomModel->searchAvailableRoomTypes($checkIn, $checkOut);
+
+        // 4. Render view kết quả
+        $this->render('user/search_results', [
+            'rooms' => $availableRooms,
+            'checkIn' => $checkIn,
+            'checkOut' => $checkOut
+        ]);
+    }
+
+    // ==========================================
+    // PHẦN QUẢN TRỊ (ADMIN) - Code của bạn giữ nguyên
+    // ==========================================
+
     /**
      * Hiển thị danh sách phòng
      * Route: /admin/rooms
@@ -33,14 +67,12 @@ class RoomController extends Controller
     public function qlroom()
     {
         $this->requireAdmin();
-
         $rooms = $this->roomModel->getAllRooms();
-
         $this->render('admin/rooms/qlroom', ['rooms' => $rooms]);
     }
 
     /**
-     * Thêm mới phòng (Hiển thị Form & Xử lý Lưu)
+     * Thêm mới phòng
      * Route: /admin/rooms/create
      */
     public function create()
@@ -69,13 +101,13 @@ class RoomController extends Controller
         }
     }
 
-
-    // Route: /admin/rooms/update/{id}
-
+    /**
+     * Cập nhật phòng
+     * Route: /admin/rooms/update/{id}
+     */
     public function update($id)
     {
         $this->requireAdmin();
-
         $room = $this->roomModel->getRoomById($id);
 
         if (!$room) {
@@ -120,9 +152,7 @@ class RoomController extends Controller
     public function delete($id)
     {
         $this->requireAdmin();
-
         $this->roomModel->deleteRoom($id);
-
         $_SESSION['flash_message'] = "Đã xóa phòng thành công!";
         header('Location: /admin/rooms');
         exit();

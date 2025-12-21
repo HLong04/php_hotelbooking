@@ -28,9 +28,11 @@ class RoomType
 
     public function getRoomTypeById($id)
     {
-        $id = $this->connection->real_escape_string($id);
-        $result = $this->connection->query("SELECT * FROM room_types WHERE id = $id");
-        return $result->fetch_assoc();
+       $sql = "SELECT * FROM room_types WHERE id = ?";
+    $stmt = $this->mysqli->prepare($sql); // Nhớ kết nối db trong construct giống Room
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
     }
 
     public function createRoomType($name, $price,$max_adults, $description, $image)
