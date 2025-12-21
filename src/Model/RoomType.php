@@ -12,8 +12,8 @@ class RoomType
         $username = DB_USER;
         $password = DB_PASSWORD;
         $database = DB_NAME;
-
-        $this->connection = new \mysqli($host, $username, $password, $database);
+         $port = DB_PORT;
+        $this->connection = new \mysqli($host, $username, $password, $database, $port);
 
         if ($this->connection->connect_error) {
             die("Connection failed: " . $this->connection->connect_error);
