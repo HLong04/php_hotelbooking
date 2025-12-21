@@ -97,8 +97,5 @@ class OrderController extends Controller
     }
     //end admin check
 
-    //user nam day
-
-
-
+    //user nam dang
 }
