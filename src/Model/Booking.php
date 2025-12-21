@@ -130,4 +130,24 @@ class Booking {
         return null; // Hết phòng
     }
 
+    public function getBookingWithDetails($id)
+    {
+        $id = (int)$id;
+        
+        $sql = "SELECT 
+                    b.*,
+                    u.full_name as guest_name,
+                    u.email as guest_email,
+                    u.phone as guest_phone,
+                    r.room_number,
+                    rt.name as room_type_name
+                FROM bookings b
+                LEFT JOIN users u ON b.user_id = u.id
+                LEFT JOIN rooms r ON b.room_id = r.id
+                LEFT JOIN room_types rt ON r.room_type_id = rt.id
+                WHERE b.id = $id";
+        
+        $result = $this->mysqli->query($sql);
+        return $result ? $result->fetch_assoc() : null;
+    }
 }

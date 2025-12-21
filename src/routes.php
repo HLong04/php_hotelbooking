@@ -40,6 +40,8 @@ $router->addRoute('#^/rooms/type/(\d+)$#', [$homeCtrl, 'roomsByType']);
 
 // Route này nhận dữ liệu POST từ form đặt phòng để lưu vào DB
 $router->addRoute('#^/booking/create/(\d+)$#', [$orderCtrl, 'createBooking']);
+$router->addRoute('#^/booking/checkout/(\d+)$#', [$orderCtrl, 'checkout']);
+$router->addRoute('#^/booking/cancel/(\d+)$#', [$orderCtrl, 'cancel']);
 
 // Quản lý cá nhân
 $router->addRoute('#^/profile/(\d+)$#', [$userCtrl, 'Profile']);
