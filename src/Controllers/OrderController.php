@@ -74,115 +74,69 @@ class OrderController extends Controller
         exit();
     }
 
-    //user đặt thì sẽ lấy check in phòng đang tróng 
-    public function confirm()
+       
+    public function createBooking($roomId)
     {
+        // Chưa login
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['flash_message'] = "Vui lòng đăng nhập để đặt phòng!";
             header('Location: /login');
             exit();
         }
 
-        $typeId = $_GET['type_id'] ?? null;
-        if (!$typeId) {
+        // Lấy thông tin phòng
+        $room = $this->roomModel->getRoomById($roomId);
+
+        // Phòng không tồn tại hoặc đã booked
+        if (!$room || $room['status'] !== 'available') {
             header('Location: /rooms');
             exit();
         }
 
-        $roomType = $this->roomTypeModel->getRoomTypeById($typeId);
-
-        $this->render('user/booking', [
-            'roomType' => $roomType
-        ]);
-    }
-
-
-    public function store()
-    {
-        if (!isset($_SESSION['user_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /');
-            exit();
+        // =====================
+        // GET → HIỂN THỊ FORM
+        // =====================
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $this->render('user/booking', [
+                'room' => $room
+            ]);
+            return;
         }
 
-        $userId = $_SESSION['user_id'];
-        $roomTypeId = $_POST['room_type_id'];
-        $checkIn = $_POST['check_in'];
+        // =====================
+        // POST → XỬ LÝ BOOKING
+        // =====================
+        $checkIn  = $_POST['check_in'];
         $checkOut = $_POST['check_out'];
-        $pricePerNight = $_POST['price_per_night'];
 
-        $diff = strtotime($checkOut) - strtotime($checkIn);
-        $days = ceil($diff / (60 * 60 * 24));
-        if ($days <= 0) $days = 1;
-        $totalPrice = $days * $pricePerNight;
-
-        $roomId = $this->bookingModel->findAvailableRoomId($roomTypeId, $checkIn, $checkOut);
-
-        if ($roomId) {
-            // B. TẠO BOOKING
-            $data = [
-                'user_id' => $userId,
-                'room_id' => $roomId,
-                'check_in' => $checkIn,
-                'check_out' => $checkOut,
-                'total_price' => $totalPrice,
-                'status' => 'pending' 
-            ];
-
-            $this->bookingModel->createBooking($data);
-
-            $this->roomModel->updateStatus($roomId, 'Booked');
-
-            $_SESSION['flash_message'] = "Đặt phòng thành công! Mã phòng của bạn là P." . $roomId;
-            header('Location: /myorders');
-        } else {
-            $_SESSION['flash_message'] = "Rất tiếc, loại phòng này đã hết trong ngày bạn chọn.";
-            header("Location: /rooms?type_id=$roomTypeId");
+        // Validate ngày
+        $days = (strtotime($checkOut) - strtotime($checkIn)) / 86400;
+        if ($days <= 0) {
+            $this->render('user/booking', [
+                'room'  => $room,
+                'error' => 'Ngày check-out phải sau check-in'
+            ]);
+            return;
         }
+
+        $totalPrice = $days * $room['price'];
+
+        // 1️⃣ Lưu booking
+        $this->bookingModel->createBooking(
+            $_SESSION['user_id'],
+            $roomId,
+            $checkIn,
+            $checkOut,
+            $totalPrice
+        );
+
+        // 2️⃣ Update trạng thái phòng
+        $this->roomModel->updateRoomStatus($roomId, 'booked');
+
+        // 3️⃣ Thông báo + redirect
+        $_SESSION['flash_message'] = "🎉 Đặt phòng thành công!";
+        header('Location: /rooms');
+        exit();
     }
 
-    /**
-     * 3. DANH SÁCH ĐƠN HÀNG CỦA TÔI
-     * URL: /myorders
-     */
-    public function index()
-    {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit();
-        }
-        $allBookings = $this->bookingModel->getAllBookings();
-        $myBookings = array_filter($allBookings, function ($b) {
-            return $b['user_id'] == $_SESSION['user_id'];
-        });
 
-        $this->render('user/my-order', ['bookings' => $myBookings]);
-    }
-
-    /**
-     * 4. HỦY PHÒNG / TRẢ PHÒNG (USER ACTION)
-     * URL: /booking/cancel/{id}
-     */
-
-    public function cancel($id)
-    {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit();
-        }
-
-        $booking = $this->bookingModel->getBookingById($id);
-
-        if ($booking && $booking['user_id'] == $_SESSION['user_id']) {
-            if ($booking['status'] == 'Pending' || $booking['status'] == 'confirmed') {
-
-                $this->bookingModel->updateStatus($id, 'cancelled');
-                
-                $this->roomModel->updateStatus($booking['room_id'], 'available');
-
-                $_SESSION['flash_message'] = "Đã hủy đơn đặt phòng.";
-            }
-        }
-
-        header('Location: /myorders');
-    }
 }

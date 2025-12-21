@@ -79,7 +79,8 @@ function getStatusConfig($status) {
                                 </div>
 
                                 <?php if (!$config['disabled']): ?>
-                                    <a href="/booking/create/<?= $room['id'] ?>" class="btn-book-room" style="display: block; width: 100%; padding: 10px 0; background: var(--primary); color: #fff; text-decoration: none; border-radius: 4px; font-weight: 500; transition: 0.3s;">
+                                    <a href="/booking/create/<?= $room['id'] ?>" class="btn-book-room"
+                                    style="display: block; width: 100%; padding: 10px 0; background: var(--primary); color: #fff; text-decoration: none; border-radius: 4px; font-weight: 500; transition: 0.3s;">
                                         <?= $config['btn_text'] ?>
                                     </a>
                                 <?php else: ?>

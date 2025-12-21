@@ -75,13 +75,22 @@ class Room
     }
 
     public function getRoomById($id)
-    {
-        $sql = "SELECT * FROM rooms WHERE id = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
+{
+    $sql = "SELECT r.*, 
+                   rt.name AS room_type_name,
+                   rt.price,
+                   rt.image
+            FROM rooms r
+            JOIN room_types rt ON r.room_type_id = rt.id
+            WHERE r.id = ?";
+
+    $stmt = $this->mysqli->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_assoc();
+}
+
 
     /**
      * Lấy danh sách các phòng theo ID loại phòng
@@ -137,4 +146,12 @@ class Room
         $stmt->bind_param("si", $status, $roomId);
         return $stmt->execute();
     }
+    
+public function updateRoomStatus($roomId, $status)
+{
+    $sql = "UPDATE rooms SET status = ? WHERE id = ?";
+    $stmt = $this->mysqli->prepare($sql);
+    $stmt->bind_param("si", $status, $roomId);
+    return $stmt->execute();
+}
 }

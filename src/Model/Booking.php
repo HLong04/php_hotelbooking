@@ -67,21 +67,15 @@ class Booking {
         return $result->fetch_assoc();
     }
 
-    public function createBooking($data) {
-        $sql = "INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price, status, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, NOW())";
+    // 4. Tạo đơn đặt phòng mới (Dùng cho User khi đặt phòng) -> QUAN TRỌNG
+    public function createBooking($userId, $roomId, $checkIn, $checkOut, $totalPrice)
+    {
+        $sql = "INSERT INTO bookings 
+                (user_id, room_id, check_in, check_out, total_price, status) 
+                VALUES (?, ?, ?, ?, ?, 'pending')";
 
         $stmt = $this->mysqli->prepare($sql);
-        // "iissds" tương ứng: int, int, string, string, double, string
-        $stmt->bind_param("iissss", 
-            $data['user_id'], 
-            $data['room_id'], 
-            $data['check_in'], 
-            $data['check_out'], 
-            $data['total_price'],
-            $data['status']
-        );
-        
+        $stmt->bind_param("iissd", $userId, $roomId, $checkIn, $checkOut, $totalPrice);
         return $stmt->execute();
     }
 
