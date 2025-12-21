@@ -37,7 +37,9 @@ function getStatusConfig($status) {
                 <p style="margin-bottom: 12px;"><strong><i class="fa-solid fa-tag" style="width: 25px; color: #666;"></i> Giá niêm yết:</strong> <br>
                     <span style="color: #e74c3c; font-weight: bold; font-size: 1.5rem; display: block; margin-top: 5px;"><?= number_format($typeInfo['price']) ?> VNĐ</span> <span style="font-size: 0.9rem; color: #888;">/ đêm</span>
                 </p>
-                
+                <div style="display: block; margin-top: 5px; color: #333; font-weight: 500;">
+                    <?= $typeInfo['max_adults'] ?? 2 ?> người lớn
+                </div>
                 <p style="margin-bottom: 12px;"><strong><i class="fa-solid fa-file-lines" style="width: 25px; color: #666;"></i> Mô tả:</strong></p>
                 <div style="font-size: 0.95rem; color: #555; line-height: 1.6; text-align: justify;">
                     <?= nl2br(htmlspecialchars($typeInfo['description'])) ?>

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="/templates/css/tooplate-bistro-elegance.css">
+    <link rel="stylesheet" href="/templates/css/search.css">
 
 </head>
 
@@ -36,7 +37,7 @@
                         
                         <ul class="dropdown-menu">
                             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1): ?>
-                                <li><a href="/adminhome"><i class="fa-solid fa-gauge"></i> Quản trị viên</a></li>
+                                <li><a href="/admin"><i class="fa-solid fa-gauge"></i> Quản trị viên</a></li>
                             <?php else: ?>
                                 <li><a href="/profile/<?= (int)$_SESSION['user_id'] ?>"><i class="fa-solid fa-id-card"></i> Hồ sơ của tôi</a></li>
                                 <li><a href="/myorders"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đặt phòng</a></li>
@@ -69,10 +70,11 @@
                 </div>
                 <div class="form-group">
                     <label>Khách</label>
-                    <select name="guests">
-                        <option value="1">2 Người lớn</option>
-                        <option value="2" selected>3 Người lớn</option>
-                        <option value="3">Gia đình (3+)</option>
+                    <select name="guests" required>
+                        <option value="1">1 Người lớn</option>
+                        <option value="2" >2 Người lớn</option>
+                        <option value="3">3 Người lớn</option>
+                        <option value="4">Gia đình (3+)</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-book">Kiểm tra phòng</button>

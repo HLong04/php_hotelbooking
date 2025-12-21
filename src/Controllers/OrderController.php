@@ -20,6 +20,8 @@ class OrderController extends Controller
         $this->roomTypeModel = new RoomType();
     }
 
+
+    //star admin check
     private function requireAdmin()
     {
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 1) {
@@ -27,7 +29,6 @@ class OrderController extends Controller
             exit();
         }
     }
-    //oder controller
 
     // 1. Hiển thị danh sách đơn
     public function qlorder()
@@ -57,14 +58,35 @@ class OrderController extends Controller
         $this->requireAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $status = $_POST['status'];
-            $this->bookingModel->updateStatus($id, $status);
+            $newStatus = $_POST['status'];
+            
+            // 1. Lấy thông tin booking hiện tại để biết Room ID là gì
+            $booking = $this->bookingModel->getBookingById($id);
+            
+            if ($booking) {
+                $roomId = $booking['room_id'];
 
-            $_SESSION['flash_message'] = "Cập nhật trạng thái Order #$id thành công!";
+                // 2. Cập nhật trạng thái Booking
+                $this->bookingModel->updateStatus($id, $newStatus);
+
+                // 3. Xử lý đồng bộ trạng thái Phòng (Room)                
+                if ($newStatus == 'confirmed' || $newStatus == 'pending') {
+                    $this->roomModel->updateStatus($roomId, 'booked');
+                    
+                } elseif ($newStatus == 'completed' || $newStatus == 'cancelled') {
+                    $this->roomModel->updateStatus($roomId, 'available');
+                }
+                
+                $_SESSION['flash_message'] = "Cập nhật trạng thái Order #$id và trạng thái phòng thành công!";
+            } else {
+                $_SESSION['flash_message'] = "Không tìm thấy đơn hàng!";
+            }
+
             header("Location: /admin/orders/detail/$id");
             exit();
         }
     }
+
     public function delete($id)
     {
         $this->requireAdmin();
@@ -73,6 +95,8 @@ class OrderController extends Controller
         header('Location: /admin/orders');
         exit();
     }
+    //end admin check
+
 
        
     public function createBooking($roomId)
@@ -137,6 +161,7 @@ class OrderController extends Controller
         header('Location: /rooms');
         exit();
     }
+
 
 
 }

@@ -1,7 +1,7 @@
 <?php ob_start(); ?>
 <section class="room-page-section" style="padding: 140px 0 80px;">
     <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-        
+
         <div style="text-align: center; margin-bottom: 60px;">
             <span style="color: #cda45e; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; font-size: 13px;">Luxury Stay</span>
             <h2 style="font-size: 42px; color: #2c3e50; font-family: 'Playfair Display', serif; margin-top: 10px;">
@@ -9,22 +9,46 @@
             </h2>
             <div style="width: 60px; height: 3px; background: #cda45e; margin: 20px auto;"></div>
         </div>
-<!--
-        
 
 
-chưa code 
- 
+        <div class="filter-container">
+
+            <a href="/rooms" class="cat-card <?= ($currentTypeId == null) ? 'active' : '' ?>">
+                <div class="cat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="cat-info">
+                    <h3>Tất cả</h3>
+                    <p>Xem toàn bộ</p>
+                </div>
+            </a>
+
+            <?php foreach ($roomTypes as $type): ?>
+                <?php
+                $isActive = ($currentTypeId == $type['id']) ? 'active' : '';
+
+                // Logic Icon
+                $iconClass = 'fa-bed';
+                if (stripos($type['name'], 'VIP') !== false) $iconClass = 'fa-crown';
+                if (stripos($type['name'], 'Family') !== false) $iconClass = 'fa-users';
+                if (stripos($type['name'], 'Double') !== false) $iconClass = 'fa-user-group';
+                ?>
+                <a href="/rooms?type_id=<?= $type['id'] ?>" class="cat-card <?= $isActive ?>">
+                    <div class="cat-icon"><i class="fa-solid <?= $iconClass ?>"></i></div>
+                    <div class="cat-info">
+                        <h3><?= $type['name'] ?></h3>
+                        <p>Từ <?= number_format($type['price'] / 1000) ?>k</p>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
 
 
 
--->
         <div style="margin-top: 40px;">
-            
+
             <p style="color: #666; margin-bottom: 20px; font-style: italic;">
-                <?php 
-                    if($currentTypeId) echo "Đang hiển thị các phòng thuộc loại được chọn:"; 
-                    else echo "Hiển thị tất cả các phòng:";
+                <?php
+                if ($currentTypeId) echo "Đang hiển thị các phòng thuộc loại được chọn:";
+                else echo "Hiển thị tất cả các phòng:";
                 ?>
             </p>
 
@@ -32,22 +56,25 @@ chưa code
                 <?php if (!empty($rooms)): ?>
                     <?php foreach ($rooms as $room): ?>
                         <?php
-                            $imgBase = defined('URLROOT') ? URLROOT : ''; 
-                            $rImage = isset($room['image']) ? $room['image'] : '';
-                            $tImage = isset($room['type_image']) ? $room['type_image'] : ''; 
-                            $imageName = !empty($rImage) ? $rImage : (!empty($tImage) ? $tImage : 'default-room.jpg');
-                            $imgSrc = $imgBase . '/img/' . $imageName;
+                        $imgBase = defined('URLROOT') ? URLROOT : '';
+                        $rImage = isset($room['image']) ? $room['image'] : '';
+                        $tImage = isset($room['type_image']) ? $room['type_image'] : '';
+                        $imageName = !empty($rImage) ? $rImage : (!empty($tImage) ? $tImage : 'default-room.jpg');
+                        $imgSrc = $imgBase . '/img/' . $imageName;
 
-                            // 2. Logic Trạng thái
-                            $isAvailable = ($room['status'] == 'available');
-                            $statusClass = $isAvailable ? 'status-available' : 'status-booked';
-                            $statusText = $isAvailable ? 'Trống' : 'Đã đặt';
-                            if($room['status'] == 'maintenance') { $statusClass = 'status-maintenance'; $statusText = 'Bảo trì'; }
+                        // 2. Logic Trạng thái
+                        $isAvailable = ($room['status'] == 'available');
+                        $statusClass = $isAvailable ? 'status-available' : 'status-booked';
+                        $statusText = $isAvailable ? 'Trống' : 'Đã đặt';
+                        if ($room['status'] == 'maintenance') {
+                            $statusClass = 'status-maintenance';
+                            $statusText = 'Bảo trì';
+                        }
 
-                            // 3. Link chi tiết
-                            $detailLink = "/room/detail/" . $room['id'];
+                        // 3. Link chi tiết
+                        $detailLink = "/room/detail/" . $room['id'];
                         ?>
-                        
+
                         <div class="room-card">
                             <a href="<?= $detailLink ?>" class="room-img-wrapper">
                                 <span class="status-badge <?= $statusClass ?>"><?= $statusText ?></span>

@@ -35,28 +35,30 @@ class Room
     // 2. HÀM DÙNG CHO TRANG TÌM KIẾM (SEARCH PAGE)
     // Mục đích: Lấy danh sách PHÒNG CỤ THỂ (101, 102...) còn trống
     // ================================================================
-    public function searchAvailableRoomTypes($checkIn, $checkOut)
+
+    public function searchAvailableRoomTypes($checkIn, $checkOut, $maxGuests)
     {
         $sql = "SELECT r.*, 
                        rt.name as room_type_name, 
                        rt.price, 
                        rt.image, 
-                       rt.description
+                       rt.description, rt.max_adults
                 FROM rooms r
                 JOIN room_types rt ON r.room_type_id = rt.id
-                WHERE r.status = 'available'
+                WHERE r.status = 'available' AND rt.max_adults >= ? 
                 AND r.id NOT IN (
                     SELECT b.room_id 
                     FROM bookings b 
                     WHERE (
                         (b.check_in <= ? AND b.check_out >= ?) 
-                        AND b.status != 'cancelled'
+                        AND b.status != 'cancelled' AND b.status != 'completed'
                     )
                 )
                 ORDER BY r.room_number ASC";
 
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ss", $checkOut, $checkIn);
+        $stmt->bind_param("iss", $maxGuests, $checkOut, $checkIn);
+
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
@@ -138,7 +140,7 @@ class Room
         $row = $result->fetch_assoc();
         return $row['total'];
     }
-    
+
     public function updateStatus($roomId, $status)
     {
         $sql = "UPDATE rooms SET status = ? WHERE id = ?";
