@@ -8,7 +8,7 @@ class Room
 
     public function __construct()
     {
-        $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT);
+        $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         if ($this->mysqli->connect_error) {
             die("Connection failed: " . $this->mysqli->connect_error);
         }
@@ -81,6 +81,21 @@ class Room
         $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    /**
+     * Lấy danh sách các phòng theo ID loại phòng
+     */
+    public function getRoomsByType($roomTypeId)
+    {
+        
+        $roomTypeId = $this->mysqli->real_escape_string($roomTypeId);
+
+        $sql = "SELECT * FROM rooms WHERE room_type_id = '$roomTypeId' ORDER BY room_number ASC";
+        
+        $result = $this->mysqli->query($sql);
+        
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function createRoom($typeId, $number, $status)

@@ -6,7 +6,7 @@ class Booking {
 
     public function __construct() {
         // Kết nối CSDL
-        $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT);
+        $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         $this->mysqli->set_charset("utf8");
 
         // Kiểm tra lỗi kết nối

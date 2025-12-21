@@ -12,8 +12,7 @@ class RoomType
         $username = DB_USER;
         $password = DB_PASSWORD;
         $database = DB_NAME;
-         $port = DB_PORT;
-        $this->connection = new \mysqli($host, $username, $password, $database, $port);
+        $this->connection = new \mysqli($host, $username, $password, $database);
 
         if ($this->connection->connect_error) {
             die("Connection failed: " . $this->connection->connect_error);
@@ -25,11 +24,11 @@ class RoomType
         $result = $this->connection->query("SELECT * FROM room_types");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-
+    
     public function getRoomTypeById($id)
     {
        $sql = "SELECT * FROM room_types WHERE id = ?";
-    $stmt = $this->mysqli->prepare($sql); // Nhớ kết nối db trong construct giống Room
+    $stmt = $this->connection->prepare($sql); // Nhớ kết nối db trong construct giống Room
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();

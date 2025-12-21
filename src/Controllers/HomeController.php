@@ -47,7 +47,7 @@ class HomeController extends Controller {
 
         // 2. Lấy danh sách các phòng cụ thể (101, 102...) thuộc loại này
         $roomList = $this->roomModel->getRoomsByType($id);
-
+        
         // 3. Render view
         // Bạn kiểm tra lại tên file view là 'detail_room' hay 'rooms_by_type' nhé
         // Theo code cũ của bạn là 'user/detail_room'
