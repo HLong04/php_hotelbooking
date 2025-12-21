@@ -41,7 +41,7 @@ class HomeController extends Controller {
     public function roomsByType($id) {
         $roomModel = new Room();
         $roomTypeModel = new RoomType();
-<<<<<<< HEAD
+
         $typeInfo = $roomTypeModel->getRoomTypeById($id);
 
         $roomList = $roomModel->getRoomsByType($id);
@@ -50,7 +50,7 @@ class HomeController extends Controller {
             header("Location: /rooms"); 
             exit;
         }
-=======
+
 
         // 1. Lấy thông tin chi tiết của Loại phòng (Tên, giá, mô tả...)
         $typeInfo = $roomTypeModel->getRoomTypeById($id);
@@ -66,7 +66,6 @@ class HomeController extends Controller {
         }
 
         // 3. Render ra view 'detail_room.php' và truyền dữ liệu
->>>>>>> f7d30a4cf4acf75333336f79a0208d2f8fd8fa06
         $this->render('user/detail_room', [
             'typeInfo' => $typeInfo,
             'roomList' => $roomList

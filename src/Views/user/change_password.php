@@ -3,137 +3,137 @@ ob_start();
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<<<<<<< HEAD
-=======
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
     :root {
-        /* Palette: Cam & Trắng (Clean Business) */
-        --primary-color: #ff6b35;       /* Cam chủ đạo */
-        --primary-hover: #e85d28;
-        --bg-body: #f3f4f6;             /* Nền xám nhạt */
-        --card-bg: #ffffff;             /* Nền thẻ trắng */
+        /* Palette: Vàng Gold & Đen (Luxury Style) */
+        --primary-color: #cda45e;       /* Vàng Gold chủ đạo */
+        --primary-hover: #b08d38;       /* Vàng đậm khi hover */
+        --bg-body: #f4f4f4;             /* Nền xám nhạt */
+        --card-bg: #ffffff;             /* Nền trắng */
         
-        --text-heading: #111827;        /* Chữ đen đậm */
-        --text-body: #4b5563;           /* Chữ nội dung */
-        --text-label: #6b7280;          /* Chữ nhãn mờ */
+        --text-heading: #0c1016;        /* Đen đậm (giống header home) */
+        --text-body: #333;              /* Chữ nội dung */
+        --text-label: #888;             /* Nhãn mờ */
         
-        --border-color: #d1d5db;
-        --input-focus: #ff6b35;
-        --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-        --radius-lg: 20px;
-        --radius-md: 10px;
+        --border-color: #eee;           /* Viền mờ */
+        --input-focus-border: #cda45e;  /* Viền input khi focus */
+        --input-focus-shadow: rgba(205, 164, 94, 0.2);
+        
+        --radius-lg: 8px;               /* Bo góc nhẹ (Luxury) */
+        --radius-md: 4px;
+        --shadow-card: 0 5px 20px rgba(0,0,0,0.05);
+        
+        --font-heading: 'Playfair Display', serif;
+        --font-body: 'Poppins', sans-serif;
     }
 
-    /* Tổng thể trang */
+    /* Tổng thể */
     .pwd-bg {
-        min-height: 85vh;
+        min-height: 100vh; /* Full màn hình */
         background: var(--bg-body);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 40px 20px;
-        font-family: 'Inter', sans-serif;
+        /* Padding top 80px để tránh bị Navbar (fixed) che mất */
+        padding: 80px 20px 40px; 
+        font-family: var(--font-body);
     }
 
-    /* Container chính chia 2 cột */
+    /* Container chính */
     .pwd-wrapper {
         display: flex;
         width: 100%;
         max-width: 900px;
         background: var(--card-bg);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-soft);
+        box-shadow: var(--shadow-card);
         overflow: hidden;
-        border: 1px solid white;
+        border: 1px solid var(--border-color);
     }
 
-    /* === CỘT TRÁI: VISUAL === */
+    /* === SIDEBAR (Trái) === */
     .pwd-sidebar {
-        flex: 0 0 35%; /* Chiếm 35% chiều rộng */
-        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+        flex: 0 0 35%;
+        /* Gradient vàng nhạt sang trắng */
+        background: linear-gradient(135deg, #fffbf2 0%, #fff 100%);
         padding: 50px 30px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
-        border-right: 1px solid #f3f4f6;
+        border-right: 1px solid var(--border-color);
     }
 
-    .sidebar-icon {
-        width: 90px;
-        height: 90px;
+    .pwd-icon-box {
+        width: 80px;
+        height: 80px;
         background: white;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 36px;
+        font-size: 32px;
         color: var(--primary-color);
-        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
+        box-shadow: 0 8px 20px rgba(205, 164, 94, 0.2);
         margin-bottom: 25px;
-        border: 4px solid #fff;
+        border: 1px solid var(--border-color);
     }
 
     .pwd-sidebar h2 {
-        font-size: 22px;
-        font-weight: 700;
+        font-family: var(--font-heading);
         color: var(--text-heading);
-        margin: 0 0 10px;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
     }
 
     .pwd-sidebar p {
-        font-size: 14px;
         color: var(--text-label);
+        font-size: 14px;
         line-height: 1.6;
-        margin: 0;
-        max-width: 240px;
     }
 
-    /* === CỘT PHẢI: FORM === */
+    /* === MAIN CONTENT (Phải) === */
     .pwd-main {
         flex: 1;
         padding: 50px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
     }
 
-    /* Alerts */
-    .alert {
-        padding: 14px 16px;
+    /* Thông báo lỗi/thành công */
+    .alert-box {
+        padding: 12px 16px;
         border-radius: var(--radius-md);
         font-size: 14px;
-        font-weight: 500;
         margin-bottom: 25px;
         display: flex;
         align-items: center;
         gap: 10px;
     }
-
-    .alert-danger {
-        background: #fef2f2;
-        color: #ef4444;
-        border: 1px solid #fecaca;
+    .alert-error {
+        background: #fff5f5;
+        border: 1px solid #fed7d7;
+        color: #c53030;
     }
-
     .alert-success {
-        background: #ecfdf5;
-        color: #10b981;
-        border: 1px solid #d1fae5;
+        background: #f0fff4;
+        border: 1px solid #c6f6d5;
+        color: #2f855a;
     }
 
-    /* Form Styles */
+    /* Form Styling */
     .form-group {
         margin-bottom: 24px;
     }
 
     .form-group label {
         display: block;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         color: var(--text-heading);
         margin-bottom: 8px;
     }
@@ -152,127 +152,132 @@ ob_start();
         transition: 0.3s;
     }
 
-    .pwd-main input {
+    .input-wrapper input {
         width: 100%;
         padding: 14px 14px 14px 45px;
-        background: #ffffff;
+        background: #fff;
         border: 1px solid var(--border-color);
         border-radius: var(--radius-md);
-        color: var(--text-heading);
-        font-family: 'Inter', sans-serif;
+        color: var(--text-body);
+        font-family: var(--font-body);
         font-size: 15px;
         outline: none;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
     }
 
-    .pwd-main input:focus {
-        border-color: var(--input-focus);
-        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.15);
+    .input-wrapper input:focus {
+        border-color: var(--input-focus-border);
+        box-shadow: 0 0 0 4px var(--input-focus-shadow);
     }
 
-    .pwd-main input:focus + i {
+    .input-wrapper input:focus + i {
         color: var(--primary-color);
     }
 
-    .pwd-main input::placeholder {
-        color: #9ca3af;
-        letter-spacing: 2px; /* Dấu chấm password đẹp hơn */
-    }
-
-    /* Actions */
+    /* Buttons */
     .pwd-actions {
         display: flex;
         gap: 15px;
-        margin-top: 10px;
+        margin-top: 35px;
         padding-top: 25px;
-        border-top: 1px solid #f3f4f6;
+        border-top: 1px solid var(--border-color);
     }
 
     .btn-submit {
         flex: 2;
+        padding: 14px;
+        background: var(--primary-color);
+        color: white;
+        border: 1px solid var(--primary-color);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 8px;
-        padding: 14px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        font-size: 15px;
-        cursor: pointer;
-        transition: all 0.2s;
     }
 
     .btn-submit:hover {
         background: var(--primary-hover);
+        border-color: var(--primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+        box-shadow: 0 5px 15px rgba(205, 164, 94, 0.4);
     }
 
     .btn-back {
         flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         padding: 14px;
-        background: white;
+        background: transparent;
         color: var(--text-body);
         text-decoration: none;
         border: 1px solid var(--border-color);
         border-radius: var(--radius-md);
         font-weight: 600;
-        font-size: 15px;
-        transition: all 0.2s;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 14px;
+        transition: all 0.3s;
     }
 
     .btn-back:hover {
-        background: #f9fafb;
-        color: var(--text-heading);
-        border-color: #9ca3af;
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        background: white;
     }
 
-    /* Responsive Mobile */
+    /* Responsive */
     @media (max-width: 768px) {
-        .pwd-wrapper { flex-direction: column; }
-        .pwd-sidebar { 
-            padding: 30px; 
-            border-right: none; 
-            border-bottom: 1px solid #f3f4f6;
-            flex: none;
+        .pwd-wrapper {
+            flex-direction: column;
         }
-        .pwd-main { padding: 30px; }
+        .pwd-sidebar {
+            flex: none;
+            padding: 40px 20px;
+            border-right: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .pwd-main {
+            padding: 30px 20px;
+        }
+        .pwd-actions {
+            flex-direction: column;
+        }
     }
 </style>
->>>>>>> e82787de6dc01637d1bf70fb236eabc569091812
 
 <div class="pwd-bg">
     <div class="pwd-wrapper">
         
         <div class="pwd-sidebar">
-            <div class="sidebar-icon">
+            <div class="pwd-icon-box">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <h2>Bảo mật tài khoản</h2>
-            <p>Để bảo vệ tài khoản, vui lòng không chia sẻ mật khẩu của bạn cho bất kỳ ai.</p>
+            <h2>Bảo mật</h2>
+            <p>Đặt mật khẩu mạnh để bảo vệ tài khoản của bạn an toàn hơn.</p>
         </div>
 
         <div class="pwd-main">
             
             <?php if (!empty($error)): ?>
-                <div class="alert alert-danger">
-                    <i class="fa-solid fa-triangle-exclamation"></i> <?= $error ?>
+                <div class="alert-box alert-error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span><?= $error ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($success)): ?>
-                <div class="alert alert-success">
-                    <i class="fa-solid fa-circle-check"></i> <?= $success ?>
+                <div class="alert-box alert-success">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><?= $success ?></span>
                 </div>
             <?php endif; ?>
 
-            <form method="POST">
+            <form method="post">
                 <div class="form-group">
                     <label>Mật khẩu hiện tại</label>
                     <div class="input-wrapper">
@@ -290,7 +295,7 @@ ob_start();
                 </div>
 
                 <div class="form-group">
-                    <label>Xác nhận mật khẩu</label>
+                    <label>Xác nhận mật khẩu mới</label>
                     <div class="input-wrapper">
                         <input type="password" name="confirm_password" required placeholder="••••••••">
                         <i class="fa-solid fa-check-double"></i>
