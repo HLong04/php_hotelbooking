@@ -37,22 +37,25 @@ class RoomController extends Controller
         // 1. Lấy dữ liệu từ URL
         $checkIn = $_GET['checkin'] ?? null;
         $checkOut = $_GET['checkout'] ?? null;
+        $maxAdults = $_GET['guests'] ?? null;
         
         // 2. Kiểm tra nếu thiếu ngày thì về trang chủ
         if (!$checkIn || !$checkOut) {
             header('Location: /');
             exit();
         }
-
+        $typeroom = $this->roomTypeModel->getAllRoomTypes();
         // 3. Gọi Model để tìm các LOẠI PHÒNG còn trống
         // Hàm searchAvailableRoomTypes phải được khai báo trong Model/Room.php
-        $availableRooms = $this->roomModel->searchAvailableRoomTypes($checkIn, $checkOut);
+        $availableRooms = $this->roomModel->searchAvailableRoomTypes($checkIn, $checkOut, $maxAdults);
 
         // 4. Render view kết quả
         $this->render('user/search_results', [
             'rooms' => $availableRooms,
             'checkIn' => $checkIn,
-            'checkOut' => $checkOut
+            'checkOut' => $checkOut,
+            'maxAdults' => $maxAdults,
+            'typeroom' => $typeroom
         ]);
     }
 
