@@ -62,8 +62,14 @@ class HomeController extends Controller {
      * Route: /rooms
      */
     public function listRoom() {
-        $rooms = $this->roomModel->getAllRooms();
-        $this->render('user/list', ['rooms' => $rooms]); 
+      // [QUAN TRỌNG] Đổi sang dùng Model Room (thay vì RoomType)
+        $roomModel = new \App\Model\Room();
+        
+        // Gọi hàm vừa viết để lấy danh sách chi tiết (101, 102...)
+        $rooms = $roomModel->getAllRoomsWithDetails(); 
+
+        // Render ra view
+        $this->render('user/list', ['rooms' => $rooms]);
     }
 
     /**
