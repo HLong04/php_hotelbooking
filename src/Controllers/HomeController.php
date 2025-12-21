@@ -22,11 +22,8 @@ class HomeController extends Controller {
      * Route: /
      */
     public function index() {
-        // [CẬP NHẬT] Dùng hàm getFeaturedRooms từ Room.php (vừa thêm ở bước trước)
-        // Để lấy đúng 4 loại phòng hiển thị ra trang chủ
-        $featuredRooms = $this->roomModel->getFeaturedRooms(4); 
-        
-        // Truyền biến 'roomTypes' để khớp với view home của bạn
+        $featuredRooms = $this->roomModel->getFeaturedRooms(10); 
+
         $this->render('user/home', ['roomTypes' => $featuredRooms]); 
     }
 

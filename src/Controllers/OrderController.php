@@ -36,7 +36,6 @@ class OrderController extends Controller {
             header('Location: /admin/orders');
             exit();
         }
-
         $this->render('admin/orders/detail', ['order' => $order]);
     }
 

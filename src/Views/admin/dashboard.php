@@ -190,7 +190,7 @@
             <div class="card-body">
                 <div style="display: flex; flex-direction: column; gap: 15px;">
                     
-                    <a href="/admin/rooms/add" style="display: flex; align-items: center; gap: 10px; padding: 15px; background: #f8f9fa; border-radius: 8px; color: #333; transition: 0.3s;">
+                    <a href="/admin/rooms/create" style="display: flex; align-items: center; gap: 10px; padding: 15px; background: #f8f9fa; border-radius: 8px; color: #333; transition: 0.3s;">
                         <div style="width: 40px; height: 40px; background: #3498db; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
                             <i class="fa-solid fa-plus"></i>
                         </div>

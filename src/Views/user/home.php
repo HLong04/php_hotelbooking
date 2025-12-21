@@ -53,11 +53,11 @@ ob_start();
     <h2 class="section-title">CÁC HẠNG PHÒNG NỔI BẬT</h2> <div class="room-grid">
         <?php if (!empty($roomTypes)): ?>
             <?php
-            $limit = 4;
-            $count = 0;
+            // $limit = 4;
+            // $count = 0;
             foreach ($roomTypes as $type):
-                if ($count >= $limit) break;
-                $count++;
+                // if ($count >= $limit) break;
+                // $count++;
 
                 $imgSrc = !empty($type['image']) ? URLROOT . '/img/' . $type['image'] : 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60';
             ?>
@@ -97,10 +97,6 @@ ob_start();
         <?php endif; ?>
     </div>
 
-
-    <div style="text-align: center; margin-top: 40px;">
-        <a href="/rooms" style="color: #2c3e50; font-weight: bold; text-decoration: underline;">Xem tất cả &rarr;</a>
-    </div>
 </section>
 
 <?php

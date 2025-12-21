@@ -19,7 +19,7 @@ class Room
     // 1. HÀM DÙNG CHO TRANG CHỦ (HOME PAGE)
     // Mục đích: Chỉ lấy danh sách LOẠI PHÒNG (Standard, VIP...)
     // ================================================================
-    public function getFeaturedRooms($limit = 4)
+    public function getFeaturedRooms($limit = 10)
     {
         // Query này lấy từ bảng room_types (Loại phòng) chứ không phải bảng rooms (Phòng lẻ)
         // Đảm bảo trang chủ luôn hiện 4 ô gọn gàng
@@ -120,5 +120,13 @@ class Room
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("i", $id);
         return $stmt->execute();
+    }
+
+       public function countRooms()
+    {
+        $sql = "SELECT COUNT(*) as total FROM rooms";
+        $result = $this->mysqli->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['total'];
     }
 }
