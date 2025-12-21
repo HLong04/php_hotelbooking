@@ -73,6 +73,11 @@ ob_start();
                             <?= number_format($type['price']) ?> VNĐ / đêm
                         </div>
                         
+                        <div style="font-size: 14px; color: #555; margin-bottom: 10px;">
+                            <i class="fa-solid fa-users" style="color: var(--primary);"></i>
+                            <strong><?= $type['max_adults'] ?></strong> người lớn
+                        </div>
+
                         <p style="font-size: 14px; color: #666; margin-bottom: 10px;">
                            <?= substr($type['description'], 0, 100) ?>...
                         </p>
