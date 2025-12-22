@@ -18,6 +18,7 @@ class HomeController extends Controller
         $this->roomModel = new Room();
         $this->roomTypeModel = new RoomType();
     }
+
     public function services()
     {
         $this->render('user/services', []);
@@ -28,7 +29,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $featuredRooms = $this->roomModel->getFeaturedRooms(10);
+        $featuredRooms = $this->roomModel->getFeaturedRooms(5);
 
         $this->render('user/home', ['roomTypes' => $featuredRooms]);
     }

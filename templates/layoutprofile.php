@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LuxStay - Trải nghiệm nghỉ dưỡng đẳng cấp</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="/templates/css/tooplate-bistro-elegance.css">
     <link rel="stylesheet" href="/templates/css/profile.css">
+    <link rel="stylesheet" href="/templates/css/cssboooking.css">
 
 </head>
 
@@ -22,19 +23,19 @@
                 <i class="fa-solid fa-hotel" style="color: var(--primary);"></i>
                 LUX<span>STAY</span>
             </a>
-            
+
             <ul class="nav-links">
                 <li><a href="/" class="active">Trang chủ</a></li>
                 <li><a href="/rooms">Phòng & Suites</a></li>
                 <li><a href="/services">Dịch vụ</a></li>
-                
+
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="dropdown">
                         <a href="#" style="color: var(--primary); font-weight: 600;">
-                            <i class="fa-regular fa-user-circle"></i> 
+                            <i class="fa-regular fa-user-circle"></i>
                             <?= htmlspecialchars($_SESSION['user_name']) ?> <i class="fa-solid fa-caret-down"></i>
                         </a>
-                        
+
                         <ul class="dropdown-menu">
                             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1): ?>
                                 <li><a href="/adminhome"><i class="fa-solid fa-gauge"></i> Quản trị viên</a></li>
@@ -53,14 +54,14 @@
     </nav>
 
     <main class="main-content">
-        <?php 
-            if(isset($content)) {
-                echo $content; 
-            } else {
-                // Nội dung mẫu nếu biến $content chưa có
-                echo "<h2 style='text-align:center; font-family: var(--font-heading); margin-bottom:20px;'>Các phòng nổi bật</h2>";
-                echo "<p style='text-align:center;'>Vui lòng tải nội dung view vào biến \$content.</p>";
-            }
+        <?php
+        if (isset($content)) {
+            echo $content;
+        } else {
+            // Nội dung mẫu nếu biến $content chưa có
+            echo "<h2 style='text-align:center; font-family: var(--font-heading); margin-bottom:20px;'>Các phòng nổi bật</h2>";
+            echo "<p style='text-align:center;'>Vui lòng tải nội dung view vào biến \$content.</p>";
+        }
         ?>
     </main>
 
@@ -91,7 +92,7 @@
 
     <script>
         // Hiệu ứng dính navbar khi cuộn (Optional)
-        window.addEventListener("scroll", function(){
+        window.addEventListener("scroll", function() {
             var nav = document.querySelector("nav");
             nav.classList.toggle("sticky", window.scrollY > 0);
         })

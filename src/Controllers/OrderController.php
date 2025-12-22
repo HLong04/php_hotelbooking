@@ -150,7 +150,7 @@ class OrderController extends Controller
 
         // 3️⃣ Thông báo + redirect
         $_SESSION['flash_message'] = "🎉 Đặt phòng thành công!";
-        header('Location: /rooms');
+        header('Location: /myorders');
         exit();
     }
 

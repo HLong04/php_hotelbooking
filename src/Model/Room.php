@@ -19,10 +19,8 @@ class Room
     // 1. HÀM DÙNG CHO TRANG CHỦ (HOME PAGE)
     // Mục đích: Chỉ lấy danh sách LOẠI PHÒNG (Standard, VIP...)
     // ================================================================
-    public function getFeaturedRooms($limit = 10)
+    public function getFeaturedRooms($limit =10)
     {
-        // Query này lấy từ bảng room_types (Loại phòng) chứ không phải bảng rooms (Phòng lẻ)
-        // Đảm bảo trang chủ luôn hiện 4 ô gọn gàng
         $sql = "SELECT * FROM room_types ORDER BY price ASC LIMIT ?";
 
         $stmt = $this->mysqli->prepare($sql);
