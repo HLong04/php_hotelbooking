@@ -62,11 +62,11 @@
             <form action="/search" method="GET" style="display: flex; width: 100%; gap: 20px; align-items: flex-end;">
                 <div class="form-group">
                     <label>Ngày nhận phòng</label>
-                    <input type="date" name="checkin" required>
+                    <input type="date" name="checkin" min="<?= date('Y-m-d') ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Ngày trả phòng</label>
-                    <input type="date" name="checkout" required>
+                    <input type="date" name="checkout" min="<?= date('Y-m-d') ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Khách</label>

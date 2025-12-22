@@ -42,76 +42,103 @@
         </div>
 
 
+        <!-- Sử dụng hotel-container-fluid thay vì div thông thường -->
+        <div class="hotel-container-fluid" style="margin-top: 40px;">
 
-        <div style="margin-top: 40px;">
+            <?php if (!empty($rooms)): ?>
+                <p style="text-align: center; color: #666; margin-bottom: 30px;">
+                    Hiển thị <strong><?= count($rooms) ?></strong> phòng phù hợp nhất
+                </p>
+            <?php endif; ?>
 
-            <p style="color: #666; margin-bottom: 20px; font-style: italic;">
-                <?php
-                if ($currentTypeId) echo "Đang hiển thị các phòng thuộc loại được chọn:";
-                else echo "Hiển thị tất cả các phòng:";
-                ?>
-            </p>
+            <div class="hotel-grid-container">
 
-            <div class="room-grid">
-                <?php if (!empty($rooms)): ?>
+                <?php if (empty($rooms)): ?>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px; background: #fff; border-radius: 8px;">
+                        <i class="fa-solid fa-hotel" style="font-size: 40px; color: #ddd; margin-bottom: 20px;"></i>
+                        <p style="color: #666;">Chưa có dữ liệu phòng nào.</p>
+                    </div>
+                <?php else: ?>
+
                     <?php foreach ($rooms as $room): ?>
                         <?php
+                        // 1. Xử lý Logic
+                        $isAvailable = ($room['status'] == 'available' || $room['status'] == 'Available');
+
+                        // Lấy số người từ DB (nếu null thì mặc định 2)
+                        $maxAdults = isset($room['max_adults']) ? $room['max_adults'] : 2;
+
+                        // Link chi tiết - có thể dùng /room/detail hoặc /booking/create
+                        $detailLink = "/room/detail/" . $room['id'];
+                        
+                        // Xử lý image
                         $imgBase = defined('URLROOT') ? URLROOT : '';
                         $rImage = isset($room['image']) ? $room['image'] : '';
                         $tImage = isset($room['type_image']) ? $room['type_image'] : '';
-                        $imageName = !empty($rImage) ? $rImage : (!empty($tImage) ? $tImage : 'default-room.jpg');
-                        $imgSrc = $imgBase . '/img/' . $imageName;
-
-                        // 2. Logic Trạng thái
-                        $isAvailable = ($room['status'] == 'available');
-                        $statusClass = $isAvailable ? 'status-available' : 'status-booked';
-                        $statusText = $isAvailable ? 'Trống' : 'Đã đặt';
-                        if ($room['status'] == 'maintenance') {
-                            $statusClass = 'status-maintenance';
-                            $statusText = 'Bảo trì';
-                        }
-
-                        // 3. Link chi tiết
-                        $detailLink = "/room/detail/" . $room['id'];
+                        $imageName = !empty($rImage) ? $rImage : (!empty($tImage) ? $tImage : 'default.jpg');
                         ?>
 
-                        <div class="room-card">
-                            <a href="<?= $detailLink ?>" class="room-img-wrapper">
-                                <span class="status-badge <?= $statusClass ?>"><?= $statusText ?></span>
-                                <img src="<?= $imgSrc ?>" alt="Room" onerror="this.src='https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60'">
-                            </a>
+                        <div class="hotel-card-item">
+                            <div class="hotel-img-wrap">
+                                <span class="badge-room">P.<?= $room['room_number'] ?></span>
 
-                            <div class="room-info">
-                                <div class="room-header">
-                                    <span class="room-number">P.<?= $room['room_number'] ?></span>
-                                    <span class="room-type-label"><?= isset($room['room_type_name']) ? $room['room_type_name'] : 'Standard' ?></span>
-                                </div>
+                                <?php if ($isAvailable): ?>
+                                    <span class="badge-status status-ok">Trống</span>
+                                <?php else: ?>
+                                    <span class="badge-status status-busy">Đã đặt</span>
+                                <?php endif; ?>
 
-                                <div class="room-price">
-                                    <?= number_format(isset($room['price']) ? $room['price'] : 0, 0, ',', '.') ?> <small style="font-size: 14px; color: #888; font-weight: 400;">/ đêm</small>
-                                </div>
-
-                                <div class="room-features">
-                                    <span><i class="fa-solid fa-wifi"></i> Wifi</span>
-                                    <span><i class="fa-solid fa-tv"></i> TV</span>
-                                    <span><i class="fa-solid fa-wind"></i> AC</span>
-                                </div>
-
-                                <a href="<?= $detailLink ?>" class="btn-book-now">
-                                    <?= $isAvailable ? 'Xem chi tiết & Đặt' : 'Xem thông tin' ?>
+                                <a href="<?= $detailLink ?>">
+                                    <img src="/img/<?= htmlspecialchars($imageName) ?>"
+                                        onerror="this.src='https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=500&q=60'"
+                                        alt="Room">
                                 </a>
                             </div>
-                        </div>
 
+                            <div class="hotel-content">
+                                <div class="small-type">
+                                    <?= isset($room['room_type_name']) ? $room['room_type_name'] : 'Standard' ?>
+                                </div>
+
+                                <h3 class="hotel-title">
+                                    <a href="<?= $detailLink ?>" style="color: inherit; text-decoration: none;">
+                                        Phòng <?= htmlspecialchars($room['room_number']) ?>
+                                    </a>
+                                </h3>
+
+                                <div class="hotel-meta">
+                                    <div class="meta-item">
+                                        <i class="fa-solid fa-user-group"></i>
+                                        <span><b><?= $maxAdults ?></b> Khách</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fa-solid fa-maximize"></i>
+                                        <span>35m²</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fa-solid fa-wifi"></i>
+                                        <span>Free</span>
+                                    </div>
+                                </div>
+
+                                <div class="hotel-price-row">
+                                    <span class="price-label">Giá mỗi đêm:</span>
+                                    <span class="price-value"><?= number_format(isset($room['price']) ? $room['price'] : 0) ?> đ</span>
+                                </div>
+
+                                <?php if ($isAvailable): ?>
+                                    <a href="<?= $detailLink ?>" class="btn-action btn-gold">
+                                        Xem & Đặt Phòng
+                                    </a>
+                                <?php else: ?>
+                                    <button class="btn-action btn-disabled" disabled>HẾT PHÒNG</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px; background: #f9f9f9; border-radius: 12px; border: 2px dashed #ddd;">
-                        <i class="fa-solid fa-folder-open" style="font-size: 50px; color: #ccc; margin-bottom: 20px;"></i>
-                        <h3 style="color: #666; margin-bottom: 10px;">Không tìm thấy phòng nào</h3>
-                        <p style="color: #999;">Vui lòng chọn loại phòng khác hoặc quay lại sau.</p>
-                        <a href="/rooms" style="display: inline-block; margin-top: 20px; color: #cda45e; font-weight: bold;">Xóa bộ lọc</a>
-                    </div>
+
                 <?php endif; ?>
+
             </div>
         </div>
 
