@@ -15,6 +15,7 @@ class AdminController extends Controller
     private $bookingModel;
     private $roomTypeModel;
 
+
     public function __construct()
     {
         $this->userModel = new User();
@@ -36,6 +37,7 @@ class AdminController extends Controller
         $countRoomTypes = $this->roomTypeModel->countRoomTypes(); 
         $revenue    = $this->bookingModel->getTotalRevenue();
         $recent_orders = $this->bookingModel->getRecentOrders(5);
+        $countPendingBookings = $this->bookingModel->countBookingByPending();
 
         // 2. Truyền dữ liệu sang View
         $data = [
@@ -43,7 +45,8 @@ class AdminController extends Controller
             'so_room' => $countRooms,
             'so_room_type' => $countRoomTypes,
             'tong_tien' => $revenue,
-            'recent_orders' => $recent_orders
+            'recent_orders' => $recent_orders,
+            'pending_bookings' => $countPendingBookings
         ];
 
         $this->render('admin/dashboard', $data);

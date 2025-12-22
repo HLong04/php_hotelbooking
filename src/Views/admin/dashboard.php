@@ -129,7 +129,7 @@
 
         <div class="card-single card-4">
             <div class="card-info">
-                <h1><?= $pending_count ?? 0 ?></h1>
+                <h1><?= $pending_bookings ?? 0 ?></h1>
                 <span>Đơn chờ duyệt</span>
             </div>
             <div class="card-icon">

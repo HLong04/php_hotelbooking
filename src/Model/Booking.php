@@ -9,10 +9,16 @@ class Booking {
         $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         $this->mysqli->set_charset("utf8");
 
-        // Kiểm tra lỗi kết nối
         if ($this->mysqli->connect_error) {
             die("Connection failed: " . $this->mysqli->connect_error);
         }
+    }
+    public function countBookingByPending()
+    {
+        $sql = "SELECT COUNT(*) as total FROM bookings WHERE status = 'pending'";
+        $result = $this->mysqli->query($sql);
+        $row = $result->fetch_assoc();
+        return $row['total'];
     }
 
     // 1. Lấy tất cả đơn hàng (Đã thêm JOIN room_types)

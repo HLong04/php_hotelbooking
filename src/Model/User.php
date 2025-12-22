@@ -26,6 +26,7 @@ class User
         $result = $this->connection->query("SELECT * FROM users ORDER BY created_at DESC");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
     public function getProfileById($id)
     {
         $id = (int)$id;
@@ -56,6 +57,7 @@ class User
         $result = $this->connection->query($sql);
         return $result->num_rows > 0;
     }
+    
     public function updatePassword($id, $password)
     {
         $stmt = $this->connection->prepare(
