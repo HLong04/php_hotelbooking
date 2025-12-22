@@ -67,7 +67,7 @@
                     </div>
 
                     <div class="btn-group-booking">
-                        <a href="/myorders" class="btn-cancel">HỦY BỎ</a>
+                        <a href="javascript:history.back()" class="btn-cancel">HỦY BỎ</a>
                         <button type="submit" class="btn-confirm">
                             <i class="fa-solid fa-check-circle"></i> XÁC NHẬN ĐẶT
                         </button>
