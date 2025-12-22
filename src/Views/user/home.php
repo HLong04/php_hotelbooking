@@ -12,7 +12,6 @@ ob_start();
             <?php else: ?>
                 <a href="/login" class="btn-intro">ĐĂNG NHẬP ĐỂ ĐẶT PHÒNG</a>
             <?php endif; ?>
-            <!-- <a href="#booking" class="">ĐẶT PHÒNG NGAY</a> -->
         </div>
 
         <div class="features-grid">

@@ -53,7 +53,8 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label-custom">Ngày trả phòng</label>
-                            <input type="date" name="check_out" id="check_out" class="input-custom" required>
+                            <input type="date" name="check_out" id="check_out" class="input-custom"
+                                    min="<?= date('Y-m-d') ?>" required>
                         </div>
                     </div>
 
