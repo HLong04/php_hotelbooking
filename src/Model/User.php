@@ -109,7 +109,7 @@ class User
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO users (full_name, email, password, phone, role) 
-                VALUES ('$fullName', '$email', '$password', '$phone', 0)";
+                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', 0)";
 
         return $this->connection->query($sql);
     }

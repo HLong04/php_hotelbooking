@@ -33,8 +33,29 @@ class OrderController extends Controller
     public function qlorder()
     {
         $this->requireAdmin();
-        $orders = $this->bookingModel->getAllBookings();
-        $this->render('admin/orders/qlorder', ['orders' => $orders]);
+
+        // $orders = $this->bookingModel->getAllBookings();
+        
+        $keyword = $_GET['keyword'] ?? '';
+        $room    = $_GET['room'] ?? '';
+        $price   = $_GET['price'] ?? '';
+        $status  = $_GET['status'] ?? '';
+
+        // Gọi Model
+        if ($keyword || $room || $price || $status) {
+            $orders = $this->bookingModel->searchBookingsAdvanced($keyword, $room, $price, $status);
+        } else {
+            $orders = $this->bookingModel->getAllBookings();
+        }
+
+        $data = [
+            'orders'  => $orders,
+            'keyword' => $keyword,
+            'room'    => $room,
+            'price'   => $price,
+            'status'  => $status
+        ];
+        $this->render('admin/orders/qlorder', $data);
     }
 
     // 2. Xem chi tiết đơn (Và form đổi trạng thái nằm ở đây luôn)
