@@ -147,6 +147,14 @@
                 <a href="/admin/orders" style="text-decoration: none; color: #666; display: flex; align-items: center; gap: 5px; transition: 0.3s;">
                     <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
                 </a>
+                <?php if ($order['status'] == 'completed'): ?>
+    
+    <a href="/admin/orders/invoice/<?= $order['id'] ?>" target="_blank" 
+       style="background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+       <i class="fa-solid fa-print"></i> In Hóa Đơn
+    </a>
+
+<?php endif; ?>
             </div>
         </div>
     </div>

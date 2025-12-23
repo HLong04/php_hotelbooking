@@ -115,6 +115,32 @@ class OrderController extends Controller
         header('Location: /admin/orders');
         exit();
     }
+    public function printInvoice($id)
+    {
+        $this->requireAdmin();
+        
+        // 1. Lấy thông tin đơn hàng từ DB (để in tên khách, phòng...)
+        $order = $this->bookingModel->getBookingById($id);
+        
+        if (!$order) {
+            die("Đơn hàng không tồn tại");
+        }
+
+        // 2. TẠO DỮ LIỆU HÓA ĐƠN "ẢO" (Không lưu vào DB)
+        // Tự động sinh mã hóa đơn theo quy tắc: INV + NămThángNgày + ID Đơn (Ví dụ: INV-20231225-10)
+        $invoiceData = [
+            'invoice_code' => 'INV-' . date('Ymd') . '-' . $id, 
+            'created_at'   => date('Y-m-d H:i:s'), // Lấy thời gian hiện tại
+            'total_amount' => $order['total_price']
+        ];
+
+        // 3. Truyền dữ liệu sang View để in
+        // View vẫn nhận biến $invoice nhưng giờ nó là mảng mình vừa tạo ở trên
+        $this->render('admin/orders/invoice', [
+            'order' => $order, 
+            'invoice' => $invoiceData
+        ]);
+    }
     //end admin check
 
 
