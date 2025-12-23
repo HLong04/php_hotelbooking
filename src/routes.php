@@ -80,3 +80,4 @@ $router->addRoute('#^/admin/orders/?$#', [$orderCtrl, 'qlorder']);
 $router->addRoute('#^/admin/orders/detail/(\d+)$#', [$orderCtrl, 'show']);
 $router->addRoute('#^/admin/orders/status/(\d+)$#', [$orderCtrl, 'updateStatus']);
 $router->addRoute('#^/admin/orders/delete/(\d+)$#', [$orderCtrl, 'delete']);
+$router->addRoute('#^/admin/orders/invoice/(\d+)$#', [$orderCtrl, 'printInvoice']);
