@@ -4,7 +4,8 @@
     /* 1. BUTTON STYLE: Nút in hóa đơn đẹp */
     .btn-print {
         background-color: #ffffff;
-        color: #2c3e50; /* Màu xanh đen */
+        color: #2c3e50;
+        /* Màu xanh đen */
         border: 1px solid #2c3e50;
         padding: 8px 16px;
         border-radius: 4px;
@@ -14,7 +15,8 @@
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
-        gap: 8px; /* Khoảng cách giữa icon và chữ */
+        gap: 8px;
+        /* Khoảng cách giữa icon và chữ */
         text-decoration: none;
     }
 
@@ -31,13 +33,20 @@
 
     /* 2. MEDIA PRINT: Cấu hình khi nhấn In */
     @media print {
+
         /* Ẩn các thành phần không cần thiết */
-        .sidebar, header, footer, .btn-print, .card-status, .btn-back {
+        .sidebar,
+        header,
+        footer,
+        .btn-print,
+        .card-status,
+        .btn-back {
             display: none !important;
         }
 
         /* Canh chỉnh lại khổ giấy */
-        body, .main-content {
+        body,
+        .main-content {
             background: #fff !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -49,7 +58,7 @@
             flex: 1 !important;
             width: 100% !important;
         }
-        
+
         /* Ẩn cột bên phải (trạng thái) để hóa đơn bung full giấy */
         .layout-container {
             display: block !important;
@@ -60,13 +69,15 @@
 <div class="layout-container" style="display: flex; gap: 20px; align-items: flex-start;">
 
     <div class="card card-invoice" style="flex: 2;">
-        
+
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="margin: 0;">Chi tiết đơn hàng #<?= $order['id'] ?></h3>
-            
-            <button class="btn-print" onclick="window.print()">
-                <i class="fas fa-print"></i> In Hóa Đơn
-            </button>
+
+            <a href="/admin/orders/invoice/<?= $order['id'] ?>" target="_blank"
+                style="background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
+                <i class="fa-solid fa-print"></i> In Hóa Đơn
+            </a>
+
         </div>
 
         <div class="card-body">
@@ -92,7 +103,7 @@
                     <?= number_format($order['total_price']) ?> VNĐ
                 </span>
             </div>
-            
+
             <div style="margin-top: 50px; display: none; justify-content: space-between;" class="print-show-flex">
                 <div style="text-align: center;">
                     <p><strong>Khách hàng</strong></p>
@@ -113,7 +124,8 @@
         <div class="card-body">
             <?php if (isset($_SESSION['flash_message'])): ?>
                 <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
-                    <?= $_SESSION['flash_message']; unset($_SESSION['flash_message']); ?>
+                    <?= $_SESSION['flash_message'];
+                    unset($_SESSION['flash_message']); ?>
                 </div>
             <?php endif; ?>
 
@@ -148,13 +160,9 @@
                     <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
                 </a>
                 <?php if ($order['status'] == 'completed'): ?>
-    
-    <a href="/admin/orders/invoice/<?= $order['id'] ?>" target="_blank" 
-       style="background: #e67e22; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
-       <i class="fa-solid fa-print"></i> In Hóa Đơn
-    </a>
 
-<?php endif; ?>
+
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -162,9 +170,19 @@
 
 <style>
     @media print {
-        .print-show { display: block !important; }
-        .print-show-flex { display: flex !important; }
-        .card-header button { display: none !important; } /* Ẩn nút in khi đang in */
+        .print-show {
+            display: block !important;
+        }
+
+        .print-show-flex {
+            display: flex !important;
+        }
+
+        .card-header button {
+            display: none !important;
+        }
+
+        /* Ẩn nút in khi đang in */
     }
 </style>
 
