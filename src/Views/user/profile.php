@@ -1,5 +1,16 @@
 <?php 
+// Bắt đầu bộ nhớ đệm output
 ob_start(); 
+
+// Đảm bảo biến $rankInfo tồn tại (phòng trường hợp Controller chưa truyền qua)
+// Mặc định giá trị để không bị lỗi nếu chạy độc lập
+$rankData = $rankInfo ?? [
+    'current_rank' => 'Standard',
+    'next_rank' => 'VIP',
+    'needed' => '0',
+    'total_spent' => '0',
+    'percent' => 0
+];
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -7,29 +18,30 @@ ob_start();
 
 <style>
     /* =========================================
-       SỬ DỤNG BIẾN TỪ STYLE.CSS CỦA HOME
+       CORE VARIABLES & RESET
        ========================================= */
     :root {
         --primary: #cda45e;       /* Vàng Gold chủ đạo */
         --primary-hover: #b08d38; /* Vàng đậm hover */
-        --bg-dark-heading: #0c1016; /* Màu đen đậm của heading home */
-        --bg-body-profile: #f4f4f4; /* Nền xám nhạt giống home */
+        --bg-dark-heading: #0c1016; 
+        --bg-body-profile: #f4f4f4;
         --card-bg: #ffffff;             
-        --text-heading-color: #2c3e50;  
-        --text-body-color: #333;          
+        --text-heading: #2c3e50;  
+        --text-body: #333;          
         --text-muted: #888;          
+        --border-color: #eee;    
+        --radius-md: 8px;        
+        --shadow-card: 0 5px 20px rgba(0,0,0,0.05);
         
-        --border-color: #eee;     /* Viền mờ giống card home */
-        --radius-md: 8px;         /* Bo góc 8px giống card home */
-        --shadow-card: 0 5px 20px rgba(0,0,0,0.05); /* Bóng mờ giống card home */
-        
-        --font-heading: 'Playfair Display', serif; /* Font tiêu đề sang trọng */
-        --font-body: 'Poppins', sans-serif;        /* Font nội dung hiện đại */
+        --font-heading: 'Playfair Display', serif;
+        --font-body: 'Poppins', sans-serif;
     }
 
+    /* =========================================
+       LAYOUT STYLES
+       ========================================= */
     .profile-bg {
-        min-height: 100vh; 
-        
+        min-height: 100vh;
         background: var(--bg-body-profile);
         display: flex;
         align-items: center;  
@@ -39,16 +51,14 @@ ob_start();
         box-sizing: border-box;
     }
 
-    /* Container chính */
     .profile-wrapper {
         display: flex;
         gap: 30px;
         width: 100%;
-        max-width: 1100px; /* Rộng hơn một chút cho thoáng */
+        max-width: 1100px;
         align-items: flex-start;
     }
 
-    /* --- DÙNG CHUNG STYLE CHO CÁC BOX (Giống Room Card ở Home) --- */
     .profile-box-style {
         background: var(--card-bg);
         border-radius: var(--radius-md);
@@ -56,19 +66,19 @@ ob_start();
         border: 1px solid var(--border-color);
         transition: all 0.3s ease;
     }
+    
     .profile-box-style:hover {
         box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         transform: translateY(-5px);
     }
 
+    /* =========================================
+       SIDEBAR (LEFT)
+       ========================================= */
     .profile-sidebar {
         flex: 0 0 320px;
         padding: 40px 30px;
         text-align: center;
-        background: var(--card-bg);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-card);
-        border: 1px solid var(--border-color);
     }
 
     .avatar-box {
@@ -111,23 +121,114 @@ ob_start();
     }
     .role-admin { background: var(--bg-dark-heading); color: var(--primary); border: 1px solid var(--bg-dark-heading); }
     .role-user { background: #f4f4f4; color: #555; border: 1px solid #ddd; }
+
+    /* =========================================
+       MAIN CONTENT (RIGHT)
+       ========================================= */
     .profile-main {
         flex: 1;
         padding: 40px;
-        background: var(--card-bg);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-card);
-        border: 1px solid var(--border-color);
         display: flex;
         flex-direction: column;
     }
 
+    /* --- NEW RANK SECTION STYLE --- */
+    .rank-section-container {
+        margin-bottom: 35px;
+        padding: 25px 30px;
+        border-radius: var(--radius-md);
+        color: #fff;
+        /* Gradient nền tối sang trọng để làm nổi bật màu vàng */
+        background: linear-gradient(135deg, #1e2024 0%, #2c3e50 100%);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Hiệu ứng ánh sáng nền */
+    .rank-section-container::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -50%;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, rgba(205,164,94,0.3) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .rank-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .rank-title-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #aaa;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .rank-current-display {
+        font-family: var(--font-heading);
+        font-size: 24px;
+        color: var(--primary);
+        font-weight: 700;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .rank-money-display {
+        text-align: right;
+    }
+    .rank-money-val {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    /* Progress Bar Styles */
+    .rank-progress-track {
+        background: rgba(255, 255, 255, 0.1);
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .rank-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #cda45e 0%, #f4d03f 100%);
+        border-radius: 5px;
+        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 10px rgba(205, 164, 94, 0.6);
+    }
+
+    .rank-footer-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #bbb;
+        position: relative;
+        z-index: 2;
+    }
+    .rank-footer-info strong { color: #fff; }
+    .next-rank-text { color: var(--primary); font-weight: 600; }
+
+    /* --- INFO & FORM SECTION --- */
     .section-title-profile {
         font-family: var(--font-heading); 
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
-        color: var(--bg-dark-heading);
-        margin-bottom: 30px;
+        color: var(--text-heading);
+        margin-bottom: 25px;
         display: flex;
         align-items: center;
         gap: 15px;
@@ -135,26 +236,26 @@ ob_start();
     .section-title-profile::after {
         content: "";
         flex: 1;
-        height: 2px;
+        height: 1px;
         background: var(--border-color);
-        
     }
+
     .info-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 25px;
+        gap: 20px;
         margin-bottom: 40px;
     }
 
     .info-item {
         background: #fff;
-        padding: 25px 20px;
+        padding: 20px;
         border-radius: var(--radius-md);
         border: 1px solid var(--border-color);
         transition: all 0.3s ease;
         display: flex;
-        align-items: flex-start; 
-        gap: 20px;
+        align-items: center; 
+        gap: 15px;
     }
     
     .info-item:hover {
@@ -163,40 +264,39 @@ ob_start();
     }
 
     .icon-box-profile {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         background: rgba(205, 164, 94, 0.1);
-        border-radius: 4px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: var(--primary); 
-        font-size: 20px;
+        font-size: 18px;
         flex-shrink: 0;
     }
 
     .data-box label {
         display: block;
-        font-family: var(--font-body);
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         text-transform: uppercase;
         color: var(--text-muted);
-        margin-bottom: 8px;
-        letter-spacing: 1px;
+        margin-bottom: 4px;
+        letter-spacing: 0.5px;
     }
 
     .data-box span {
         display: block;
-        font-family: var(--font-body);
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 500;
-        color: var(--text-body-color);
+        color: var(--text-body);
         word-break: break-all;
     }
+
     .action-row {
         display: flex;
-        gap: 20px;
+        gap: 15px;
         margin-top: auto;
         border-top: 1px solid var(--border-color);
         padding-top: 30px;
@@ -207,8 +307,8 @@ ob_start();
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        padding: 15px;
+        gap: 8px;
+        padding: 12px;
         border-radius: var(--radius-md);
         font-weight: 600;
         font-size: 14px;
@@ -217,7 +317,6 @@ ob_start();
         cursor: pointer;
         text-transform: uppercase;
         letter-spacing: 1px;
-        font-family: var(--font-body);
     }
 
     .btn-primary-profile {
@@ -228,15 +327,14 @@ ob_start();
     .btn-primary-profile:hover {
         background: var(--primary-hover);
         border-color: var(--primary-hover);
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(205, 164, 94, 0.4);
     }
 
-
     .btn-outline-profile {
         background: transparent;
-        color: var(--text-body-color);
-        border: 1px solid var(--border-color);
+        color: var(--text-body);
+        border: 1px solid #ddd;
     }
     .btn-outline-profile:hover {
         border-color: var(--primary);
@@ -244,34 +342,14 @@ ob_start();
         background: white;
     }
 
-    .role-text-highlight {
-        font-weight: 700 !important;
-        color: var(--primary) !important;
-    }
-
     @media (max-width: 768px) {
-        .profile-bg {
-            padding: 40px 15px;
-        }
-        .profile-wrapper {
-            flex-direction: column;
-            gap: 25px;
-        }
-        .profile-sidebar {
-            width: 100%;
-            flex: none;
-        }
-        .info-grid {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        .info-item {
-             padding: 20px 15px;
-        }
-        .action-row {
-            flex-direction: column;
-            gap: 15px;
-        }
+        .profile-bg { padding: 40px 15px; }
+        .profile-wrapper { flex-direction: column; gap: 20px; }
+        .profile-sidebar { width: 100%; flex: none; padding: 30px; }
+        .info-grid { grid-template-columns: 1fr; gap: 15px; }
+        .action-row { flex-direction: column; }
+        .rank-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .rank-money-display { text-align: left; }
     }
 </style>
 
@@ -282,26 +360,65 @@ ob_start();
             <div class="sidebar-content">
                 <div class="avatar-box">
                     <div class="avatar-circle">
-                        <i class="fa-solid fa-user"></i>
+                        <?php 
+                            $initial = !empty($user['full_name']) ? strtoupper(substr($user['full_name'], 0, 1)) : '';
+                        ?>
+                        <?php if($initial): ?>
+                            <span><?= $initial ?></span>
+                        <?php else: ?>
+                            <i class="fa-solid fa-user"></i>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
-                <h2 class="user-name"><?= htmlspecialchars($user['full_name'] ?? 'N/A') ?></h2>
+                <h2 class="user-name"><?= htmlspecialchars($user['full_name'] ?? 'Guest User') ?></h2>
                 
                 <span class="user-role-badge <?= ($user['role'] ?? 0) == 1 ? 'role-admin' : 'role-user' ?>">
-                    <?= ($user['role'] ?? 0) == 1 ? 'ADMINISTRATOR' : 'MEMBER' ?>
+                    <?= ($user['role'] ?? 0) == 1 ? 'Administrator' : 'Member' ?>
                 </span>
             </div>
         </div>
 
         <div class="profile-main profile-box-style">
+            
+            <div class="rank-section-container">
+                <div class="rank-header-row">
+                    <div>
+                        <div class="rank-title-label">Hạng thành viên hiện tại</div>
+                        <div class="rank-current-display">
+                            <i class="fa-solid fa-crown"></i> <?= $rankData['current_rank'] ?>
+                        </div>
+                    </div>
+                    <div class="rank-money-display">
+                        <div class="rank-title-label">Tổng chi tiêu tích lũy</div>
+                        <div class="rank-money-val"><?= $rankData['total_spent'] ?> VNĐ</div>
+                    </div>
+                </div>
+
+                <div class="rank-progress-track">
+                    <div class="rank-progress-fill" style="width: <?= $rankData['percent'] ?>%;"></div>
+                </div>
+
+                <div class="rank-footer-info">
+                    <div>Tiến trình: <strong><?= $rankData['percent'] ?>%</strong></div>
+                    
+                    <?php if($rankData['next_rank'] !== 'Max Level'): ?>
+                        <div>
+                            Cần thêm <strong class="next-rank-text"><?= $rankData['needed'] ?> VNĐ</strong> 
+                            để lên <strong><?= $rankData['next_rank'] ?></strong>
+                        </div>
+                    <?php else: ?>
+                        <div class="next-rank-text">Bạn đã đạt cấp bậc cao nhất!</div>
+                    <?php endif; ?>
+                </div>
+            </div>
             <h3 class="section-title-profile">Thông tin cá nhân</h3>
 
             <div class="info-grid">
                 <div class="info-item">
                     <div class="icon-box-profile"><i class="fa-solid fa-envelope"></i></div>
                     <div class="data-box">
-                        <label>Email</label>
+                        <label>Email đăng ký</label>
                         <span><?= htmlspecialchars($user['email'] ?? 'N/A') ?></span>
                     </div>
                 </div>
@@ -325,8 +442,8 @@ ob_start();
                 <div class="info-item">
                     <div class="icon-box-profile"><i class="fa-solid fa-shield-halved"></i></div>
                     <div class="data-box">
-                        <label>Vai trò hệ thống</label>
-                        <span class="role-text-highlight"><?= htmlspecialchars($user['role'] == 1 ? 'Quản trị viên (Admin)' : 'Thành viên thân thiết') ?></span>
+                        <label>Trạng thái tài khoản</label>
+                        <span style="color: green; font-weight: 600;">Đang hoạt động</span>
                     </div>
                 </div>
             </div>
@@ -335,7 +452,7 @@ ob_start();
                 <a href="/profile/update/<?= $user['id'] ?? '' ?>" class="btn-profile btn-primary-profile">
                     <i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin
                 </a>
-                <a href="/profile/change-password/<?= (int)$user['id'] ?>" class="btn-profile btn-outline-profile">
+                <a href="/profile/change-password/<?= (int)($user['id'] ?? 0) ?>" class="btn-profile btn-outline-profile">
                     <i class="fa-solid fa-key"></i> Đổi mật khẩu
                 </a>
             </div>
@@ -346,6 +463,11 @@ ob_start();
 
 <?php 
 $content = ob_get_clean(); 
-// Đảm bảo layoutprofile.php cũng load các file css chung như style.css của home
-include APPROOT . '/templates/layoutprofile.php';
+// Include Layout Profile (Đảm bảo đường dẫn này đúng trong project của bạn)
+if (defined('APPROOT')) {
+    include APPROOT . '/templates/layoutprofile.php';
+} else {
+    // Fallback nếu không định nghĩa APPROOT (Tùy chỉnh đường dẫn này nếu cần)
+    include '../templates/layoutprofile.php'; 
+}
 ?>

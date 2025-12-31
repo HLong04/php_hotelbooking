@@ -38,7 +38,8 @@ class User
                 phone, 
                 role, 
                 password,       -- <--- Thêm password
-                created_at 
+                created_at,
+                total_spent
             FROM users 
             WHERE id = $id";
 
