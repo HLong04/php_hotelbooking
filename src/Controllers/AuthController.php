@@ -39,7 +39,6 @@ class AuthController extends Controller
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_phone'] = $user['phone'];
                 $_SESSION['user_role'] = $user['role'];
-                $_SESSION['flash_message'] = "Đăng nhập thành công!";
 
                 if ($user['role'] == 1) {
                     header('Location: /admin');

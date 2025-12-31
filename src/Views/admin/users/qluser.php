@@ -23,7 +23,10 @@
                     <th style="padding: 12px;">Email</th>
                     <th style="padding: 12px;">SĐT</th>
                     <th style="padding: 12px;">Vai trò</th>
+                    <th style="padding: 12px;">Tổng tiền</th>
+                    <th style="padding: 12px;">Cấp độ</th>
                     <th style="padding: 12px;">Hành động</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +44,8 @@
                                 <span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8em;">User</span>
                             <?php endif; ?>
                         </td>
+                        <td style="padding: 12px;"><?= number_format($u['total_spent'], 0, ',', '.') ?> VND</td>
+                        <td style="padding: 12px;"><?= $u['rank_level'] ?></td>
                         <td style="padding: 12px;">
                             <a href="/admin/users/update/<?= $u['id'] ?>" style="color: #3498db; margin-right: 10px;"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
                             

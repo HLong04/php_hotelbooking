@@ -1,47 +1,5 @@
 <?php ob_start(); ?>
 
-<style>
-    /* CSS cho thanh tìm kiếm */
-    .search-bar {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: flex;
-        gap: 15px;
-        border: 1px solid #ddd;
-    }
-
-    .form-control {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-        outline: none;
-    }
-
-    .btn-search {
-        background: #cda45e;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .btn-search:hover {
-        background: #b38b45;
-    }
-
-    .btn-reset {
-        text-decoration: none;
-        color: #666;
-        padding: 10px 15px;
-        display: flex;
-        align-items: center;
-    }
-</style>
 
 <div class="card">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -51,7 +9,24 @@
         </a>
     </div>
 
-    <div class="card-body">
+    <div class="card-body " style="margin-top: 20px;">
+        <form action="" method="GET" class="search-bar ">
+            <input type="text" name="keyword" class="form-control" style="flex: 1;"
+                placeholder="Nhập ID hoặc Số phòng..."
+                value="<?= htmlspecialchars($keyword ?? '') ?>">
+
+            <select name="status" class="form-control" style="width: 200px;">
+                <option value="">-- Tất cả trạng --</tháioption>
+                <option value="available" <?= (isset($status) && $status == 'available') ? 'selected' : '' ?>>Phòng Trống (Available)</option>
+                <option value="booked" <?= (isset($status) && $status == 'booked') ? 'selected' : '' ?>>Có khách (Booked)</option>
+                <option value="maintenance" <?= (isset($status) && $status == 'maintenance') ? 'selected' : '' ?>>Bảo trì</option>
+            </select>
+
+            <button type="submit" class="btn-search"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            <?php if (!empty($keyword) || !empty($status)): ?>
+                <a href="/admin/rooms" class="btn-reset"><i class="fa-solid fa-rotate-left"></i> Đặt lại</a>
+            <?php endif; ?>
+        </form>
 
         <?php if (isset($_SESSION['flash_message'])): ?>
             <div style="background: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
@@ -79,9 +54,8 @@
                             <td style="padding: 12px;"><?= isset($room['room_type_name']) ? $room['room_type_name'] : $room['room_type_id'] ?></td>
                             <td style="padding: 12px;">
                                 <?php
-                                $statusColor = 'green';
-                                $statusText = 'Trống';
-
+                                $statusColor = 'gray';
+                                $statusText = $room['status'];
                                 if ($room['status'] == 'available') {
                                     $statusColor = '#27ae60';
                                     $statusText = 'Trống';
@@ -107,11 +81,42 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px; color: #999;">Không tìm thấy phòng nào phù hợp.</td>
+                        <td colspan="5" style="text-align: center; padding: 20px;">Không tìm thấy phòng nào phù hợp.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
+
+        <?php if ($total_pages > 1): ?>
+            <ul class="pagination">
+                <?php if ($current_page > 1): ?>
+                    <li>
+                        <a href="?page=<?= $current_page - 1 ?>&keyword=<?= $keyword ?>&status=<?= $status ?>">« Trước</a>
+                    </li>
+                <?php else: ?>
+                    <li class="disabled"><span>« Trước</span></li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="<?= ($i == $current_page) ? 'active' : '' ?>">
+                        <?php if ($i == $current_page): ?>
+                            <span><?= $i ?></span>
+                        <?php else: ?>
+                            <a href="?page=<?= $i ?>&keyword=<?= $keyword ?>&status=<?= $status ?>"><?= $i ?></a>
+                        <?php endif; ?>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($current_page < $total_pages): ?>
+                    <li>
+                        <a href="?page=<?= $current_page + 1 ?>&keyword=<?= $keyword ?>&status=<?= $status ?>">Sau »</a>
+                    </li>
+                <?php else: ?>
+                    <li class="disabled"><span>Sau »</span></li>
+                <?php endif; ?>
+            </ul>
+        <?php endif; ?>
+
     </div>
 </div>
 

@@ -26,7 +26,7 @@ class AdminController extends Controller
 
     public function admin()
     {
-        // 1. Check quyền Admin
+        // 1. Check quyền Admin 
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 1) {
             header('Location: /login');
             exit();

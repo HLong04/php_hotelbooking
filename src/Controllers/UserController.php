@@ -3,15 +3,18 @@
 namespace App\Controllers;
 
 use App\Controller;
+use App\Model\Booking;
 use App\Model\User;
 
 class UserController extends Controller
 {
     private $userModel;
+    private $bookingModel;
 
     public function __construct()
     {
         $this->userModel = new User();
+        $this->bookingModel = new Booking();
     }
     private function requireLogin()
     {
@@ -192,7 +195,14 @@ class UserController extends Controller
     public function qluser()
     {
         $this->requireAdmin();
+
         $users = $this->userModel->getAllUsers();
+
+        foreach ($users as &$user) {
+            $user['total_spent'] = $this->bookingModel->getTotalMoneyByUserId($user['id']);
+        }
+        unset($user);
+
         $this->render('admin/users/qluser', ['users' => $users]);
     }
 
@@ -206,8 +216,10 @@ class UserController extends Controller
             $password = $_POST['password'];
             $phone = $_POST['phone'];
             $role = $_POST['role'];
+            $totalspent = $_POST['total_spent'];
+            $ranklevel = $_POST['rank_level'];
 
-            $isCreated = $this->userModel->createUser($fullName, $email, $password, $phone, $role);
+            $isCreated = $this->userModel->createUser($fullName, $email, $password, $phone, $role, $totalspent, $ranklevel);
 
             if ($isCreated) {
                 $_SESSION['flash_message'] = "Thêm người dùng thành công!";
@@ -237,8 +249,10 @@ class UserController extends Controller
             $phone = $_POST['phone'];
             $role = $_POST['role'];
             $newPassword = $_POST['password'];
+            $totalspent = $_POST['total_spent'];
+            $ranklevel = $_POST['rank_level'];
 
-            $this->userModel->updateUserWithRole($id, $fullName, $email, $phone, $role);
+            $this->userModel->updateUserWithRole($id, $fullName, $email, $phone, $role, $totalspent, $ranklevel);
 
             if (!empty($newPassword)) {
                 $this->userModel->adminResetPassword($id, $newPassword);

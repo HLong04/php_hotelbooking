@@ -14,14 +14,37 @@ class TypeRoomController extends Controller
         $this->roomTypeModel = new RoomType();
     }
 
+    private function requireAdmin()
+    {
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 1) {
+            header('Location: /login');
+            exit();
+        }
+    }
     /**
      * 1. DANH SÁCH LOẠI PHÒNG
      * Route: /admin/typeroom
      */
     public function qltyperoom()
     {
-        $types = $this->roomTypeModel->getAllRoomTypes();
-        $data = ['types' => $types];
+        $this->requireAdmin();
+
+        $keyword  = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $capacity = isset($_GET['capacity']) ? $_GET['capacity'] : '';
+        $maxPrice = isset($_GET['price']) ? $_GET['price'] : '';
+
+        if ($keyword != '' || $capacity != '' || $maxPrice != '') {
+            $types = $this->roomTypeModel->searchRoomTypes($keyword, $capacity, $maxPrice);
+        } else {
+            $types = $this->roomTypeModel->getAllRoomTypes();
+        }
+
+        $data = [
+            'types' => $types,
+            'keyword' => $keyword,
+            'capacity' => $capacity,
+            'maxPrice' => $maxPrice
+        ];
         $this->render('admin/room_types/qltyperoom', $data);
     }
 
@@ -37,7 +60,7 @@ class TypeRoomController extends Controller
             $max_adults = trim($_POST['max_adults']);
             $description = trim($_POST['description']);
 
-            $imageName = 'default.jpg'; 
+            $imageName = 'default.jpg';
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
                 $imageName = time() . '_' . $_FILES['image']['name'];
                 move_uploaded_file($_FILES['image']['tmp_name'], 'img/' . $imageName);

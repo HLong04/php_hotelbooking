@@ -33,12 +33,13 @@ class RoomController extends Controller
      * [QUAN TRỌNG] Tìm kiếm phòng trống theo ngày
      * Route: /search?checkin=...&checkout=...
      */
-    public function search() {
+    public function search()
+    {
         // 1. Lấy dữ liệu từ URL
         $checkIn = $_GET['checkin'] ?? null;
         $checkOut = $_GET['checkout'] ?? null;
         $maxAdults = $_GET['guests'] ?? null;
-        
+
         // 2. Kiểm tra nếu thiếu ngày thì về trang chủ
         if (!$checkIn || !$checkOut) {
             header('Location: /');
@@ -70,8 +71,28 @@ class RoomController extends Controller
     public function qlroom()
     {
         $this->requireAdmin();
-        $rooms = $this->roomModel->getAllRooms();
-        $this->render('admin/rooms/qlroom', ['rooms' => $rooms]);
+
+        $keyword = $_GET['keyword'] ?? '';
+        $status = $_GET['status'] ?? '';
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        // 3. Gọi Model
+        $totalRecords = $this->roomModel->countsRooms($keyword, $status);
+        $totalPages = ceil($totalRecords / $limit);
+        $rooms = $this->roomModel->getRoomsPagination($keyword, $status, $limit, $offset);
+
+        $data = [
+            'rooms' => $rooms,
+            'total_pages' => $totalPages,
+            'current_page' => $page,
+            'keyword' => $keyword,
+            'status' => $status
+        ];
+        $this->render('admin/rooms/qlroom', $data);
     }
 
     /**

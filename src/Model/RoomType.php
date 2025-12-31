@@ -24,17 +24,17 @@ class RoomType
         $result = $this->connection->query("SELECT * FROM room_types");
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-    
+
     public function getRoomTypeById($id)
     {
-       $sql = "SELECT * FROM room_types WHERE id = ?";
-    $stmt = $this->connection->prepare($sql); // Nhớ kết nối db trong construct giống Room
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_assoc();
+        $sql = "SELECT * FROM room_types WHERE id = ?";
+        $stmt = $this->connection->prepare($sql); 
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
-    public function createRoomType($name, $price,$max_adults, $description, $image)
+    public function createRoomType($name, $price, $max_adults, $description, $image)
     {
         $name = $this->connection->real_escape_string($name);
         $price = $this->connection->real_escape_string($price);
@@ -47,6 +47,7 @@ class RoomType
 
         return $this->connection->query($sql);
     }
+
     public function updateRoomType($id, $name, $price, $max_adults, $description, $image)
     {
         $id = $this->connection->real_escape_string($id);
@@ -75,5 +76,40 @@ class RoomType
         $result = $this->connection->query($sql);
         $row = $result->fetch_assoc();
         return $row['total'];
+    }
+
+    public function searchRoomTypes($keyword, $capacity, $maxPrice)
+    {
+        $sql = "SELECT * FROM room_types WHERE 1=1";
+        $types = "";
+        $params = [];
+
+        if (!empty($keyword)) {
+            $sql .= " AND (id LIKE ? OR name LIKE ?)";
+            $keywordParam = "%$keyword%";
+            $types .= "ss";
+            $params[] = $keywordParam;
+            $params[] = $keywordParam;
+        }
+
+        if (!empty($capacity)) {
+            $sql .= " AND max_adults >= ?";
+            $types .= "i";
+            $params[] = $capacity;
+        }
+
+
+        if (!empty($maxPrice)) {
+            $sql .= " AND price <= ?";
+            $types .= "d";
+            $params[] = $maxPrice;
+        }
+        $sql .= " ORDER BY id DESC";
+        $stmt = $this->connection->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 }

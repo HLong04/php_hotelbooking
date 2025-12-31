@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Model;
 
-class Booking {
+class Booking
+{
     private $mysqli;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Kết nối CSDL
         $this->mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         $this->mysqli->set_charset("utf8");
@@ -20,9 +23,29 @@ class Booking {
         $row = $result->fetch_assoc();
         return $row['total'];
     }
+    // Trong BookingModel
 
+    public function getTotalMoneyByUserId($userId)
+    {
+        // Dùng hàm SUM để cộng tổng tiền (total_price)
+        // IFNULL(..., 0) để nếu không có đơn nào thì trả về 0 thay vì null
+        // Bạn có thể chọn status là 'confirmed' hoặc 'completed' tùy nhu cầu
+        $sql = "SELECT IFNULL(SUM(total_price), 0) as total_money 
+            FROM bookings 
+            WHERE user_id = ? AND (status = 'confirmed' OR status = 'completed')";
+
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        return $row['total_money'];
+    }
+    
     // 1. Lấy tất cả đơn hàng (Đã thêm JOIN room_types)
-    public function getAllBookings() {
+    public function getAllBookings()
+    {
         // Thêm JOIN room_types để lấy tên loại phòng (rt.name)
         $sql = "SELECT b.*, 
                        u.full_name, u.email, 
@@ -33,20 +56,21 @@ class Booking {
                 JOIN rooms r ON b.room_id = r.id 
                 JOIN room_types rt ON r.room_type_id = rt.id
                 ORDER BY b.created_at DESC";
-        
+
         $result = $this->mysqli->query($sql);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-    
+
     // 2. Lấy đơn hàng gần đây (Dashboard)
-    public function getRecentOrders($limit = 5) {
+    public function getRecentOrders($limit = 5)
+    {
         $sql = "SELECT b.*, u.full_name, r.room_number, b.status, b.total_price 
                 FROM bookings b 
                 JOIN users u ON b.user_id = u.id 
                 JOIN rooms r ON b.room_id = r.id 
                 ORDER BY b.created_at DESC 
                 LIMIT ?"; // Dùng dấu ?
-        
+
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("i", $limit); // "i" nghĩa là integer
         $stmt->execute();
@@ -55,7 +79,8 @@ class Booking {
     }
 
     // 3. Xem chi tiết đơn hàng
-    public function getBookingById($id) {
+    public function getBookingById($id)
+    {
         $sql = "SELECT b.*, 
                        u.full_name, u.email, u.phone, 
                        r.room_number, 
@@ -65,7 +90,7 @@ class Booking {
                 JOIN rooms r ON b.room_id = r.id 
                 JOIN room_types rt ON r.room_type_id = rt.id
                 WHERE b.id = ?";
-        
+
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -86,7 +111,8 @@ class Booking {
     }
 
     // 5. Cập nhật trạng thái
-    public function updateStatus($id, $status) {
+    public function updateStatus($id, $status)
+    {
         $sql = "UPDATE bookings SET status = ? WHERE id = ?";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("si", $status, $id);
@@ -94,7 +120,8 @@ class Booking {
     }
 
     // 6. Xóa đơn
-    public function deleteBooking($id) {
+    public function deleteBooking($id)
+    {
         $sql = "DELETE FROM bookings WHERE id = ?";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("i", $id);
@@ -102,7 +129,8 @@ class Booking {
     }
 
     // 7. Tổng doanh thu (Chỉ tính Confirmed hoặc Completed)
-    public function getTotalRevenue() {
+    public function getTotalRevenue()
+    {
         $sql = "SELECT SUM(total_price) as revenue FROM bookings 
                 WHERE status IN ('Confirmed', 'Completed')";
         $result = $this->mysqli->query($sql);
@@ -111,35 +139,35 @@ class Booking {
     }
 
     // 8. (Bổ sung) Tìm phòng trống theo loại phòng và ngày
-    public function findAvailableRoomId($roomTypeId, $checkIn, $checkOut) {
-        // Logic: Lấy 1 phòng thuộc loại này mà ID của nó KHÔNG nằm trong danh sách các booking trùng ngày
-        $sql = "SELECT r.id FROM rooms r
-                WHERE r.room_type_id = ? 
-                AND r.status = 'available'
-                AND r.id NOT IN (
-                    SELECT b.room_id FROM bookings b
-                    WHERE (
-                        (b.check_in <= ? AND b.check_out >= ?)
-                        AND b.status != 'cancelled'
-                    )
-                )
-                LIMIT 1";
-        
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("iss", $roomTypeId, $checkOut, $checkIn);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($row = $result->fetch_assoc()) {
-            return $row['id'];
-        }
-        return null; // Hết phòng
-    }
+    // public function findAvailableRoomId($roomTypeId, $checkIn, $checkOut) {
+    //     // Logic: Lấy 1 phòng thuộc loại này mà ID của nó KHÔNG nằm trong danh sách các booking trùng ngày
+    //     $sql = "SELECT r.id FROM rooms r
+    //             WHERE r.room_type_id = ? 
+    //             AND r.status = 'available'
+    //             AND r.id NOT IN (
+    //                 SELECT b.room_id FROM bookings b
+    //                 WHERE (
+    //                     (b.check_in <= ? AND b.check_out >= ?)
+    //                     AND b.status != 'cancelled'
+    //                 )
+    //             )
+    //             LIMIT 1";
+
+    //     $stmt = $this->mysqli->prepare($sql);
+    //     $stmt->bind_param("iss", $roomTypeId, $checkOut, $checkIn);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
+
+    //     if ($row = $result->fetch_assoc()) {
+    //         return $row['id'];
+    //     }
+    //     return null; // Hết phòng
+    // }
 
     public function getBookingWithDetails($id)
     {
         $id = (int)$id;
-        
+
         $sql = "SELECT 
                     b.*,
                     u.full_name as guest_name,
@@ -152,8 +180,56 @@ class Booking {
                 LEFT JOIN rooms r ON b.room_id = r.id
                 LEFT JOIN room_types rt ON r.room_type_id = rt.id
                 WHERE b.id = $id";
-        
+
         $result = $this->mysqli->query($sql);
         return $result ? $result->fetch_assoc() : null;
+    }
+
+    // Tìm kiếm Booking nâng cao
+    public function searchBookingsAdvanced($keyword, $roomNumber, $price, $status)
+    {
+        $sql = "SELECT b.*, 
+                       u.full_name, u.email, 
+                       r.room_number 
+                FROM bookings b 
+                JOIN users u ON b.user_id = u.id 
+                JOIN rooms r ON b.room_id = r.id 
+                WHERE 1=1";
+
+        $types = "";
+        $params = [];
+        // 1. Tìm theo Từ khóa (Mã đơn hoặc Tên khách)
+        if (!empty($keyword)) {
+            $sql .= " AND (b.id LIKE ? OR u.full_name LIKE ?)";
+            $keywordParam = "%$keyword%";
+            $types .= "ss";
+            $params[] = $keywordParam;
+            $params[] = $keywordParam;
+        }
+        // 2. Tìm theo Số phòng
+        if (!empty($roomNumber)) {
+            $sql .= " AND r.room_number LIKE ?";
+            $types .= "s";
+            $params[] = "%$roomNumber%";
+        }
+        // 3. Tìm theo Giá tiền (Tìm chính xác hoặc gần đúng)
+        if (!empty($price)) {
+            $sql .= " AND b.total_price >= ?";
+            $types .= "d";
+            $params[] = $price;
+        }
+        // 4. Tìm theo Trạng thái
+        if (!empty($status)) {
+            $sql .= " AND b.status = ?";
+            $types .= "s";
+            $params[] = $status;
+        }
+        $sql .= " ORDER BY b.created_at DESC";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 }

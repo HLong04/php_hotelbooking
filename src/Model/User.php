@@ -110,37 +110,41 @@ class User
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO users (full_name, email, password, phone, role) 
-                VALUES ('$fullName', '$email', '$password', '$phone', 0)";
+                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', 0)";
 
         return $this->connection->query($sql);
     }
 
 
-    public function createUser($fullName, $email, $password, $phone, $role)
+    public function createUser($fullName, $email, $password, $phone, $role, $totalspent, $ranklevel)
     {
         $fullName = $this->connection->real_escape_string($fullName);
         $email = $this->connection->real_escape_string($email);
         $phone = $this->connection->real_escape_string($phone);
         $role = (int)$role;
+        $totalspent = (float)$totalspent;
+        $ranklevel = (int)$ranklevel;
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (full_name, email, password, phone, role) 
-                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', '$role')";
+        $sql = "INSERT INTO users (full_name, email, password, phone, role, total_spent, rank_level) 
+                VALUES ('$fullName', '$email', '$hashedPassword', '$phone', '$role', '$totalspent', '$ranklevel')";
 
         return $this->connection->query($sql);
     }
 
-    public function updateUserWithRole($id, $fullName, $email, $phone, $role)
+    public function updateUserWithRole($id, $fullName, $email, $phone, $role,$totalspent, $ranklevel)
     {
         $id = $this->connection->real_escape_string($id);
         $fullName = $this->connection->real_escape_string($fullName);
         $email = $this->connection->real_escape_string($email);
         $phone = $this->connection->real_escape_string($phone);
         $role = (int)$role;
+        $totalspent = (double)$totalspent;
+        $ranklevel = $this->connection->real_escape_string($ranklevel);
 
         $sql = "UPDATE users 
-                SET full_name='$fullName', email='$email', phone='$phone', role='$role' 
+                SET full_name='$fullName', email='$email', phone='$phone', role='$role', total_spent='$totalspent', rank_level='$ranklevel'
                 WHERE id=$id";
 
         return $this->connection->query($sql);
