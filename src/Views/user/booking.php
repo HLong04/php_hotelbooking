@@ -143,14 +143,6 @@
                                     </div>
                                 <?php endif; ?>
 
-                                <div class="form-group mt-3">
-                                    <label class="form-label-custom">Tải ảnh biên lai chuyển khoản (Bắt buộc)</label>
-                                    <input type="file" name="evidence_image" class="form-control" accept="image/*" required 
-                                           style="padding: 10px; border: 1px solid #ddd; width: 100%;">
-                                    <small class="text-muted" style="font-size: 12px; display: block; margin-top: 5px;">
-                                        * Vui lòng cọc trước <strong>30%</strong> để giữ phòng.
-                                    </small>
-                                </div>
                             </div>
                         </div>
                     </div>

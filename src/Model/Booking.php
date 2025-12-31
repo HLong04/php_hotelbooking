@@ -32,7 +32,7 @@ class Booking
         // Bạn có thể chọn status là 'confirmed' hoặc 'completed' tùy nhu cầu
         $sql = "SELECT IFNULL(SUM(total_price), 0) as total_money 
             FROM bookings 
-            WHERE user_id = ? AND (status = 'confirmed' OR status = 'completed')";
+            WHERE user_id = ? AND (status = 'completed')";
 
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("i", $userId);
@@ -99,17 +99,18 @@ class Booking
     }
 
     // 4. Tạo đơn đặt phòng mới (Dùng cho User khi đặt phòng) -> QUAN TRỌNG
-    public function createBooking($userId, $roomId, $checkIn, $checkOut, $totalPrice)
-    {
-        $sql = "INSERT INTO bookings 
-                (user_id, room_id, check_in, check_out, total_price, status) 
-                VALUES (?, ?, ?, ?, ?, 'pending')";
-
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("iissd", $userId, $roomId, $checkIn, $checkOut, $totalPrice);
-        return $stmt->execute();
-    }
-
+   // Trong Booking.php
+public function createBooking($userId, $roomId, $checkIn, $checkOut, $totalPrice, $depositAmount, $status)
+{
+    $sql = "INSERT INTO bookings 
+            (user_id, room_id, check_in, check_out, total_price, deposit_amount, status, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            
+    $stmt = $this->mysqli->prepare($sql);
+    // i: int, s: string, d: double
+    $stmt->bind_param("iissdds", $userId, $roomId, $checkIn, $checkOut, $totalPrice, $depositAmount, $status);
+    return $stmt->execute();
+}
     // 5. Cập nhật trạng thái
     public function updateStatus($id, $status)
     {
@@ -137,32 +138,6 @@ class Booking
         $row = $result->fetch_assoc();
         return $row['revenue'] ?? 0;
     }
-
-    // 8. (Bổ sung) Tìm phòng trống theo loại phòng và ngày
-    // public function findAvailableRoomId($roomTypeId, $checkIn, $checkOut) {
-    //     // Logic: Lấy 1 phòng thuộc loại này mà ID của nó KHÔNG nằm trong danh sách các booking trùng ngày
-    //     $sql = "SELECT r.id FROM rooms r
-    //             WHERE r.room_type_id = ? 
-    //             AND r.status = 'available'
-    //             AND r.id NOT IN (
-    //                 SELECT b.room_id FROM bookings b
-    //                 WHERE (
-    //                     (b.check_in <= ? AND b.check_out >= ?)
-    //                     AND b.status != 'cancelled'
-    //                 )
-    //             )
-    //             LIMIT 1";
-
-    //     $stmt = $this->mysqli->prepare($sql);
-    //     $stmt->bind_param("iss", $roomTypeId, $checkOut, $checkIn);
-    //     $stmt->execute();
-    //     $result = $stmt->get_result();
-
-    //     if ($row = $result->fetch_assoc()) {
-    //         return $row['id'];
-    //     }
-    //     return null; // Hết phòng
-    // }
 
     public function getBookingWithDetails($id)
     {

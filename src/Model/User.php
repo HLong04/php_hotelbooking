@@ -57,7 +57,7 @@ class User
         $result = $this->connection->query($sql);
         return $result->num_rows > 0;
     }
-    
+
     public function updatePassword($id, $password)
     {
         $stmt = $this->connection->prepare(
@@ -132,14 +132,15 @@ class User
         return $this->connection->query($sql);
     }
 
-    public function updateUserWithRole($id, $fullName, $email, $phone, $role,$totalspent, $ranklevel)
+    public function updateUserWithRole($id, $fullName, $email, $phone, $role, $totalspent, $ranklevel)
     {
         $id = $this->connection->real_escape_string($id);
         $fullName = $this->connection->real_escape_string($fullName);
         $email = $this->connection->real_escape_string($email);
         $phone = $this->connection->real_escape_string($phone);
         $role = (int)$role;
-        $totalspent = (double)$totalspent;
+        $totalspent = (float)$totalspent;
+        
         $ranklevel = $this->connection->real_escape_string($ranklevel);
 
         $sql = "UPDATE users 
@@ -188,12 +189,47 @@ class User
     {
         $sql = "SELECT COUNT(*) as count FROM users WHERE email = ?";
 
-        
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         return $row['count'] > 0;
+    }
+
+
+    // Trong src/Model/User.php
+
+    public function updateMemberRank($userId)
+    {
+        // 1. Tính tổng tiền (Ép kiểu float để chắc chắn là số)
+        $sql = "SELECT SUM(total_price) as total_spent 
+                FROM bookings 
+                WHERE user_id = ? AND status = 'completed'";
+                
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        // Ép kiểu float
+        $totalSpent = (float)($result['total_spent'] ?? 0);
+
+        // 2. Xét hạng (QUAN TRỌNG: PHẢI XÉT TỪ CAO XUỐNG THẤP)
+        $rank = 'standard'; 
+        
+        if ($totalSpent >= 50000000) { 
+            $rank = 'diamond'; // Ưu tiên xét Diamond trước
+        } elseif ($totalSpent >= 10000000) { 
+            $rank = 'vip';     // Sau đó mới xét VIP
+        }
+
+        // 3. Cập nhật
+        $updateSql = "UPDATE users SET total_spent = ?, rank_level = ? WHERE id = ?";
+        $updateStmt = $this->connection->prepare($updateSql);
+        $updateStmt->bind_param("dsi", $totalSpent, $rank, $userId);
+        
+        return $updateStmt->execute();
     }
 }
