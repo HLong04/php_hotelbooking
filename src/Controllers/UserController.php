@@ -46,9 +46,66 @@ class UserController extends Controller
             header('Location: /');
             exit();
         }
+        // ==================================================================
+        // BẮT ĐẦU ĐOẠN CODE CẦN THÊM (LOGIC TÍNH RANK)
+        // ==================================================================
+        
+        $totalSpent = (float)($user['total_spent'] ?? 0);
+        
+        // Cấu hình mốc tiền (Bạn có thể đổi số ở đây)
+        $milestones = [
+            'vip' => 10000000,      // 10 triệu lên VIP
+            'diamond' => 50000000  // 50 triệu lên Diamond
+        ];
+
+        // Mặc định
+        $currentRank = 'standard'; 
+        $nextRank = 'VIP';
+        $moneyNeeded = 0;
+        $percent = 0;
+
+        if ($totalSpent < $milestones['vip']) {
+            // Đang là Standard
+            $currentRank = 'standard';
+            $nextRank = 'VIP';
+            $moneyNeeded = $milestones['vip'] - $totalSpent;
+            $percent = ($totalSpent / $milestones['vip']) * 100;
+
+        } elseif ($totalSpent < $milestones['diamond']) {
+            // Đang là VIP
+            $currentRank = 'vip';
+            $nextRank = 'Diamond';
+            $moneyNeeded = $milestones['diamond'] - $totalSpent;
+            
+            // Tính % trong khoảng từ VIP đến Diamond
+            $range = $milestones['diamond'] - $milestones['vip'];
+            $progress = $totalSpent - $milestones['vip'];
+            $percent = ($progress / $range) * 100;
+
+        } else {
+            // Đã là Diamond
+            $currentRank = 'diamond';
+            $nextRank = 'Max Level';
+            $moneyNeeded = 0;
+            $percent = 100;
+        }
+
+        // Đóng gói dữ liệu để gửi sang View
+        $rankInfo = [
+            'current_rank' => ucfirst($currentRank), // Viết hoa chữ cái đầu
+            'next_rank'    => $nextRank,
+            'needed'       => number_format($moneyNeeded, 0, ',', '.'),
+            'total_spent'  => number_format($totalSpent, 0, ',', '.'),
+            'percent'      => round($percent)
+        ];
+
+        // ==================================================================
+        // KẾT THÚC ĐOẠN CODE CẦN THÊM
+        // ==================================================================
 
         $this->render('user/profile', [
-            'user' => $user
+            'user' => $user,
+            'rankInfo' => $rankInfo
         ]);
     }
 
