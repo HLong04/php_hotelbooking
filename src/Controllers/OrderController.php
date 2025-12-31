@@ -46,7 +46,7 @@ class OrderController extends Controller
             $orders = $this->bookingModel->searchBookingsAdvanced($keyword, $room, $price, $status);
         } else {
             $orders = $this->bookingModel->getAllBookings();
-        }
+       }
 
         $data = [
             'orders'  => $orders,

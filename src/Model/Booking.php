@@ -23,16 +23,26 @@ class Booking
         $row = $result->fetch_assoc();
         return $row['total'];
     }
-    public function countBookingByConfirmed($iduser)
+    // Trong BookingModel
+
+    public function getTotalMoneyByUserId($userId)
     {
-        $sql = "SELECT COUNT(*) as total FROM bookings WHERE status = 'confirmed' and user_id = ?";
+        // Dùng hàm SUM để cộng tổng tiền (total_price)
+        // IFNULL(..., 0) để nếu không có đơn nào thì trả về 0 thay vì null
+        // Bạn có thể chọn status là 'confirmed' hoặc 'completed' tùy nhu cầu
+        $sql = "SELECT IFNULL(SUM(total_price), 0) as total_money 
+            FROM bookings 
+            WHERE user_id = ? AND (status = 'confirmed' OR status = 'completed')";
+
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("i", $iduser);
+        $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        return $row['total'];
+
+        return $row['total_money'];
     }
+    
     // 1. Lấy tất cả đơn hàng (Đã thêm JOIN room_types)
     public function getAllBookings()
     {

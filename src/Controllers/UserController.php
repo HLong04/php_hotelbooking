@@ -138,10 +138,15 @@ class UserController extends Controller
     public function qluser()
     {
         $this->requireAdmin();
-        $users = $this->userModel->getAllUsers();
-        $tongtien = $this->bookingModel->countBookingByConfirmed($_SESSION['user_id']);
 
-        $this->render('admin/users/qluser', ['users' => $users, 'tongtien' => $tongtien]);
+        $users = $this->userModel->getAllUsers();
+
+        foreach ($users as &$user) {
+            $user['total_spent'] = $this->bookingModel->getTotalMoneyByUserId($user['id']);
+        }
+        unset($user);
+
+        $this->render('admin/users/qluser', ['users' => $users]);
     }
 
     public function create()
