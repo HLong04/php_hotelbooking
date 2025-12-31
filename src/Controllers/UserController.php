@@ -149,8 +149,10 @@ class UserController extends Controller
             $password = $_POST['password'];
             $phone = $_POST['phone'];
             $role = $_POST['role'];
+            $totalspent = $_POST['total_spent'];
+            $ranklevel = $_POST['rank_level'];
 
-            $isCreated = $this->userModel->createUser($fullName, $email, $password, $phone, $role);
+            $isCreated = $this->userModel->createUser($fullName, $email, $password, $phone, $role, $totalspent, $ranklevel);
 
             if ($isCreated) {
                 $_SESSION['flash_message'] = "Thêm người dùng thành công!";
@@ -180,8 +182,10 @@ class UserController extends Controller
             $phone = $_POST['phone'];
             $role = $_POST['role'];
             $newPassword = $_POST['password'];
+            $totalspent = $_POST['total_spent'];
+            $ranklevel = $_POST['rank_level'];
 
-            $this->userModel->updateUserWithRole($id, $fullName, $email, $phone, $role);
+            $this->userModel->updateUserWithRole($id, $fullName, $email, $phone, $role, $totalspent, $ranklevel);
 
             if (!empty($newPassword)) {
                 $this->userModel->adminResetPassword($id, $newPassword);
