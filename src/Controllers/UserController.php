@@ -3,15 +3,18 @@
 namespace App\Controllers;
 
 use App\Controller;
+use App\Model\Booking;
 use App\Model\User;
 
 class UserController extends Controller
 {
     private $userModel;
+    private $bookingModel;
 
     public function __construct()
     {
         $this->userModel = new User();
+        $this->bookingModel = new Booking();
     }
     private function requireLogin()
     {
@@ -136,7 +139,9 @@ class UserController extends Controller
     {
         $this->requireAdmin();
         $users = $this->userModel->getAllUsers();
-        $this->render('admin/users/qluser', ['users' => $users]);
+        $tongtien = $this->bookingModel->countBookingByConfirmed($_SESSION['user_id']);
+
+        $this->render('admin/users/qluser', ['users' => $users, 'tongtien' => $tongtien]);
     }
 
     public function create()

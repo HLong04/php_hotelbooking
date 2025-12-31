@@ -44,7 +44,7 @@
                                 <span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8em;">User</span>
                             <?php endif; ?>
                         </td>
-                        <td style="padding: 12px;"><?= $u['total_spent'] ?></td>
+                        <td style="padding: 12px;"><?= number_format($u['total_spent'], 0, ',', '.') ?> VND</td>
                         <td style="padding: 12px;"><?= $u['rank_level'] ?></td>
                         <td style="padding: 12px;">
                             <a href="/admin/users/update/<?= $u['id'] ?>" style="color: #3498db; margin-right: 10px;"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>

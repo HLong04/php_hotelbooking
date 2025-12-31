@@ -23,7 +23,16 @@ class Booking
         $row = $result->fetch_assoc();
         return $row['total'];
     }
-
+    public function countBookingByConfirmed($iduser)
+    {
+        $sql = "SELECT COUNT(*) as total FROM bookings WHERE status = 'confirmed' and user_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $iduser);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['total'];
+    }
     // 1. Lấy tất cả đơn hàng (Đã thêm JOIN room_types)
     public function getAllBookings()
     {
