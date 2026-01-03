@@ -1,4 +1,10 @@
 <?php ob_start(); ?>
+<?php
+// Tính toán trước cho gọn code hiển thị
+$total = $order['total_price'];
+$deposit = $order['deposit_amount'];
+$remaining = $total - $deposit;
+?>
 
 <div class="layout-container" style="display: flex; gap: 20px; align-items: flex-start;">
 
@@ -31,11 +37,23 @@
             <p style="margin-bottom: 8px;"><strong>Ngày trả phòng:</strong> <?= date('d/m/Y', strtotime($order['check_out'])) ?></p>
             <p style="margin-bottom: 8px;"><strong>Ngày tạo đơn:</strong> <?= date('H:i d/m/Y', strtotime($order['created_at'])) ?></p>
 
-            <div style="margin-top: 30px; padding: 20px; background: #fdfdfd; border: 1px dashed #ddd; border-radius: 5px; text-align: right;">
-                <span style="font-size: 1.1em; font-weight: 600; color: #555;">Tổng tiền thanh toán:</span><br>
-                <span style="font-size: 1.8em; color: #cda45e; font-weight: 800; margin-top: 5px; display: inline-block;">
-                    <?= number_format($order['total_price']) ?> VNĐ
-                </span>
+            <div style="margin-top: 30px; background: #fff; border: 1px solid #e1e1e1; border-top: 3px solid #cda45e; border-radius: 4px; padding: 20px;">
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Tổng giá trị đơn phòng:</span>
+                    <span style="font-weight: 600; color: #333;"><?= number_format($total) ?> VNĐ</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Đã đặt cọc:</span>
+                    <span style="font-weight: 600; color: #cda45e;">- <?= number_format($deposit) ?> VNĐ</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <span style="color: #2c3e50; font-weight: 700; font-size: 1.1em; text-transform: uppercase;">Cần thanh toán tại KS:</span>
+                    <span style="font-size: 1.6em; color: #c0392b; font-weight: 800;"><?= number_format($remaining) ?> VNĐ</span>
+                </div>
+
             </div>
 
             <div style="margin-top: 50px; display: none; justify-content: space-between;" class="print-show-flex">

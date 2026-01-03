@@ -42,7 +42,7 @@ class Booking
 
         return $row['total_money'];
     }
-    
+
     // 1. Lấy tất cả đơn hàng (Đã thêm JOIN room_types)
     public function getAllBookings()
     {
@@ -99,18 +99,23 @@ class Booking
     }
 
     // 4. Tạo đơn đặt phòng mới (Dùng cho User khi đặt phòng) -> QUAN TRỌNG
-   // Trong Booking.php
-public function createBooking($userId, $roomId, $checkIn, $checkOut, $totalPrice, $depositAmount, $status)
-{
-    $sql = "INSERT INTO bookings 
-            (user_id, room_id, check_in, check_out, total_price, deposit_amount, status, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-            
-    $stmt = $this->mysqli->prepare($sql);
-    // i: int, s: string, d: double
-    $stmt->bind_param("iissdds", $userId, $roomId, $checkIn, $checkOut, $totalPrice, $depositAmount, $status);
-    return $stmt->execute();
-}
+    // Trong Booking.php
+    // File: src/Model/Booking.php
+
+    public function createBooking($userId, $roomId, $checkIn, $checkOut, $totalPrice, $depositAmount, $paymentStatus)
+    {
+
+        $sql = "INSERT INTO bookings 
+            (user_id, room_id, check_in, check_out, total_price, deposit_amount, status, payment_status, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, NOW())";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("iissdds", $userId, $roomId, $checkIn, $checkOut, $totalPrice, $depositAmount, $paymentStatus);
+
+        if ($stmt->execute()) {
+            return $this->mysqli->insert_id;
+        }
+        return false;
+    }
     // 5. Cập nhật trạng thái
     public function updateStatus($id, $status)
     {

@@ -162,104 +162,94 @@ class OrderController extends Controller
 
     public function createBooking($roomId)
     {
-        // 1. Kiểm tra đăng nhập
+        // 1. Kiểm tra đăng nhập & Phòng
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['flash_message'] = "Vui lòng đăng nhập để đặt phòng";
+            $_SESSION['flash_message'] = "Vui lòng đăng nhập!";
             header('Location: /login');
             exit();
         }
 
-        // 2. Lấy thông tin phòng
         $room = $this->roomModel->getRoomById($roomId);
-
-        // Check phòng tồn tại và còn trống
         if (!$room || $room['status'] !== 'available') {
-            $_SESSION['flash_message'] = "Phòng này không còn trống!";
+            $_SESSION['flash_message'] = "Phòng không khả dụng!";
             header('Location: /rooms');
             exit();
         }
 
-        // 3. Xử lý hiển thị Form (GET)
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $this->render('user/booking', [
-                'room' => $room
-            ]);
+            $this->render('user/booking', ['room' => $room]);
             return;
         }
 
-        // 4. Xử lý Đặt phòng (POST)
+        // 2. Tính toán tiền
         $checkIn  = $_POST['check_in'];
         $checkOut = $_POST['check_out'];
-
-        // Validate ngày
         $days = (strtotime($checkOut) - strtotime($checkIn)) / 86400;
+
         if ($days <= 0) {
-            $this->render('user/booking', [
-                'room'  => $room,
-                'error' => 'Ngày trả phòng phải sau ngày nhận phòng'
-            ]);
-            return;
+            // Handle error...
         }
 
-        // --- BẮT ĐẦU TÍNH TOÁN TIỀN & VIP (QUAN TRỌNG) ---
-
-        // A. Tính tổng tiền gốc
+        // A. Giá gốc
         $originalPrice = $days * $room['price'];
 
-        // B. Lấy thông tin User để check hạng VIP
+        // B. Trừ tiền Rank (Đã làm đúng)
         $user = $this->userModel->getUserById($_SESSION['user_id']);
-        $rank = $user['rank_level'] ?? 'standard'; // Mặc định là standard nếu lỗi
+        $rank = $user['rank_level'] ?? 'standard';
 
-        // C. Tính % giảm giá
-        $discountRate = 0;
-        if ($rank == 'vip') {
-            $discountRate = 0.05; // 5%
-        } elseif ($rank == 'diamond') {
-            $discountRate = 0.10; // 10%
-        }
+        $discountRate = ($rank == 'vip') ? 0.05 : (($rank == 'diamond') ? 0.10 : 0);
+        $discountAmount = $originalPrice * $discountRate;
 
-        // D. Tính ra con số cuối cùng
-        $discountAmount = $originalPrice * $discountRate; // Số tiền được giảm
-        $finalPrice     = $originalPrice - $discountAmount; // Giá chốt phải trả
-        $depositAmount  = $finalPrice * 0.3; // Tiền cọc (30%)
+        // $finalPrice: Là GIÁ CHỐT HỢP ĐỒNG (Sau khi trừ Rank)
+        // Ví dụ: Gốc 1tr - Giảm 100k = 900k. (Lưu 900k vào DB)
+        $finalPrice = $originalPrice - $discountAmount;
 
-        // --------------------------------------------------
+        // C. Tính tiền cọc (Chỉ tính ra con số để khách chuyển, KHÔNG trừ vào finalPrice)
+        // Ví dụ: Cọc 30% của 900k = 270k.
+        $depositAmount = $finalPrice * 0.3; // Bạn nên để 0.3 (30%) cho chuẩn logic cũ
 
-        // 5. Lưu vào Database
-        // Gọi hàm createBooking (Đảm bảo Model Booking của bạn đã nhận đủ 7 tham số này)
-        $isCreated = $this->bookingModel->createBooking(
+        // 3. Gọi Model
+        $newBookingId = $this->bookingModel->createBooking(
             $_SESSION['user_id'],
             $roomId,
             $checkIn,
             $checkOut,
-            $finalPrice,    // Lưu giá sau khi đã giảm
-            $depositAmount, // Lưu tiền cọc
-            'pending'       // Trạng thái chờ duyệt
+            $finalPrice,
+            $depositAmount,
+            'deposited'
         );
+        // => Lúc này trong DB: Status = 'pending' (do sửa Model ở Bước 1)
 
-        if ($isCreated) {
-            // 6. Cập nhật trạng thái phòng thành 'Booked'
+        // ... Code lưu booking ở trên ...
+
+        if ($newBookingId) {
+            // 1. Update trạng thái phòng
             $this->roomModel->updateStatus($roomId, 'booked');
+            // 2. TẠO THÔNG BÁO CHI TIẾT (Logic hiển thị Rank & Tiền giảm)
+            $msg = "🎉 Đặt phòng thành công!";
 
-            // 7. Thông báo & Chuyển hướng
-            $msg = "🎉 Đặt phòng thành công! Vui lòng chờ xác nhận cọc.";
             if ($discountAmount > 0) {
-                $msg .= " (Bạn được giảm " . number_format($discountAmount) . "đ nhờ hạng thành viên $rank)";
+                $rankName = strtoupper($rank); // Chuyển vip -> VIP
+                $moneySaved = number_format($discountAmount);
+
+                $msg .= " Chúc mừng! Vì bạn là thành viên <b>$rankName</b>, ";
+                $msg .= "bạn đã được giảm trực tiếp <b>$moneySaved VNĐ</b> vào đơn hàng.";
+            } else {
+                $msg .= " Vui lòng chờ Admin xác nhận khoản cọc.";
             }
 
             $_SESSION['flash_message'] = $msg;
-            $_SESSION['alert_type'] = "success"; // Để hiện popup đẹp (nếu có dùng SweetAlert)
+            $_SESSION['alert_type'] = 'success'; // Để dùng class màu xanh (nếu có)
 
+            // 4. Chuyển hướng
             header('Location: /myorders');
             exit();
         } else {
-            // Nếu lỗi Database
-            $_SESSION['flash_message'] = "Có lỗi xảy ra, vui lòng thử lại.";
+            $_SESSION['flash_message'] = "Lỗi hệ thống!";
             header("Location: /rooms/detail/$roomId");
             exit();
         }
     }
-
 
     public function myorders()
     {
@@ -367,15 +357,9 @@ class OrderController extends Controller
         // 2. Cập nhật trạng thái phòng thành 'maintenance' (Bảo trì/Dọn dẹp)
         $this->roomModel->updateStatus($booking['room_id'], 'maintenance');
 
-        // =============================================================
-        // 3. [MỚI] TÍNH TOÁN LẠI HẠNG THÀNH VIÊN (Database)
-        // =============================================================
         // Lúc này đơn đã là completed, hàm này sẽ cộng tiền và đổi rank trong DB
         $this->userModel->updateMemberRank($userId);
 
-        // =============================================================
-        // 4. [MỚI] CẬP NHẬT LẠI SESSION (Quan trọng nhất)
-        // =============================================================
         // Lấy thông tin mới nhất từ DB (lúc này đã là VIP/Diamond)
         $updatedUser = $this->userModel->getUserById($userId);
 
