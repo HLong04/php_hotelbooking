@@ -1,6 +1,6 @@
-<?php 
+<?php
 // Bắt đầu bộ nhớ đệm output
-ob_start(); 
+ob_start();
 
 // Đảm bảo biến $rankInfo tồn tại (phòng trường hợp Controller chưa truyền qua)
 // Mặc định giá trị để không bị lỗi nếu chạy độc lập
@@ -21,18 +21,20 @@ $rankData = $rankInfo ?? [
        CORE VARIABLES & RESET
        ========================================= */
     :root {
-        --primary: #cda45e;       /* Vàng Gold chủ đạo */
-        --primary-hover: #b08d38; /* Vàng đậm hover */
-        --bg-dark-heading: #0c1016; 
+        --primary: #cda45e;
+        /* Vàng Gold chủ đạo */
+        --primary-hover: #b08d38;
+        /* Vàng đậm hover */
+        --bg-dark-heading: #0c1016;
         --bg-body-profile: #f4f4f4;
-        --card-bg: #ffffff;             
-        --text-heading: #2c3e50;  
-        --text-body: #333;          
-        --text-muted: #888;          
-        --border-color: #eee;    
-        --radius-md: 8px;        
-        --shadow-card: 0 5px 20px rgba(0,0,0,0.05);
-        
+        --card-bg: #ffffff;
+        --text-heading: #2c3e50;
+        --text-body: #333;
+        --text-muted: #888;
+        --border-color: #eee;
+        --radius-md: 8px;
+        --shadow-card: 0 5px 20px rgba(0, 0, 0, 0.05);
+
         --font-heading: 'Playfair Display', serif;
         --font-body: 'Poppins', sans-serif;
     }
@@ -44,9 +46,9 @@ $rankData = $rankInfo ?? [
         min-height: 100vh;
         background: var(--bg-body-profile);
         display: flex;
-        align-items: center;  
-        justify-content: center; 
-        padding: 80px 20px 40px 20px; 
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px 40px 20px;
         font-family: var(--font-body);
         box-sizing: border-box;
     }
@@ -66,9 +68,9 @@ $rankData = $rankInfo ?? [
         border: 1px solid var(--border-color);
         transition: all 0.3s ease;
     }
-    
+
     .profile-box-style:hover {
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         transform: translateY(-5px);
     }
 
@@ -103,7 +105,7 @@ $rankData = $rankInfo ?? [
     }
 
     .user-name {
-        font-family: var(--font-heading); 
+        font-family: var(--font-heading);
         font-size: 26px;
         font-weight: 700;
         color: var(--bg-dark-heading);
@@ -119,8 +121,18 @@ $rankData = $rankInfo ?? [
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    .role-admin { background: var(--bg-dark-heading); color: var(--primary); border: 1px solid var(--bg-dark-heading); }
-    .role-user { background: #f4f4f4; color: #555; border: 1px solid #ddd; }
+
+    .role-admin {
+        background: var(--bg-dark-heading);
+        color: var(--primary);
+        border: 1px solid var(--bg-dark-heading);
+    }
+
+    .role-user {
+        background: #f4f4f4;
+        color: #555;
+        border: 1px solid #ddd;
+    }
 
     /* =========================================
        MAIN CONTENT (RIGHT)
@@ -140,7 +152,7 @@ $rankData = $rankInfo ?? [
         color: #fff;
         /* Gradient nền tối sang trọng để làm nổi bật màu vàng */
         background: linear-gradient(135deg, #1e2024 0%, #2c3e50 100%);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         position: relative;
         overflow: hidden;
     }
@@ -149,9 +161,11 @@ $rankData = $rankInfo ?? [
     .rank-section-container::before {
         content: '';
         position: absolute;
-        top: -50%; right: -50%;
-        width: 200px; height: 200px;
-        background: radial-gradient(circle, rgba(205,164,94,0.3) 0%, transparent 70%);
+        top: -50%;
+        right: -50%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(205, 164, 94, 0.3) 0%, transparent 70%);
         pointer-events: none;
     }
 
@@ -186,6 +200,7 @@ $rankData = $rankInfo ?? [
     .rank-money-display {
         text-align: right;
     }
+
     .rank-money-val {
         font-size: 18px;
         font-weight: 700;
@@ -219,12 +234,19 @@ $rankData = $rankInfo ?? [
         position: relative;
         z-index: 2;
     }
-    .rank-footer-info strong { color: #fff; }
-    .next-rank-text { color: var(--primary); font-weight: 600; }
+
+    .rank-footer-info strong {
+        color: #fff;
+    }
+
+    .next-rank-text {
+        color: var(--primary);
+        font-weight: 600;
+    }
 
     /* --- INFO & FORM SECTION --- */
     .section-title-profile {
-        font-family: var(--font-heading); 
+        font-family: var(--font-heading);
         font-size: 22px;
         font-weight: 700;
         color: var(--text-heading);
@@ -233,6 +255,7 @@ $rankData = $rankInfo ?? [
         align-items: center;
         gap: 15px;
     }
+
     .section-title-profile::after {
         content: "";
         flex: 1;
@@ -254,13 +277,13 @@ $rankData = $rankInfo ?? [
         border: 1px solid var(--border-color);
         transition: all 0.3s ease;
         display: flex;
-        align-items: center; 
+        align-items: center;
         gap: 15px;
     }
-    
+
     .info-item:hover {
         border-color: var(--primary);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
 
     .icon-box-profile {
@@ -271,7 +294,7 @@ $rankData = $rankInfo ?? [
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--primary); 
+        color: var(--primary);
         font-size: 18px;
         flex-shrink: 0;
     }
@@ -324,6 +347,7 @@ $rankData = $rankInfo ?? [
         color: white;
         border: 1px solid var(--primary);
     }
+
     .btn-primary-profile:hover {
         background: var(--primary-hover);
         border-color: var(--primary-hover);
@@ -336,6 +360,7 @@ $rankData = $rankInfo ?? [
         color: var(--text-body);
         border: 1px solid #ddd;
     }
+
     .btn-outline-profile:hover {
         border-color: var(--primary);
         color: var(--primary);
@@ -343,36 +368,67 @@ $rankData = $rankInfo ?? [
     }
 
     @media (max-width: 768px) {
-        .profile-bg { padding: 40px 15px; }
-        .profile-wrapper { flex-direction: column; gap: 20px; }
-        .profile-sidebar { width: 100%; flex: none; padding: 30px; }
-        .info-grid { grid-template-columns: 1fr; gap: 15px; }
-        .action-row { flex-direction: column; }
-        .rank-header-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-        .rank-money-display { text-align: left; }
+        .profile-bg {
+            padding: 40px 15px;
+        }
+
+        .profile-wrapper {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-sidebar {
+            width: 100%;
+            flex: none;
+            padding: 30px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .action-row {
+            flex-direction: column;
+        }
+
+        .rank-header-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .rank-money-display {
+            text-align: left;
+        }
     }
 </style>
 
 <div class="profile-bg">
     <div class="profile-wrapper">
-        
+
         <div class="profile-sidebar profile-box-style">
             <div class="sidebar-content">
                 <div class="avatar-box">
                     <div class="avatar-circle">
-                        <?php 
-                            $initial = !empty($user['full_name']) ? strtoupper(substr($user['full_name'], 0, 1)) : '';
+                        <?php
+                        $initial = !empty($user['full_name']) ? strtoupper(substr($user['full_name'], 0, 1)) : '';
                         ?>
-                        <?php if($initial): ?>
+                        <?php if ($initial): ?>
                             <span><?= $initial ?></span>
                         <?php else: ?>
                             <i class="fa-solid fa-user"></i>
                         <?php endif; ?>
                     </div>
                 </div>
-                
+
                 <h2 class="user-name"><?= htmlspecialchars($user['full_name'] ?? 'Guest User') ?></h2>
-                
+                <?php if ($user['rank_level'] == 'vip'): ?>
+                    <img src="/templates/image/—Pngtree—3d metal vip badge golden_7522372.png" alt="anh kimcuong" style="width: 100px; display: block; margin: 0 auto 10px auto;">
+                <?php elseif ($user['rank_level'] == 'diamond'): ?>
+                    <img src="/templates/image/Gemini_Generated_Image_caduu0caduu0cadu.png" alt="anh kimcuong" style="width: 100px; display: block; margin: 0 auto 10px auto;">
+                <?php else:  ?>
+                <?php endif; ?>
                 <span class="user-role-badge <?= ($user['role'] ?? 0) == 1 ? 'role-admin' : 'role-user' ?>">
                     <?= ($user['role'] ?? 0) == 1 ? 'Administrator' : 'Member' ?>
                 </span>
@@ -380,7 +436,7 @@ $rankData = $rankInfo ?? [
         </div>
 
         <div class="profile-main profile-box-style">
-            
+
             <div class="rank-section-container">
                 <div class="rank-header-row">
                     <div>
@@ -401,10 +457,10 @@ $rankData = $rankInfo ?? [
 
                 <div class="rank-footer-info">
                     <div>Tiến trình: <strong><?= $rankData['percent'] ?>%</strong></div>
-                    
-                    <?php if($rankData['next_rank'] !== 'Max Level'): ?>
+
+                    <?php if ($rankData['next_rank'] !== 'Max Level'): ?>
                         <div>
-                            Cần thêm <strong class="next-rank-text"><?= $rankData['needed'] ?> VNĐ</strong> 
+                            Cần thêm <strong class="next-rank-text"><?= $rankData['needed'] ?> VNĐ</strong>
                             để lên <strong><?= $rankData['next_rank'] ?></strong>
                         </div>
                     <?php else: ?>
@@ -430,7 +486,7 @@ $rankData = $rankInfo ?? [
                         <span><?= htmlspecialchars($user['phone'] ?? 'Chưa cập nhật') ?></span>
                     </div>
                 </div>
-                
+
                 <div class="info-item">
                     <div class="icon-box-profile"><i class="fa-solid fa-calendar-days"></i></div>
                     <div class="data-box">
@@ -461,13 +517,13 @@ $rankData = $rankInfo ?? [
     </div>
 </div>
 
-<?php 
-$content = ob_get_clean(); 
+<?php
+$content = ob_get_clean();
 // Include Layout Profile (Đảm bảo đường dẫn này đúng trong project của bạn)
 if (defined('APPROOT')) {
     include APPROOT . '/templates/layoutprofile.php';
 } else {
     // Fallback nếu không định nghĩa APPROOT (Tùy chỉnh đường dẫn này nếu cần)
-    include '../templates/layoutprofile.php'; 
+    include '../templates/layoutprofile.php';
 }
 ?>

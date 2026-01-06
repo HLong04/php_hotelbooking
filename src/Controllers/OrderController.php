@@ -319,7 +319,7 @@ class OrderController extends Controller
         $this->roomModel->updateStatus($booking['room_id'], 'available');
 
         // 3. Thông báo thành công
-        $_SESSION['flash_message'] = "✅ Đã hủy đơn đặt phòng thành công!";
+        $_SESSION['flash_message'] = "Đã hủy đơn đặt phòng thành công! Tiền cọc của bạn sẽ được hoàn trả trong 24h tới!!! vui kiểm tra tài khoản của mình!!";
         header('Location: /myorders');
         exit();
     }

@@ -180,9 +180,10 @@ class Booking
         $params = [];
         // 1. Tìm theo Từ khóa (Mã đơn hoặc Tên khách)
         if (!empty($keyword)) {
-            $sql .= " AND (b.id LIKE ? OR u.full_name LIKE ?)";
+            $sql .= " AND (b.id LIKE ? OR u.full_name LIKE ? OR u.email like ?)";
             $keywordParam = "%$keyword%";
-            $types .= "ss";
+            $types .= "sss";
+            $params[] = $keywordParam;
             $params[] = $keywordParam;
             $params[] = $keywordParam;
         }

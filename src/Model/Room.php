@@ -20,7 +20,7 @@ class Room
     // Mục đích: Chỉ lấy danh sách LOẠI PHÒNG (Standard, VIP...)
     // ================================================================
 
-    public function getFeaturedRooms($limit =10)
+    public function getFeaturedRooms($limit = 10)
     {
         $sql = "SELECT * FROM room_types ORDER BY price ASC LIMIT ?";
 
@@ -68,7 +68,7 @@ class Room
                 FROM rooms r
                 LEFT JOIN room_types rt ON r.room_type_id = rt.id
                 WHERE 1=1";
-        
+
         $types = "";
         $params = [];
 
@@ -143,6 +143,14 @@ class Room
                 JOIN room_types rt ON r.room_type_id = rt.id 
                 ORDER BY room_number ASC";
         return $this->mysqli->query($sql)->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function countStatusRooms()
+    {
+        $sql = "SELECT Count(*) as total FROM rooms WHERE status = 'available'";
+        $result = $this->mysqli->query($sql);
+        $row = $result->fetch_assoc();
+        return (int)$row['total'];
     }
 
     public function getRoomById($id)

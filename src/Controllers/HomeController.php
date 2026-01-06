@@ -5,18 +5,21 @@ namespace App\Controllers;
 use App\Controller;
 use App\Model\Room;
 use App\Model\RoomType;
+use App\Model\User;
 
 class HomeController extends Controller
 {
 
     private $roomModel;
     private $roomTypeModel;
+    private $userModel;
 
     public function __construct()
     {
         // Khởi tạo Model 1 lần dùng cho toàn class
         $this->roomModel = new Room();
         $this->roomTypeModel = new RoomType();
+        $this->userModel = new User();
     }
 
     public function services()
@@ -29,8 +32,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $featuredRooms = $this->roomModel->getFeaturedRooms(5);
-
+        $featuredRooms = $this->roomModel->getFeaturedRooms(10);
         $this->render('user/home', ['roomTypes' => $featuredRooms]);
     }
 
@@ -58,11 +60,13 @@ class HomeController extends Controller
      * Trang danh sách tất cả phòng (nếu có)
      * Route: /rooms
      */
+
     public function listRoom()
     {
         $rooms = $this->roomModel->getAllRooms();
         $typeroom = $this->roomTypeModel->getAllRoomTypes();
-        $this->render('user/list', ['rooms' => $rooms, 'typeroom' => $typeroom]);
+        $coutstausrooms = $this->roomModel->countStatusRooms();
+        $this->render('user/list', ['rooms' => $rooms, 'typeroom' => $typeroom, 'coutstatusrooms' => $coutstausrooms]);
     }
 
     /**

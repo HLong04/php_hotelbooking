@@ -69,6 +69,8 @@ class AuthController extends Controller
             $phone    = $_POST['phone'];
             $password = $_POST['password'];
             $passwordCheck = $_POST['password_check'];
+            $ranklevel = $_POST['rank_level'];
+
 
             if ($password !== $passwordCheck) {
                 $this->render('auth/register', ['error' => 'Mật khẩu nhập lại không khớp!']);

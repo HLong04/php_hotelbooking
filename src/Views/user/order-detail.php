@@ -364,6 +364,10 @@ $nights = $checkOut->diff($checkIn)->days;
                 <span>Giá phòng x <?= $nights ?> đêm:</span>
                 <span><?= number_format($booking['total_price']) ?> VNĐ</span>
             </div>
+            <div class="price-row">
+                <span>Tiền đặt cọc: </span>
+                <span><?= number_format($booking['deposit_amount']) ?> VNĐ</span>
+            </div>
             <?php if (!empty($booking['discount'])): ?>
             <div class="price-row">
                 <span>Giảm giá:</span>
@@ -372,7 +376,7 @@ $nights = $checkOut->diff($checkIn)->days;
             <?php endif; ?>
             <div class="price-total">
                 <span>Tổng thanh toán:</span>
-                <span><?= number_format($booking['total_price']) ?> VNĐ</span>
+                <span><?= number_format($booking['total_price'] - $booking['deposit_amount']) ?> VNĐ</span>
             </div>
         </div>
 

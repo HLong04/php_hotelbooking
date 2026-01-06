@@ -49,11 +49,13 @@ class UserController extends Controller
             header('Location: /');
             exit();
         }
+
         // ==================================================================
         // BẮT ĐẦU ĐOẠN CODE CẦN THÊM (LOGIC TÍNH RANK)
         // ==================================================================
         
         $totalSpent = (float)($user['total_spent'] ?? 0);
+        
         
         // Cấu hình mốc tiền (Bạn có thể đổi số ở đây)
         $milestones = [

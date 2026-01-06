@@ -15,7 +15,6 @@
 </head>
 
 <body>
-
     <nav>
         <div class="nav-container">
             <a href="/" class="logo">
@@ -45,12 +44,6 @@
                             <li><a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
                         </ul>
                     </li>
-                    
-                        <li><img src="/templates/image/—Pngtree—3d metal vip badge golden_7522372.png" alt="anh kimcuong" style="width: 100px; display: block; margin: 0 auto 10px auto;">
-                        </li>
-                        <li><img src="/templates/image/Gemini_Generated_Image_caduu0caduu0cadu.png" alt="anh kimcuong" style="width: 100px; display: block; margin: 0 auto 10px auto;">
-                        </li>
-                        
                 <?php else: ?>
                     <li><a href="/login" style="border: 1px solid var(--primary); padding: 8px 20px; border-radius: 20px; color: var(--primary);">Đăng nhập</a></li>
                 <?php endif; ?>
