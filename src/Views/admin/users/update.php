@@ -22,10 +22,6 @@
                 <label>Tổng chi tiêu:</label>
                 <input type="number" name="total_spent" value="<?= $user['total_spent'] ?>" required style="width: 100%; padding: 8px; border: 1px solid #ddd;">
             </div>
-            <!-- <div style="margin-bottom: 15px;">
-                <label>Cấp độ:</label>
-                <input type="text" name="rank_level" value="<?= $user['rank_level'] ?>" required style="width: 100%; padding: 8px; border: 1px solid #ddd;">
-            </div> -->
             <div style="margin-bottom: 15px;">
                 <label>Cấp độ:</label>
                 <select name="rank_level" style="width: 100%; padding: 8px; border: 1px solid #ddd;">

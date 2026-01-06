@@ -81,6 +81,7 @@
                     <th style="padding: 12px;">Phòng</th>
                     <th style="padding: 12px;">Thời gian</th>
                     <th style="padding: 12px;">Tổng tiền</th>
+                    <th style="padding: 12px;">Tiền cọc</th>
                     <th style="padding: 12px;">Trạng thái</th>
                     <th style="padding: 12px;">Hành động</th>
                 </tr>
@@ -107,7 +108,9 @@
                             <td style="padding: 12px; color: #cda45e; font-weight: bold;">
                                 <?= number_format($order['total_price']) ?> đ
                             </td>
-                            
+                            <td style="padding: 12px; color: #cda45e; font-weight: bold;">
+                                <?= number_format($order['deposit_amount']) ?> đ
+                            </td>
                             <td style="padding: 12px;">
                                 <?php 
                                     $statusColor = 'gray'; $statusText = $order['status'];

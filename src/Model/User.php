@@ -39,7 +39,8 @@ class User
                 role, 
                 password,       -- <--- Thêm password
                 created_at,
-                total_spent
+                total_spent,
+                rank_level
             FROM users 
             WHERE id = $id";
 
