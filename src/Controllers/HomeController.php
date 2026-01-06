@@ -41,20 +41,26 @@ class HomeController extends Controller
      * Route: /rooms/type/{id}
      */
     public function roomsByType($id)
-    {
-        $typeInfo = $this->roomTypeModel->getRoomTypeById($id);
-
-        if (!$typeInfo) {
-            header("Location: /rooms");
-            exit;
-        }
-
-        $roomList = $this->roomModel->getRoomsByType($id);
-        $this->render('user/detail_room', [
-            'typeInfo' => $typeInfo,
-            'roomList' => $roomList
-        ]);
+{
+    $typeInfo = $this->roomTypeModel->getRoomTypeById($id);
+    if (!$typeInfo) {
+        header("Location: /");
+        exit;
     }
+
+    $roomList = $this->roomModel->getRoomsByType($id);
+
+    $reviewModel = new \App\Model\Review();
+    $reviews     = $reviewModel->getByRoomTypeId($id);
+    $ratingInfo  = $reviewModel->getRatingSummary($id);
+
+    $this->render('user/detail_room', [
+        'typeInfo' => $typeInfo,
+        'roomList' => $roomList ,
+        'reviews'  => $reviews,
+        'rating'   => $ratingInfo
+    ]);
+}
 
     /**
      * Trang danh sách tất cả phòng (nếu có)

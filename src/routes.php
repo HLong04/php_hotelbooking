@@ -9,6 +9,7 @@ use App\Controllers\RoomController;
 use App\Controllers\OrderController;
 use App\Controllers\AdminController;
 use App\Controllers\TypeRoomController;
+use App\Controllers\ReviewController;
 
 $authCtrl = new AuthController();
 $homeCtrl = new HomeController();
@@ -17,6 +18,7 @@ $roomCtrl = new RoomController();
 $orderCtrl = new OrderController();
 $adminCtrl = new AdminController();
 $typeRoomCtrl = new TypeRoomController();
+$reviewCtrl = new ReviewController();   
 
 
 
@@ -42,6 +44,10 @@ $router->addRoute('#^/rooms/type/(\d+)$#', [$homeCtrl, 'roomsByType']);
 $router->addRoute('#^/booking/create/(\d+)$#', [$orderCtrl, 'createBooking']);
 $router->addRoute('#^/booking/checkout/(\d+)$#', [$orderCtrl, 'checkout']);
 $router->addRoute('#^/booking/cancel/(\d+)$#', [$orderCtrl, 'cancel']);
+
+// Thêm đoạn này vào routes.php
+$router->addRoute('#^/reviews/create/(\d+)$#', [$reviewCtrl, 'create']); // Form đánh giá
+$router->addRoute('#^/reviews/store$#', [$reviewCtrl, 'store']);         // Xử lý lưu
 
 // Quản lý cá nhân
 $router->addRoute('#^/profile/(\d+)$#', [$userCtrl, 'Profile']);

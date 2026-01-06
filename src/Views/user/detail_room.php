@@ -2,6 +2,7 @@
 // src/Views/user/detail_room.php
 ob_start();
 
+
 // Helper nhỏ để map trạng thái từ tiếng Anh (DB) sang tiếng Việt và class CSS
 function getStatusConfig($status) {
     switch ($status) {
@@ -99,6 +100,206 @@ function getStatusConfig($status) {
         </div>
     </div>
 </div>
+<style>
+    .reviews-section {
+        max-width: 100%;
+        margin-top: 40px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Tiêu đề & Tổng điểm */
+    .reviews-header-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fdfdfd;
+        padding: 25px;
+        border-radius: 4px;
+        border: 1px solid #eee;
+        margin-bottom: 30px;
+    }
+
+    .rating-overview {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .big-number {
+        font-size: 54px;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1;
+    }
+
+    .stars-total {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .gold-stars {
+        color: #C19B5C; /* Màu vàng đồng LuxStay */
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+
+    .total-text {
+        color: #777;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    /* Danh sách bình luận */
+    .review-card {
+        padding: 20px 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        gap: 20px;
+        transition: 0.3s;
+    }
+
+    .review-card:last-child {
+        border-bottom: none;
+    }
+
+    .user-icon {
+        width: 45px;
+        height: 45px;
+        background: #C19B5C; /* Đổi màu nền avatar thành vàng đồng */
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        flex-shrink: 0;
+        text-transform: uppercase;
+    }
+
+    .review-body {
+        flex-grow: 1;
+    }
+
+    .review-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .user-info .user-name {
+        display: block;
+        font-weight: 600;
+        font-size: 15px;
+        color: #333;
+        margin-bottom: 4px;
+    }
+    
+    .room-badge {
+        font-size: 11px;
+        background: #f0f0f0;
+        color: #666;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 8px;
+        vertical-align: middle;
+        font-weight: normal;
+    }
+
+    .time-stamp {
+        font-size: 12px;
+        color: #bbb;
+    }
+
+    .comment-text {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .empty-msg {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+        background: #fafafa;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="reviews-section">
+    <h3 style="font-size: 20px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+        Đánh giá của khách hàng
+    </h3>
+
+    <?php
+    $avg   = $rating['avg_rating'] ?? 0;
+    $total = $rating['total_reviews'] ?? 0;
+
+    // Hàm tạo sao vàng
+    function showStars($num) {
+        $html = '';
+        for ($i = 1; $i <= 5; $i++) {
+            $html .= ($i <= $num) ? '★' : '☆';
+        }
+        return $html;
+    }
+    ?>
+
+    <div class="reviews-header-box">
+        <div class="rating-overview">
+            <div class="big-number"><?= number_format($avg, 1) ?></div>
+            <div class="stars-total">
+                <div class="gold-stars"><?= showStars(round($avg)) ?></div>
+                <div class="total-text"><?= $total ?> đánh giá chân thực</div>
+            </div>
+        </div>
+        <div style="color: #C19B5C; font-weight: bold; font-size: 14px;">
+            <i class="fa fa-check-circle"></i> 100% Khách đã lưu trú
+        </div>
+    </div>
+
+    <div class="review-list">
+        <?php if (empty($reviews)): ?>
+            <div class="empty-msg">
+                <p>Chưa có đánh giá nào cho hạng phòng này.</p>
+            </div>
+        <?php else: ?>
+            <?php foreach ($reviews as $rv): ?>
+                <div class="review-card">
+                    <div class="user-icon">
+                        <?= strtoupper(substr($rv['full_name'] ?? 'U', 0, 1)) ?>
+                    </div>
+                    
+                    <div class="review-body">
+                        <div class="review-meta">
+                            <div class="user-info">
+                                <div>
+                                    <span class="user-name">
+                                        <?= htmlspecialchars($rv['full_name'] ?? 'Khách hàng ẩn danh') ?>
+                                        <?php if(!empty($rv['room_number'])): ?>
+                                            <span class="room-badge">Phòng <?= htmlspecialchars($rv['room_number']) ?></span>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="gold-stars" style="font-size: 12px;">
+                                    <?= showStars($rv['rating']) ?>
+                                </div>
+                            </div>
+                            <span class="time-stamp">
+                                <?= date('d/m/Y', strtotime($rv['created_at'])) ?>
+                            </span>
+                        </div>
+                        <p class="comment-text"><?= nl2br(htmlspecialchars($rv['comment'])) ?></p>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
+
+
 
 <?php
 $content = ob_get_clean();

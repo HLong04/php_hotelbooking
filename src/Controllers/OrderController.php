@@ -340,6 +340,7 @@ class OrderController extends Controller
         // Kiểm tra booking có tồn tại và thuộc về user hiện tại
         if (!$booking || $booking['user_id'] != $userId) {
             $_SESSION['flash_message'] = "Đơn đặt phòng không tồn tại!";
+
             header('Location: /myorders');
             exit();
         }
@@ -347,6 +348,10 @@ class OrderController extends Controller
         // Kiểm tra trạng thái phải là 'confirmed' mới được checkout
         if ($booking['status'] != 'confirmed') {
             $_SESSION['flash_message'] = "Chỉ có thể checkout đơn hàng đã xác nhận!";
+            // ================== THÊM PHẦN NÀY ==================
+            $_SESSION['show_review_popup'] = true;
+            $_SESSION['review_booking_id'] = $bookingId;
+            // ==================================================
             header('Location: /myorders/detail/' . $bookingId);
             exit();
         }
@@ -377,14 +382,19 @@ class OrderController extends Controller
         // =============================================================
 
         // 5. Thông báo thành công
-        $msg = "✅ Checkout thành công! Cảm ơn quý khách.";
+        $_SESSION['flash_message'] = "✅ Checkout thành công! Cảm ơn quý khách.";
+    
+        // === THÊM ĐOẠN NÀY ===
+        // Đặt cờ hiệu để View biết là vừa checkout xong
+        $_SESSION['show_review_popup'] = true; 
+        $_SESSION['review_booking_id'] = $bookingId;
 
         // Khoe ngay nếu được lên hạng
         if ($updatedUser['rank_level'] != 'standard') {
-            $msg .= " Chúc mừng! Bạn hiện là thành viên " . strtoupper($updatedUser['rank_level']);
+            $_SESSION['flash_message'] = " Chúc mừng! Bạn hiện là thành viên " . strtoupper($updatedUser['rank_level']);
         }
 
-        $_SESSION['flash_message'] = $msg;
+        
         header('Location: /myorders/detail/' . $bookingId);
         exit();
     }
