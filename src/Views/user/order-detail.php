@@ -390,6 +390,15 @@ $nights = $checkOut->diff($checkIn)->days;
                 <i class="fa-solid fa-arrow-left"></i>
                 Quay lại
             </a>
+            <!-- Nút hành động -->
+        <?php if ($booking['status'] == 'completed'): ?>
+        <div class="action-buttons">
+            <a href="/reviews/create/<?= $booking['id'] ?>" class="btn btn-back">
+                <i class="fa-solid fa-arrow-left"></i>
+                Viết đánh giá
+            </a>
+        <?php endif; ?>
+            
             
             <?php if ($booking['status'] == 'pending'): ?>
             <button onclick="return confirm('Bạn có chắc chắn muốn hủy đơn đặt phòng này không?') && (window.location.href='/booking/cancel/<?= $booking['id'] ?>')" 
@@ -409,6 +418,43 @@ $nights = $checkOut->diff($checkIn)->days;
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if (isset($_SESSION['show_review_popup']) && $_SESSION['show_review_popup'] === true): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Checkout thành công!',
+            text: "Cảm ơn quý khách đã sử dụng dịch vụ. Quý khách có muốn dành chút thời gian để đánh giá trải nghiệm không?",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#27ae60',  // Màu xanh lá (hoặc #cda45e vàng đồng)
+            cancelButtonColor: '#95a5a6',
+            confirmButtonText: '<i class="fa-solid fa-star"></i> Đánh giá ngay',
+            cancelButtonText: 'Để sau',
+            backdrop: `
+                rgba(0,0,123,0.4)
+                left top
+                no-repeat
+            `
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu chọn "Đánh giá ngay" -> Chuyển sang trang đánh giá
+                window.location.href = '/reviews/create/<?= $_SESSION['review_booking_id'] ?>';
+            } else {
+                // Nếu chọn "Để sau" -> Popup tự tắt, người dùng ở lại trang hiện tại
+            }
+        });
+    });
+</script>
+
+<?php 
+    // Quan trọng: Xóa session ngay lập tức để F5 không hiện lại
+    unset($_SESSION['show_review_popup']);
+    unset($_SESSION['review_booking_id']);
+endif; 
+?>
+
 
 <?php 
 $content = ob_get_clean(); 
