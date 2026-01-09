@@ -135,7 +135,7 @@ ob_start();
                                     <p style="font-size: 13px; color: #666; margin-bottom: 5px;">Quét mã để cọc tiền</p>
 
                                     <img id="qr-image"
-                                        src="https://img.vietqr.io/image/VCB-1031323098-compact2.jpg?amount=0&addInfo=DATPHONG&accountName=LUXSTAY"
+                                        src="https://img.vietqr.io/image/MB-0000000000-compact2.jpg?amount=0&addInfo=DATPHONG&accountName=LUXSTAY"
                                         alt="QR Thanh Toán" style="width: 100%; max-width: 180px;">
 
                                     <p style="font-weight: bold; margin-top: 10px; color: #2c3e50;">MB Bank</p>
@@ -249,7 +249,7 @@ ob_start();
                 // Cấu trúc API VietQR: https://img.vietqr.io/image/<BANK>-<STK>-compact2.jpg?amount=<TIEN>&addInfo=<NOIDUNG>
 
                 let contentCK = `COC PHONG ${roomNumber}`;
-                let qrUrl = `https://img.vietqr.io/image/VCB-1031323098-compact2.jpg?amount=${depositMoney}&addInfo=${encodeURIComponent(contentCK)}&accountName=LUXSTAY`;
+                let qrUrl = `https://img.vietqr.io/image/MB-0000000000-compact2.jpg?amount=${depositMoney}&addInfo=${encodeURIComponent(contentCK)}&accountName=LUXSTAY`;
 
                 qrImage.src = qrUrl;
 

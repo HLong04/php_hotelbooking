@@ -154,7 +154,8 @@ class Booking
                     u.email as guest_email,
                     u.phone as guest_phone,
                     r.room_number,
-                    rt.name as room_type_name
+                    rt.name as room_type_name,
+                    rt.max_adults as guests
                 FROM bookings b
                 LEFT JOIN users u ON b.user_id = u.id
                 LEFT JOIN rooms r ON b.room_id = r.id
@@ -166,7 +167,7 @@ class Booking
     }
 
     // Tìm kiếm Booking nâng cao
-    public function searchBookingsAdvanced($keyword, $roomNumber, $price, $status)
+    public function searchBookings($keyword, $roomNumber, $price, $status)
     {
         $sql = "SELECT b.*, 
                        u.full_name, u.email, 

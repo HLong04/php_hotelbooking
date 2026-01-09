@@ -45,9 +45,12 @@ class RoomController extends Controller
             header('Location: /');
             exit();
         }
+
         $typeroom = $this->roomTypeModel->getAllRoomTypes();
+
         // 3. Gọi Model để tìm các LOẠI PHÒNG còn trống
         // Hàm searchAvailableRoomTypes phải được khai báo trong Model/Room.php
+
         $availableRooms = $this->roomModel->searchAvailableRoomTypes($checkIn, $checkOut, $maxAdults);
 
         // 4. Render view kết quả
@@ -61,7 +64,7 @@ class RoomController extends Controller
     }
 
     // ==========================================
-    // PHẦN QUẢN TRỊ (ADMIN) - Code của bạn giữ nguyên
+    // PHẦN QUẢN TRỊ (ADMIN) thì t 
     // ==========================================
 
     /**
@@ -83,7 +86,7 @@ class RoomController extends Controller
         // 3. Gọi Model
         $totalRecords = $this->roomModel->countsRooms($keyword, $status);
         $totalPages = ceil($totalRecords / $limit);
-        $rooms = $this->roomModel->getRoomsPagination($keyword, $status, $limit, $offset);
+        $rooms = $this->roomModel->getSearchRoomsPaginationAdmin($keyword, $status, $limit, $offset);
 
         $data = [
             'rooms' => $rooms,
@@ -99,14 +102,27 @@ class RoomController extends Controller
      * Thêm mới phòng
      * Route: /admin/rooms/create
      */
+    // File: src/Controllers/RoomController.php
+
     public function create()
     {
         $this->requireAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $roomNumber = $_POST['room_number'];
+            $roomNumber = trim($_POST['room_number']);
             $roomTypeId = $_POST['room_type_id'];
             $status     = $_POST['status'];
+
+            if ($this->roomModel->checkRoomExists($roomNumber)) {
+                $error = "Lỗi: Số phòng '$roomNumber' đã tồn tại! Vui lòng chọn số khác.";
+                $roomTypes = $this->roomTypeModel->getAllRoomTypes();
+                $this->render('admin/rooms/create', [
+                    'error' => $error,
+                    'roomTypes' => $roomTypes,
+                    'old_room_number' => $roomNumber
+                ]);
+                return;
+            }
 
             $isCreated = $this->roomModel->createRoom($roomTypeId, $roomNumber, $status);
 
@@ -115,7 +131,7 @@ class RoomController extends Controller
                 header('Location: /admin/rooms');
                 exit();
             } else {
-                $error = "Lỗi: Không thể tạo phòng (Có thể số phòng bị trùng).";
+                $error = "Lỗi hệ thống: Không thể tạo phòng.";
                 $roomTypes = $this->roomTypeModel->getAllRoomTypes();
                 $this->render('admin/rooms/create', ['error' => $error, 'roomTypes' => $roomTypes]);
             }

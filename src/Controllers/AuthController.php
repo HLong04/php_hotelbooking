@@ -62,6 +62,7 @@ class AuthController extends Controller
             header('Location: /');
             exit();
         }
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $fullName = $_POST['full_name'];
@@ -69,8 +70,6 @@ class AuthController extends Controller
             $phone    = $_POST['phone'];
             $password = $_POST['password'];
             $passwordCheck = $_POST['password_check'];
-            $ranklevel = $_POST['rank_level'];
-
 
             if ($password !== $passwordCheck) {
                 $this->render('auth/register', ['error' => 'Mật khẩu nhập lại không khớp!']);

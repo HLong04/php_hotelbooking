@@ -200,12 +200,8 @@ class User
         return $row['count'] > 0;
     }
 
-
-    // Trong src/Model/User.php
-
     public function updateMemberRank($userId)
     {
-        // 1. Tính tổng tiền (Ép kiểu float để chắc chắn là số)
         $sql = "SELECT SUM(total_price) as total_spent 
                 FROM bookings 
                 WHERE user_id = ? AND status = 'completed'";
@@ -215,19 +211,14 @@ class User
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
         
-        // Ép kiểu float
         $totalSpent = (float)($result['total_spent'] ?? 0);
 
-        // 2. Xét hạng (QUAN TRỌNG: PHẢI XÉT TỪ CAO XUỐNG THẤP)
-        $rank = 'standard'; 
-        
+        $rank = 'standard';         
         if ($totalSpent >= 50000000) { 
-            $rank = 'diamond'; // Ưu tiên xét Diamond trước
+            $rank = 'diamond';
         } elseif ($totalSpent >= 10000000) { 
-            $rank = 'vip';     // Sau đó mới xét VIP
+            $rank = 'vip';  
         }
-
-        // 3. Cập nhật
         $updateSql = "UPDATE users SET total_spent = ?, rank_level = ? WHERE id = ?";
         $updateStmt = $this->connection->prepare($updateSql);
         $updateStmt->bind_param("dsi", $totalSpent, $rank, $userId);

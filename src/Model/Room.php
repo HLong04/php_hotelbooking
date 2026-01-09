@@ -61,9 +61,8 @@ class Room
     }
 
     // 2. Lấy danh sách phòng có Phân trang & Tìm kiếm
-    public function getRoomsPagination($keyword = '', $status = '', $limit = 10, $offset = 0)
+    public function getSearchRoomsPaginationAdmin($keyword = '', $status = '', $limit = 10, $offset = 0)
     {
-        // Có JOIN để lấy tên loại phòng
         $sql = "SELECT r.*, rt.name as room_type_name 
                 FROM rooms r
                 LEFT JOIN room_types rt ON r.room_type_id = rt.id
@@ -72,7 +71,6 @@ class Room
         $types = "";
         $params = [];
 
-        // Lọc theo từ khóa
         if (!empty($keyword)) {
             $sql .= " AND (r.id LIKE ? OR r.room_number LIKE ?)";
             $keywordParam = "%$keyword%";
@@ -81,14 +79,12 @@ class Room
             $params[] = $keywordParam;
         }
 
-        // Lọc theo trạng thái
         if (!empty($status)) {
             $sql .= " AND r.status = ?";
             $types .= "s";
             $params[] = $status;
         }
 
-        // Thêm sắp xếp và giới hạn
         $sql .= " ORDER BY r.id DESC LIMIT ? OFFSET ?";
         $types .= "ii";
         $params[] = $limit;
@@ -99,6 +95,11 @@ class Room
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
+
+
+
+
 
     // ================================================================
     // 2. HÀM DÙNG CHO TRANG TÌM KIẾM (SEARCH PAGE)
@@ -138,7 +139,7 @@ class Room
 
     public function getAllRooms()
     {
-        $sql = "SELECT r.*, rt.name as room_type_name, rt.price, rt.image 
+        $sql = "SELECT r.*, rt.name as room_type_name, rt.price, rt.image, rt.max_adults
                 FROM rooms r 
                 JOIN room_types rt ON r.room_type_id = rt.id 
                 ORDER BY room_number ASC";
@@ -232,5 +233,20 @@ class Room
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("si", $status, $roomId);
         return $stmt->execute();
+    }
+
+    public function checkRoomExists($roomNumber)
+    {
+        $sql = "SELECT COUNT(*) as count FROM rooms WHERE room_number = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $roomNumber);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+
+        if ($result['count'] > 0) {
+            return true;
+        }
+        return false;
     }
 }

@@ -21,10 +21,12 @@ class TypeRoomController extends Controller
             exit();
         }
     }
+
     /**
      * 1. DANH SÁCH LOẠI PHÒNG
      * Route: /admin/typeroom
      */
+
     public function qltyperoom()
     {
         $this->requireAdmin();
@@ -52,6 +54,7 @@ class TypeRoomController extends Controller
      * 2. TẠO LOẠI PHÒNG MỚI
      * Route: /admin/typeroom/create
      */
+
     public function createType()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -84,6 +87,7 @@ class TypeRoomController extends Controller
      * 3. CẬP NHẬT LOẠI PHÒNG
      * Route: /admin/typeroom/update/{id}
      */
+
     public function updateType($id)
     {
         $type = $this->roomTypeModel->getRoomTypeById($id);
@@ -112,10 +116,12 @@ class TypeRoomController extends Controller
             $this->render('admin/room_types/update', ['type' => $type]);
         }
     }
+
     /**
      * 4. XÓA LOẠI PHÒNG
      * Route: /admin/typeroom/delete/{id}
      */
+    
     public function deleteType($id)
     {
         $this->roomTypeModel->deleteRoomType($id);

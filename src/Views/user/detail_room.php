@@ -100,6 +100,7 @@ function getStatusConfig($status) {
         </div>
     </div>
 </div>
+
 <style>
     .reviews-section {
         max-width: 100%;

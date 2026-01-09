@@ -37,8 +37,6 @@ class OrderController extends Controller
     {
         $this->requireAdmin();
 
-        // $orders = $this->bookingModel->getAllBookings();
-
         $keyword = $_GET['keyword'] ?? '';
         $room    = $_GET['room'] ?? '';
         $price   = $_GET['price'] ?? '';
@@ -46,7 +44,7 @@ class OrderController extends Controller
 
         // Gọi Model
         if ($keyword || $room || $price || $status) {
-            $orders = $this->bookingModel->searchBookingsAdvanced($keyword, $room, $price, $status);
+            $orders = $this->bookingModel->searchBookings($keyword, $room, $price, $status);
         } else {
             $orders = $this->bookingModel->getAllBookings();
         }
@@ -58,10 +56,11 @@ class OrderController extends Controller
             'price'   => $price,
             'status'  => $status
         ];
+
         $this->render('admin/orders/qlorder', $data);
     }
 
-    // 2. Xem chi tiết đơn (Và form đổi trạng thái nằm ở đây luôn)
+    // 2. Xem chi tiết đơn (Và form đổi trạng thái nằm ở đây luôn)z
     public function show($id)
     {
         $this->requireAdmin();
@@ -83,34 +82,23 @@ class OrderController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newStatus = $_POST['status'];
 
-            // 1. Lấy thông tin booking hiện tại
             $booking = $this->bookingModel->getBookingById($id);
 
             if ($booking) {
                 $roomId = $booking['room_id'];
-                $userId = $booking['user_id']; // Lấy thêm User ID để tính hạng
+                $userId = $booking['user_id'];
 
-                // 2. Cập nhật trạng thái Booking
                 $this->bookingModel->updateStatus($id, $newStatus);
 
-
-                // 3. Xử lý đồng bộ trạng thái Phòng (Room)
                 if ($newStatus == 'confirmed' || $newStatus == 'pending') {
                     $this->roomModel->updateStatus($roomId, 'booked');
                 } elseif ($newStatus == 'completed' || $newStatus == 'cancelled') {
                     $this->roomModel->updateStatus($roomId, 'available');
                 }
 
-                // =========================================================
-                // 4. [MỚI] TỰ ĐỘNG CẬP NHẬT HẠNG THÀNH VIÊN (VIP LOGIC)
-                // =========================================================
-                // Chỉ chạy khi Admin bấm "Đã trả phòng" (Completed)
-
                 if ($newStatus == 'completed') {
                     $this->userModel->updateMemberRank($userId);
                 }
-                // =========================================================
-
                 $_SESSION['flash_message'] = "Cập nhật trạng thái Order #$id thành công!";
             } else {
                 $_SESSION['flash_message'] = "Không tìm thấy đơn hàng!";
@@ -130,19 +118,15 @@ class OrderController extends Controller
         header('Location: /admin/orders');
         exit();
     }
+
     public function printInvoice($id)
     {
         $this->requireAdmin();
-
-        // 1. Lấy thông tin đơn hàng từ DB (để in tên khách, phòng...)
         $order = $this->bookingModel->getBookingById($id);
-
         if (!$order) {
             die("Đơn hàng không tồn tại");
         }
-
         // 2. TẠO DỮ LIỆU HÓA ĐƠN "ẢO" (Không lưu vào DB)
-        // Tự động sinh mã hóa đơn theo quy tắc: INV + NămThángNgày + ID Đơn (Ví dụ: INV-20231225-10)
         $invoiceData = [
             'invoice_code' => 'INV-' . date('Ymd') . '-' . $id,
             'created_at'   => date('Y-m-d H:i:s'), // Lấy thời gian hiện tại
@@ -150,15 +134,12 @@ class OrderController extends Controller
         ];
 
         // 3. Truyền dữ liệu sang View để in
-        // View vẫn nhận biến $invoice nhưng giờ nó là mảng mình vừa tạo ở trên
         $this->render('admin/orders/invoice', [
             'order' => $order,
             'invoice' => $invoiceData
         ]);
     }
     //end admin check
-
-
 
     public function createBooking($roomId)
     {
@@ -187,13 +168,12 @@ class OrderController extends Controller
         $days = (strtotime($checkOut) - strtotime($checkIn)) / 86400;
 
         if ($days <= 0) {
-            // Handle error...
+            $_SESSION['flash_message'] = "Vui lòng nhập lại ngày!";
         }
 
         // A. Giá gốc
         $originalPrice = $days * $room['price'];
 
-        // B. Trừ tiền Rank (Đã làm đúng)
         $user = $this->userModel->getUserById($_SESSION['user_id']);
         $rank = $user['rank_level'] ?? 'standard';
 
@@ -201,12 +181,9 @@ class OrderController extends Controller
         $discountAmount = $originalPrice * $discountRate;
 
         // $finalPrice: Là GIÁ CHỐT HỢP ĐỒNG (Sau khi trừ Rank)
-        // Ví dụ: Gốc 1tr - Giảm 100k = 900k. (Lưu 900k vào DB)
         $finalPrice = $originalPrice - $discountAmount;
 
-        // C. Tính tiền cọc (Chỉ tính ra con số để khách chuyển, KHÔNG trừ vào finalPrice)
-        // Ví dụ: Cọc 30% của 900k = 270k.
-        $depositAmount = $finalPrice * 0.3; // Bạn nên để 0.3 (30%) cho chuẩn logic cũ
+        $depositAmount = $finalPrice * 0.3;
 
         // 3. Gọi Model
         $newBookingId = $this->bookingModel->createBooking(
@@ -218,28 +195,24 @@ class OrderController extends Controller
             $depositAmount,
             'deposited'
         );
-        // => Lúc này trong DB: Status = 'pending' (do sửa Model ở Bước 1)
-
-        // ... Code lưu booking ở trên ...
 
         if ($newBookingId) {
             // 1. Update trạng thái phòng
             $this->roomModel->updateStatus($roomId, 'booked');
-            // 2. TẠO THÔNG BÁO CHI TIẾT (Logic hiển thị Rank & Tiền giảm)
             $msg = "🎉 Đặt phòng thành công!";
 
             if ($discountAmount > 0) {
                 $rankName = strtoupper($rank); // Chuyển vip -> VIP
                 $moneySaved = number_format($discountAmount);
 
-                $msg .= " Chúc mừng! Vì bạn là thành viên <b>$rankName</b>, ";
-                $msg .= "bạn đã được giảm trực tiếp <b>$moneySaved VNĐ</b> vào đơn hàng.";
+                $msg .= " Chúc mừng! Vì bạn là thành viên $rankName, ";
+                $msg .= "bạn đã được giảm trực tiếp $moneySaved VNĐ vào đơn hàng.";
             } else {
                 $msg .= " Vui lòng chờ Admin xác nhận khoản cọc.";
             }
 
             $_SESSION['flash_message'] = $msg;
-            $_SESSION['alert_type'] = 'success'; // Để dùng class màu xanh (nếu có)
+            $_SESSION['alert_type'] = 'success';
 
             // 4. Chuyển hướng
             header('Location: /myorders');
@@ -282,8 +255,6 @@ class OrderController extends Controller
             header('Location: /myorders');
             exit();
         }
-
-        // Render view chi tiết
         $this->render('user/order-detail', ['booking' => $booking]);
     }
 
@@ -348,10 +319,8 @@ class OrderController extends Controller
         // Kiểm tra trạng thái phải là 'confirmed' mới được checkout
         if ($booking['status'] != 'confirmed') {
             $_SESSION['flash_message'] = "Chỉ có thể checkout đơn hàng đã xác nhận!";
-            // ================== THÊM PHẦN NÀY ==================
             $_SESSION['show_review_popup'] = true;
             $_SESSION['review_booking_id'] = $bookingId;
-            // ==================================================
             header('Location: /myorders/detail/' . $bookingId);
             exit();
         }
@@ -379,14 +348,12 @@ class OrderController extends Controller
         // Cách 2: Nếu bạn lưu lẻ từng biến (như rank_level)
         $_SESSION['rank_level'] = $updatedUser['rank_level'];
 
-        // =============================================================
 
         // 5. Thông báo thành công
         $_SESSION['flash_message'] = "✅ Checkout thành công! Cảm ơn quý khách.";
-    
-        // === THÊM ĐOẠN NÀY ===
+
         // Đặt cờ hiệu để View biết là vừa checkout xong
-        $_SESSION['show_review_popup'] = true; 
+        $_SESSION['show_review_popup'] = true;
         $_SESSION['review_booking_id'] = $bookingId;
 
         // Khoe ngay nếu được lên hạng
@@ -394,7 +361,7 @@ class OrderController extends Controller
             $_SESSION['flash_message'] = " Chúc mừng! Bạn hiện là thành viên " . strtoupper($updatedUser['rank_level']);
         }
 
-        
+
         header('Location: /myorders/detail/' . $bookingId);
         exit();
     }
